@@ -42,7 +42,7 @@ public class SQLediterMeals {
         }
     }
 
-    private static void deleteUser(int id) {
+    private static void deleteMeal(int id) {
         String deleteSQL = "DELETE FROM MEALS WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
