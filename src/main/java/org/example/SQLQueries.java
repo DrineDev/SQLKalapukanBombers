@@ -11,22 +11,22 @@ import java.util.Arrays;
 
 public class SQLQueries {
 
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/c202301062/IdeaProjects/javaworks2/SQL/database.db";
+    private static final String DB_URL = "jdbc:sqlite:C:/Users/c202301062/SQLKalapukanBombers/SQL/database.db";
 
     public static void main(String[] args) {
-//        createUsersTable();
-//        createMealsTable();
-//        createOrderTable();
-//        createSalesTable();
-//        createPromotionsTable();
-//        createInventoryTable();
+        createUsersTable();
+        createMealsTable();
+        createOrderTable();
+        createSalesTable();
+        createPromotionsTable();
+        createInventoryTable();
 
         // Test adding a user
 //        addUser("JamesDamayo", "XavierViduya", "admin");
-        if(authenticateUser("JamesDamayo", "XavierViduya"))
-            System.out.println("worki");
-        else
-            System.out.println("no worki");
+//        if(authenticateUser("JamesDamayo", "XavierViduya"))
+//            System.out.println("worki");
+//        else
+//            System.out.println("no worki");
 //
 //        // Test adding a meal
 //        addMeals(1, 12.99f, "Pasta", "Main Course", "Italian", "Pasta, Sauce", "Delicious pasta with sauce", "1 Plate");

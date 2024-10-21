@@ -8,7 +8,7 @@ import javax.swing.*;
 
 
 public class Goowee extends JFrame{
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/c202301062/IdeaProjects/javaworks2/SQL/database.db";
+    private static final String DB_URL = "jdbc:sqlite:C:/Users/c202301062/SQLKalapukanBombers/SQL/database.db";
     JFrame loginFrame;
     JButton exitButton;
     JButton loginButton;
