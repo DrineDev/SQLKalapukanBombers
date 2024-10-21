@@ -42,6 +42,7 @@ public class SQLQueries {
 //
 //        // Test adding inventory
 //        addInventory(1, 1, 100);
+        // TESTING TESTING
     }
 
     private static void createUsersTable() {
