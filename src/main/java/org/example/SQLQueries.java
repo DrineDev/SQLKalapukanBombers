@@ -42,9 +42,6 @@ public class SQLQueries {
 //
 //        // Test adding inventory
 //        addInventory(1, 1, 100);
-        // teasdas
-        // teasdas
-        // tessadsa
     }
 
     private static void createUsersTable() {
