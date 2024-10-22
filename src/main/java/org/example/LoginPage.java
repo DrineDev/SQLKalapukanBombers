@@ -1,69 +1,182 @@
 package org.example;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
 import javax.swing.*;
+//import org.example.SQLQueries;
 
-public class LoginPage {
 
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/c202301062/IdeaProjects/javaworks2/SQL/database.db";
+public class LoginPage extends JFrame{
+    private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
+    JFrame loginFrame;
+    JButton exitButton;
+    JButton loginButton;
+    LoginPage()
+    {
+        //make frame for login
+        loginFrame = new JFrame();
+        loginFrame.setSize(1000, 600);
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.setUndecorated(true);
+        loginFrame.setLayout(new BorderLayout());
+        loginFrame.setLocationRelativeTo(null);
+        loginFrame.getContentPane().setBackground(new Color(255, 255, 255, 100));
 
-    public static void main(String[] args) {
+        //make custom button to exit the program
+        ImageIcon exitImageIcon = new ImageIcon("exit button.png");
+        exitButton = new JButton();
+        exitButton.setIcon(exitImageIcon);
+        exitButton.setBounds(565, 15, 20, 20);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setFocusPainted(false);
+        exitButton.setBorderPainted(false);
 
-        LoadLoginPage();
-    }
-    public static void LoadLoginPage() {
-        JFrame frame = new JFrame();
+        exitButton.addActionListener((ActionEvent e) ->
+        {
+            System.exit(0);
+        });
 
-        JButton button = new JButton("Login");
+        //left side of panel
+        JPanel leftSidePanel = new JPanel();
+        leftSidePanel.setPreferredSize(new Dimension(400,600));
+        leftSidePanel.setBackground(Color.white);
+        leftSidePanel.setLayout(null);
 
-        JTextField username = new JTextField();
-        JPasswordField password = new JPasswordField();
+        JLabel usernameText = new JLabel();
+        JLabel passwordText = new JLabel();
+        usernameText.setText("Username");
+        usernameText.setBounds(90, 240, 60,15);
+        passwordText.setText("Password");
+        passwordText.setBounds(90, 320, 60, 15);
 
-        button.setBounds(150, 300, 100, 25);
+        JTextField userTextField = new JTextField();
+        JPasswordField passTextField = new JPasswordField();
+        userTextField.setBounds(90, 210, 220, 30);
+        passTextField.setBounds(90, 290, 220, 30);
 
-        JLabel userLabel = new JLabel("Username: ");
-        userLabel.setBounds(150, 70, 150, 25);
-        userLabel.setVisible(true);
-        JLabel passLabel = new JLabel("Password: ");
-        passLabel.setBounds(150, 170, 150, 25);
-        passLabel.setVisible(true);
+        //right side of panel
+        ImageIcon rightImage = new ImageIcon("right.png");
+        JLabel rightBackground = new JLabel();
+        rightBackground.setIcon(rightImage);
+        rightBackground.setBounds(0,0, 600, 600);
+        JPanel rightSidePanel = new JPanel();
+        rightSidePanel.setPreferredSize(new Dimension(600,600));
+        rightSidePanel.setLayout(null);
 
-        username.setBounds(150, 100, 150, 25);
-        password.setBounds(150, 200, 150, 25);
-        frame.add(username);
-        frame.add(password);
-        frame.add(userLabel);
-        frame.add(passLabel);
+        //error text
+        ImageIcon errorPic = new ImageIcon("Incorrect error.png");
+        JLabel errorText = new JLabel();
+        errorText.setBounds(90, 175, 220, 15);
+        errorText.setIcon(errorPic);
+        errorText.setForeground(Color.red);
+        errorText.setVisible(false);
 
-        frame.add(button);
-        frame.setResizable(false);
-        frame.setSize(500, 600);
-        frame.setLayout(null);
-        frame.setVisible(true);
 
-        button.addActionListener(new ActionListener() {
+        //login button
+        ImageIcon loginButtonImage = new ImageIcon("login button.png");
+        loginButton = new JButton();
+        loginButton.setBounds(90, 390, 120, 30);
+        loginButton.setIcon(loginButtonImage);
+        loginButton.setContentAreaFilled(false);
+        loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String usernameInput = username.getText();
-                String passwordInput = new String(password.getPassword());
-                System.out.println(usernameInput);
-                System.out.println(passwordInput);
-                    if (SQLQueries.authenticateUser(usernameInput, passwordInput)) {
-                        JButton confirm = new JButton("Okay boss");
-                        JFrame loginSuccessful = new JFrame();
-                        loginSuccessful.add(confirm);
-                        loginSuccessful.setSize(75, 150);
-                        loginSuccessful.setVisible(true);
-                    } else {
-                        JFrame loginFailed = new JFrame();
-                        JButton failed = new JButton("Oh no boss");
-                        loginFailed.add(failed);
-                        loginFailed.setSize(75, 150);
-                        loginFailed.setVisible(true);
-                    }
+                //FIX THIS TOMORROW! ASK FOR HELP!
+
+                String userInput = userTextField.getText();
+                String passInput = new String(passTextField.getPassword());
+                if(SQLQueries.authenticateUser(userInput, passInput))
+                {
+                    fadeInNewFrame();
+                }
+                else
+                {
+                    errorText.setVisible(true);
+                }
+
+            }
+        });
+
+
+        //add shits
+        loginFrame.add(leftSidePanel, BorderLayout.WEST);
+        loginFrame.add(rightSidePanel, BorderLayout.EAST);
+
+        leftSidePanel.add(errorText);
+        leftSidePanel.add(userTextField);
+        leftSidePanel.add(usernameText);
+        leftSidePanel.add(passTextField);
+        leftSidePanel.add(passwordText);
+        leftSidePanel.add(loginButton);
+
+        rightSidePanel.add(rightBackground);
+        rightSidePanel.add(exitButton);
+
+        loginFrame.setVisible(true);
+    }
+
+
+    //everything below makes it so that welcome window fades in (burger.png is placeholder....)
+    private void fadeInNewFrame() {
+        JFrame newFrame = new JFrame();
+        newFrame.setSize(1000, 600);
+        newFrame.setUndecorated(true);
+        newFrame.setLocationRelativeTo(null);
+
+        // Load the image
+        ImageIcon imageIcon = new ImageIcon("burger.png");
+        Image image = imageIcon.getImage();
+
+        // Create a custom panel for fading effect
+        FadePanel fadePanel = new FadePanel(image);
+        newFrame.add(fadePanel);
+        newFrame.setVisible(true);
+
+        // Timer to handle fading in
+        Timer fadeInTimer = new Timer(45, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                loginFrame.dispose();
+                fadePanel.incrementAlpha();
+                if (fadePanel.getAlpha() >= 255) {
+                    ((Timer) evt.getSource()).stop();
+                    newFrame.dispose(); // Dispose the fade-in frame
+                    SwingUtilities.invokeLater(MainFrame::new);// Create a new main frame
                 }
             }
-        );
+        });
+
+        fadeInTimer.start();
     }
+
+    //custom panel for fading in things
+    private class FadePanel extends JPanel {
+        private int alpha = 0;
+        private final Image image;
+
+        public FadePanel(Image image) {
+            this.image = image;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha / 255f));
+            g2d.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        public void incrementAlpha() {
+            if (alpha < 255) {
+                alpha += 5;
+                repaint();
+            }
+        }
+        public int getAlpha() {
+            return alpha;
+        }
+    }
+
+
 }

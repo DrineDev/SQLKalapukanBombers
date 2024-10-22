@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SQLediterUser {
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/C202301062/SQLKalapukanBombers/SQL/database.db";
+    private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
     public static void addUser(String username, String password, String role) {
         String insertSQL = "INSERT INTO Users (username, password, role) VALUES (?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(DB_URL);

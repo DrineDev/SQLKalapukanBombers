@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class SQLQueries {
 
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/c202301062/SQLKalapukanBombers/SQL/database.db";
+    private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
     public static void main(String[] args) {
         createUsersTable();

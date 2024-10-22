@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.sql.*;
 
 public class SQLediterInventory {
-    private static final String DB_URL = "jdbc:sqlite:C:/Users/C202301036/IdeaProjects/untitled/SQL/database.db";
+    private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
     public static void addInventory(int Inventory_ID, int Meal_ID, int Quantity_Available) {
         String insertSQL = "INSERT INTO INVENTORY (Inventory_ID, Meal_ID, Quantity_Available) VALUES (?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(DB_URL);
