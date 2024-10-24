@@ -142,7 +142,7 @@ public class LoginPage extends JFrame{
                 if (fadePanel.getAlpha() >= 255) {
                     ((Timer) evt.getSource()).stop();
                     newFrame.dispose(); // Dispose the fade-in frame
-                    SwingUtilities.invokeLater(MainFrame::new);// Create a new main frame
+                    SwingUtilities.invokeLater(MainFrameEmployee::new);// Create a new main frame
                 }
             }
         });
