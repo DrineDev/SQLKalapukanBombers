@@ -7,12 +7,14 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
@@ -31,11 +34,11 @@ public class MainFrameEmployee extends JFrame {
 
     public MainFrameEmployee() {
         // Food icons
-        ImageIcon fIcon = new ImageIcon("Rectangle 8.png");
-        ImageIcon fIconHover = new ImageIcon("Rectangle 8 (1).png");
+        ImageIcon fIcon = new ImageIcon("pics/Rectangle 8.png");
+        ImageIcon fIconHover = new ImageIcon("pics/Rectangle 8 (1).png");
         
         // Exit button
-        ImageIcon exitImageIcon = new ImageIcon("exit button.png");
+        ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
         exitButton.setIcon(exitImageIcon);
         exitButton.setContentAreaFilled(false);
@@ -61,14 +64,14 @@ public class MainFrameEmployee extends JFrame {
         mainFrame.setLocationRelativeTo(null);
 
         // Left side
-        ImageIcon leftSideArea = new ImageIcon("checkout area.png");
+        ImageIcon leftSideArea = new ImageIcon("pics/checkout area.png");
         JLabel leftSide = new JLabel();
         leftSide.setIcon(leftSideArea);
         leftSide.setLayout(null);
         
-        ImageIcon defaultCheckbox = new ImageIcon("checkbox default.png");
-        ImageIcon selectedCheckbox = new ImageIcon("check_box.png");
-        ImageIcon categoryArea = new ImageIcon("category area.png");
+        ImageIcon defaultCheckbox = new ImageIcon("pics/checkbox default.png");
+        ImageIcon selectedCheckbox = new ImageIcon("pics/check_box.png");
+        ImageIcon categoryArea = new ImageIcon("pics/category area.png");
         JLabel leftSideCategory = new JLabel();
         JCheckBox vegetarianButton = new JCheckBox("Vegetarian");
         vegetarianButton.setFocusPainted(false);
@@ -150,13 +153,13 @@ public class MainFrameEmployee extends JFrame {
         leftSideCategory.add(spicyButton);
         leftSideCategory.add(non_VegetariaButton);
 
-        ImageIcon checkoutArea = new ImageIcon("checkout box.png");
+        ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         JLabel leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
         leftSideCheckout.setBounds(35, 195, 250,320);
         //maybe add another jscrollpane because if order is too much, you ahve to scroll it 
 
-        ImageIcon checkoutButtonImage = new ImageIcon("checkout button.png");
+        ImageIcon checkoutButtonImage = new ImageIcon("pics/checkout button.png");
         JButton checkoutButton = new JButton();
         checkoutButton.setIcon(checkoutButtonImage);
         checkoutButton.setBounds(35, 535, 110, 30);
@@ -168,7 +171,7 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                showImageFrame();
+                showImageFrame("pics/pop up frame.png");
             }
         });
 
@@ -234,41 +237,58 @@ public class MainFrameEmployee extends JFrame {
     }
    
     //shit below is the same w/ login page popup after login (fadein adn fadeout)
-    private void showImageFrame() 
-    {
-        ImageIcon imageIcon = new ImageIcon("pop up frame.png"); 
+    private void showImageFrame(String imagePath) {
+        // Load your custom image
+        ImageIcon imageIcon = new ImageIcon(imagePath); // Use the provided image path
         Image image = imageIcon.getImage();
-        
+    
+        // Create a new JWindow
         JWindow imageWindow = new JWindow();
-        imageWindow.setSize(image.getWidth(null), image.getHeight(null));
+        int width = image.getWidth(null);
+        int height = image.getHeight(null);
+        imageWindow.setSize(width, height); // Size to match the image
         imageWindow.setLocationRelativeTo(mainFrame);
     
+        // Create a panel to hold the image
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(image, 0, 0, this); 
+                g.drawImage(image, 0, 0, this); // Draw the image directly
             }
         };
-        
+    
+        panel.setPreferredSize(new Dimension(width, height));
         imageWindow.setContentPane(panel);
-        imageWindow.setOpacity(0.0f);
+        
+        // Set the shape of the window to match the image
+        Shape shape = new RoundRectangle2D.Float(0, 0, width, height, 20, 20); // Adjust the corner radius as needed
+        imageWindow.setShape(shape);
+    
+        imageWindow.setOpacity(0.0f); // Start fully transparent
         imageWindow.setVisible(true);
     
+        // Timer for fading in
         Timer fadeInTimer = new Timer(20, null);
         fadeInTimer.addActionListener(new ActionListener() {
             float opacity = 0.0f;
     
             @Override
             public void actionPerformed(ActionEvent e) {
-                opacity += 0.05f; 
+                opacity += 0.05f; // Increase opacity
                 if (opacity >= 1.0f) {
                     opacity = 1.0f;
-                    fadeInTimer.stop(); 
-                    new Timer(1000, evt -> startFadeOut(imageWindow)).start(); 
+                    fadeInTimer.stop(); // Stop fade-in timer
+                    // Start pause timer
+                    new Timer(1000, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent evt) {
+                            startFadeOut(imageWindow);
+                        }
+                    }).start(); // Pause for 1 second
                 }
                 imageWindow.setOpacity(opacity);
-                imageWindow.repaint(); 
+                imageWindow.repaint(); // Repaint to update opacity
             }
         });
         fadeInTimer.start();
@@ -280,17 +300,17 @@ public class MainFrameEmployee extends JFrame {
     
             @Override
             public void actionPerformed(ActionEvent e) {
-                opacity -= 0.05f; 
+                opacity -= 0.05f; // Decrease opacity
                 if (opacity <= 0.0f) {
                     opacity = 0.0f;
-                    imageWindow.dispose(); 
-                    fadeOutTimer.stop();
+                    imageWindow.dispose(); // Close the window
+                    fadeOutTimer.stop(); // Stop fade-out timer
                 }
                 imageWindow.setOpacity(opacity);
-                imageWindow.repaint(); 
+                imageWindow.repaint(); // Repaint to update opacity
             }
         });
-        fadeOutTimer.start(); 
+        fadeOutTimer.start(); // Start fade-out process
     }
-
 }
+

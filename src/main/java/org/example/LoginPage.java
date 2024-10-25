@@ -24,7 +24,7 @@ public class LoginPage extends JFrame{
         loginFrame.getContentPane().setBackground(new Color(255, 255, 255, 100));
 
         //make custom button to exit the program
-        ImageIcon exitImageIcon = new ImageIcon("exit button.png");
+        ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
         exitButton.setIcon(exitImageIcon);
         exitButton.setBounds(565, 15, 20, 20);
@@ -56,7 +56,7 @@ public class LoginPage extends JFrame{
         passTextField.setBounds(90, 290, 220, 30);
 
         //right side of panel
-        ImageIcon rightImage = new ImageIcon("right.png");
+        ImageIcon rightImage = new ImageIcon("pics/right.png");
         JLabel rightBackground = new JLabel();
         rightBackground.setIcon(rightImage);
         rightBackground.setBounds(0,0, 600, 600);
@@ -65,7 +65,7 @@ public class LoginPage extends JFrame{
         rightSidePanel.setLayout(null);
 
         //error text
-        ImageIcon errorPic = new ImageIcon("Incorrect error.png");
+        ImageIcon errorPic = new ImageIcon("pics/Incorrect error.png");
         JLabel errorText = new JLabel();
         errorText.setBounds(90, 175, 220, 15);
         errorText.setIcon(errorPic);
@@ -74,7 +74,7 @@ public class LoginPage extends JFrame{
 
 
         //login button
-        ImageIcon loginButtonImage = new ImageIcon("login button.png");
+        ImageIcon loginButtonImage = new ImageIcon("pics/login button.png");
         loginButton = new JButton();
         loginButton.setBounds(90, 390, 120, 30);
         loginButton.setIcon(loginButtonImage);
@@ -125,7 +125,7 @@ public class LoginPage extends JFrame{
         newFrame.setLocationRelativeTo(null);
 
         // Load the image
-        ImageIcon imageIcon = new ImageIcon("burger.png");
+        ImageIcon imageIcon = new ImageIcon("pics/burger.png");
         Image image = imageIcon.getImage();
 
         // Create a custom panel for fading effect
