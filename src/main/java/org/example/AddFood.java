@@ -69,28 +69,31 @@ public class AddFood extends JLabel {
         // this.setContentAreaFilled(false);
         // this.setBorderPainted(false);
 
-        // Initialize the hover timer
+        //below is timer for hovering over the foods, ilisan pa guro ni para ma inig hover kay ma display ang nutritional facts
         hoverTimer = new Timer(500, new ActionListener() 
         {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
                 
-                AddFood.this.setIcon(hoverImage); // Change the icon to the hover image
-                hoverTimer.stop(); // Stop the timer
+                AddFood.this.setIcon(hoverImage); 
+                hoverTimer.stop(); 
             }
         });
 
-        this.addMouseListener(new java.awt.event.MouseAdapter() {
+        this.addMouseListener(new java.awt.event.MouseAdapter() 
+        {
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                hoverTimer.start(); // Start the timer on hover
+            public void mouseEntered(java.awt.event.MouseEvent evt) 
+            {
+                hoverTimer.start(); 
             }
 
             @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                hoverTimer.stop(); // Stop the timer if mouse exits before delay
-                setIcon(foodImage); // Reset to original image
+            public void mouseExited(java.awt.event.MouseEvent evt) 
+            {
+                hoverTimer.stop(); 
+                setIcon(foodImage); 
             }
         });
         

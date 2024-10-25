@@ -79,10 +79,11 @@ public class LoginPage extends JFrame{
         loginButton.setBounds(90, 390, 120, 30);
         loginButton.setIcon(loginButtonImage);
         loginButton.setContentAreaFilled(false);
-        loginButton.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() 
+        {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                //FIX THIS TOMORROW! ASK FOR HELP!
+            public void actionPerformed(ActionEvent e) 
+            {
 
                 String userInput = userTextField.getText();
                 String passInput = new String(passTextField.getPassword());
@@ -124,25 +125,23 @@ public class LoginPage extends JFrame{
         newFrame.setUndecorated(true);
         newFrame.setLocationRelativeTo(null);
 
-        // Load the image
         ImageIcon imageIcon = new ImageIcon("pics/burger.png");
         Image image = imageIcon.getImage();
-
-        // Create a custom panel for fading effect
+    
         FadePanel fadePanel = new FadePanel(image);
         newFrame.add(fadePanel);
         newFrame.setVisible(true);
 
-        // Timer to handle fading in
-        Timer fadeInTimer = new Timer(45, new ActionListener() {
+        Timer fadeInTimer = new Timer(45, new ActionListener() 
+        {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 loginFrame.dispose();
                 fadePanel.incrementAlpha();
                 if (fadePanel.getAlpha() >= 255) {
                     ((Timer) evt.getSource()).stop();
-                    newFrame.dispose(); // Dispose the fade-in frame
-                    SwingUtilities.invokeLater(MainFrameEmployee::new);// Create a new main frame
+                    newFrame.dispose(); 
+                    SwingUtilities.invokeLater(MainFrameEmployee::new);
                 }
             }
         });
@@ -151,29 +150,35 @@ public class LoginPage extends JFrame{
     }
 
     //custom panel for fading in things
-    private class FadePanel extends JPanel {
+    private class FadePanel extends JPanel 
+    {
         private int alpha = 0;
         private final Image image;
 
-        public FadePanel(Image image) {
+        public FadePanel(Image image) 
+        {
             this.image = image;
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) 
+        {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha / 255f));
             g2d.drawImage(image, 0, 0, getWidth(), getHeight(), this);
         }
 
-        public void incrementAlpha() {
-            if (alpha < 255) {
+        public void incrementAlpha() 
+        {
+            if (alpha < 255) 
+            {
                 alpha += 5;
                 repaint();
             }
         }
-        public int getAlpha() {
+        public int getAlpha() 
+        {
             return alpha;
         }
     }

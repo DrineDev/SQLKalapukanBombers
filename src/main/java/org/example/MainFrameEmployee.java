@@ -24,14 +24,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JWindow;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 public class MainFrameEmployee extends JFrame {
     private JFrame mainFrame;
     private JButton exitButton;
-
     public MainFrameEmployee() {
         // Food icons
         ImageIcon fIcon = new ImageIcon("pics/Rectangle 8.png");
@@ -206,7 +204,8 @@ public class MainFrameEmployee extends JFrame {
         rightSideScrollPane.getViewport().setViewPosition(new java.awt.Point(0, 20));
 
         // custom scrolling shit
-        rightSideScrollPane.addMouseWheelListener(new MouseWheelListener() {
+        rightSideScrollPane.addMouseWheelListener(new MouseWheelListener() 
+        {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 int currentY = rightSideScrollPane.getViewport().getViewPosition().y;
@@ -237,80 +236,83 @@ public class MainFrameEmployee extends JFrame {
     }
    
     //shit below is the same w/ login page popup after login (fadein adn fadeout)
-    private void showImageFrame(String imagePath) {
-        // Load your custom image
-        ImageIcon imageIcon = new ImageIcon(imagePath); // Use the provided image path
+    private void showImageFrame(String imagePath) 
+    {
+        ImageIcon imageIcon = new ImageIcon(imagePath);
         Image image = imageIcon.getImage();
     
-        // Create a new JWindow
         JWindow imageWindow = new JWindow();
         int width = image.getWidth(null);
         int height = image.getHeight(null);
-        imageWindow.setSize(width, height); // Size to match the image
+        imageWindow.setSize(width, height);
         imageWindow.setLocationRelativeTo(mainFrame);
     
-        // Create a panel to hold the image
         JPanel panel = new JPanel() {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g) 
+            {
                 super.paintComponent(g);
-                g.drawImage(image, 0, 0, this); // Draw the image directly
+                g.drawImage(image, 0, 0, this);
             }
         };
     
         panel.setPreferredSize(new Dimension(width, height));
         imageWindow.setContentPane(panel);
         
-        // Set the shape of the window to match the image
-        Shape shape = new RoundRectangle2D.Float(0, 0, width, height, 20, 20); // Adjust the corner radius as needed
+        Shape shape = new RoundRectangle2D.Float(0, 0, width, height, 17, 17); 
         imageWindow.setShape(shape);
     
-        imageWindow.setOpacity(0.0f); // Start fully transparent
+        imageWindow.setOpacity(0.0f); 
         imageWindow.setVisible(true);
     
-        // Timer for fading in
         Timer fadeInTimer = new Timer(20, null);
-        fadeInTimer.addActionListener(new ActionListener() {
+        fadeInTimer.addActionListener(new ActionListener() 
+        {
             float opacity = 0.0f;
     
             @Override
-            public void actionPerformed(ActionEvent e) {
-                opacity += 0.05f; // Increase opacity
+            public void actionPerformed(ActionEvent e) 
+            {
+                opacity += 0.05f; 
                 if (opacity >= 1.0f) {
                     opacity = 1.0f;
-                    fadeInTimer.stop(); // Stop fade-in timer
-                    // Start pause timer
-                    new Timer(1000, new ActionListener() {
+                    fadeInTimer.stop(); 
+                    new Timer(1000, new ActionListener() 
+                    {
                         @Override
-                        public void actionPerformed(ActionEvent evt) {
+                        public void actionPerformed(ActionEvent evt) 
+                        {
                             startFadeOut(imageWindow);
                         }
-                    }).start(); // Pause for 1 second
+                    }).start();
                 }
                 imageWindow.setOpacity(opacity);
-                imageWindow.repaint(); // Repaint to update opacity
+                imageWindow.repaint();
             }
         });
         fadeInTimer.start();
     }
-    private void startFadeOut(JWindow imageWindow) {
+    private void startFadeOut(JWindow imageWindow) 
+    {
         Timer fadeOutTimer = new Timer(20, null);
-        fadeOutTimer.addActionListener(new ActionListener() {
+        fadeOutTimer.addActionListener(new ActionListener() 
+        {
             float opacity = 1.0f;
     
             @Override
-            public void actionPerformed(ActionEvent e) {
-                opacity -= 0.05f; // Decrease opacity
+            public void actionPerformed(ActionEvent e) 
+            {
+                opacity -= 0.05f;
                 if (opacity <= 0.0f) {
                     opacity = 0.0f;
-                    imageWindow.dispose(); // Close the window
-                    fadeOutTimer.stop(); // Stop fade-out timer
+                    imageWindow.dispose();
+                    fadeOutTimer.stop(); 
                 }
                 imageWindow.setOpacity(opacity);
-                imageWindow.repaint(); // Repaint to update opacity
+                imageWindow.repaint(); 
             }
         });
-        fadeOutTimer.start(); // Start fade-out process
+        fadeOutTimer.start();
     }
 }
 
