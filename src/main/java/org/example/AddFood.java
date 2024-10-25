@@ -64,7 +64,7 @@ public class AddFood extends JLabel {
 
     public AddFood(ImageIcon foodImage, ImageIcon hoverImage) 
     {
-        this.setPreferredSize(new Dimension(300, 250));
+        this.setPreferredSize(new Dimension(300, 300));
         this.setIcon(foodImage);
         // this.setContentAreaFilled(false);
         // this.setBorderPainted(false);
@@ -93,5 +93,10 @@ public class AddFood extends JLabel {
                 setIcon(foodImage); // Reset to original image
             }
         });
+        
+    }
+    private void AddVegetarianFoods()
+    {
+
     }
 }
