@@ -1,13 +1,6 @@
 package org.example;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -16,15 +9,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.RoundRectangle2D;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JWindow;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class MainFrameEmployee extends JFrame {
@@ -32,9 +17,12 @@ public class MainFrameEmployee extends JFrame {
     private JButton exitButton;
     public MainFrameEmployee() {
         // Food icons
-        ImageIcon fIcon = new ImageIcon("pics/Rectangle 8.png");
+        ImageIcon fIcon = new ImageIcon("pics/fried chicken.png");
         ImageIcon fIconHover = new ImageIcon("pics/Rectangle 8 (1).png");
-        
+        ImageIcon fIcon2 = new ImageIcon("pics/cordon.png");
+        ImageIcon fIconHover2 = new ImageIcon("pics/Rectangle 8 (1).png");
+
+
         // Exit button
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
@@ -49,8 +37,16 @@ public class MainFrameEmployee extends JFrame {
 
         // Create food items, change this pls, dapat connectted ni sa database so we can know its food details
         AddFood[] foods = new AddFood[6];
-        for (int i = 0; i < foods.length; i++) {
+        for (int i = 0; i < foods.length; i++)
+        {
             foods[i] = new AddFood(fIcon, fIconHover);
+//            BufferedImage image = ImageIO.read(new File("pics/fried chicken.png"));
+        }
+        AddFood[] foods2 = new AddFood[6];
+        for (int i = 0; i < foods.length; i++)
+        {
+            foods2[i] = new AddFood(fIcon2, fIconHover2);
+//            BufferedImage image = ImageIO.read(new File("pics/fried chicken.png"));
         }
 
         // Frame initialization
@@ -61,117 +57,7 @@ public class MainFrameEmployee extends JFrame {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setLocationRelativeTo(null);
 
-        // Left side
-        ImageIcon leftSideArea = new ImageIcon("pics/checkout area.png");
-        JLabel leftSide = new JLabel();
-        leftSide.setIcon(leftSideArea);
-        leftSide.setLayout(null);
-        
-        ImageIcon defaultCheckbox = new ImageIcon("pics/checkbox default.png");
-        ImageIcon selectedCheckbox = new ImageIcon("pics/check_box.png");
-        ImageIcon categoryArea = new ImageIcon("pics/category area.png");
-        JLabel leftSideCategory = new JLabel();
-        JCheckBox vegetarianButton = new JCheckBox("Vegetarian");
-        vegetarianButton.setFocusPainted(false);
-        vegetarianButton.setContentAreaFilled(false);
-        vegetarianButton.setBorder(new EmptyBorder(0, 15,0, 0));
-        vegetarianButton.setIcon(defaultCheckbox);
-        vegetarianButton.setSelectedIcon(selectedCheckbox);
-        vegetarianButton.addItemListener(new ItemListener() 
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e) 
-            {
-                if (e.getStateChange() == ItemEvent.SELECTED)
-                {
-                    //its gonna do something
 
-                }
-                else
-                {
-                    //its still gonna do something
-                }   
-            }
-            
-        });
-
-        JCheckBox non_VegetariaButton =  new JCheckBox("Non-Vegetarian");
-        non_VegetariaButton.setFocusPainted(false);
-        non_VegetariaButton.setContentAreaFilled(false);
-        non_VegetariaButton.setBorder(new EmptyBorder(0, 15,0, 0));
-        non_VegetariaButton.setIcon(defaultCheckbox);
-        non_VegetariaButton.setSelectedIcon(selectedCheckbox);
-        non_VegetariaButton.addItemListener(new ItemListener() 
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e) 
-            {
-                if (e.getStateChange() == ItemEvent.SELECTED)
-                {
-                    //its gonna do something
-
-                }
-                else
-                {
-                    //its still gonna do something
-                }   
-            }
-            
-        });
-
-        JCheckBox spicyButton = new JCheckBox("Spicy");
-        spicyButton.setFocusPainted(false);
-        spicyButton.setBorderPainted(false);
-        spicyButton.setContentAreaFilled(false);
-        spicyButton.setBorder(new EmptyBorder(0, 25,0, 0));
-        spicyButton.setIcon(defaultCheckbox);
-        spicyButton.setSelectedIcon(selectedCheckbox);
-        spicyButton.addItemListener(new ItemListener() 
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e) 
-            {
-                if (e.getStateChange() == ItemEvent.SELECTED)
-                {
-                    //put here addfood pero spicy category only, we ahve to amke meals pa......
-                    System.out.println("fuckyou");
-                }
-                else
-                {
-                    //its still gonna do something
-                }   
-            }
-            
-        });
-
-        leftSideCategory.setIcon(categoryArea);
-        leftSideCategory.setLayout(new GridLayout(2, 2));
-        leftSideCategory.setBounds(35,65, 250, 100);
-        leftSideCategory.add(vegetarianButton);
-        leftSideCategory.add(spicyButton);
-        leftSideCategory.add(non_VegetariaButton);
-
-        ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
-        JLabel leftSideCheckout = new JLabel();
-        leftSideCheckout.setIcon(checkoutArea);
-        leftSideCheckout.setBounds(35, 195, 250,320);
-        //maybe add another jscrollpane because if order is too much, you ahve to scroll it 
-
-        ImageIcon checkoutButtonImage = new ImageIcon("pics/checkout button.png");
-        JButton checkoutButton = new JButton();
-        checkoutButton.setIcon(checkoutButtonImage);
-        checkoutButton.setBounds(35, 535, 110, 30);
-        checkoutButton.setContentAreaFilled(false);
-        checkoutButton.setFocusPainted(false);
-        checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                showImageFrame("pics/pop up frame.png");
-            }
-        });
 
         // Right side
         JPanel rightSideWhole = new JPanel();
@@ -186,22 +72,152 @@ public class MainFrameEmployee extends JFrame {
         exitPanel.add(exitButton);
 
         // Bottom area of right side
+
+
         JPanel rightSideComponents = new JPanel();
-        rightSideComponents.setLayout(new GridLayout(0, 2, 0, 10)); // Adjust gap
+        rightSideComponents.setLayout(new GridLayout(0, 2, 0, 0)); // Adjust gap
         rightSideComponents.setPreferredSize(new Dimension(680, 1000));
         rightSideComponents.setBackground(Color.white);
-        for (AddFood food : foods) 
+        for (AddFood food : foods)
         {
-            rightSideComponents.add(food); 
+            rightSideComponents.add(food);
         }
-
         JScrollPane rightSideScrollPane = new JScrollPane(rightSideComponents);
         rightSideScrollPane.setPreferredSize(new Dimension(680, 3000));
         rightSideScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         rightSideScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         rightSideScrollPane.setBorder(null);
-        
+
         rightSideScrollPane.getViewport().setViewPosition(new java.awt.Point(0, 20));
+
+
+        JPanel rightSideComponents2 = new JPanel();
+        rightSideComponents2.setLayout(new GridLayout(0, 2, 0, 0)); // Adjust gap
+        rightSideComponents2.setPreferredSize(new Dimension(680, 1000));
+        rightSideComponents2.setBackground(Color.white);
+        for (AddFood food : foods)
+        {
+            rightSideComponents2.add(food);
+        }
+        JScrollPane rightSideScrollPane2 = new JScrollPane(rightSideComponents);
+        rightSideScrollPane2.setPreferredSize(new Dimension(680, 3000));
+        rightSideScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        rightSideScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        rightSideScrollPane2.setBorder(null);
+
+        rightSideScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 20));
+
+        //right food area scrooll
+        JPanel rightFoodArea = new JPanel();
+        CardLayout cardLayout = new CardLayout();
+        rightFoodArea.setLayout(cardLayout);
+        rightFoodArea.setPreferredSize(new Dimension(680,1000));
+        rightFoodArea.add(rightSideScrollPane, "1");
+        rightFoodArea.add(rightSideScrollPane2, "2");
+
+
+        cardLayout.show(rightFoodArea, "1");
+
+
+        // Left side
+        ImageIcon leftSideArea = new ImageIcon("pics/checkout area.png");
+        JLabel leftSide = new JLabel();
+        leftSide.setIcon(leftSideArea);
+        leftSide.setLayout(null);
+
+        ImageIcon defaultCheckbox = new ImageIcon("pics/checkbox default.png");
+        ImageIcon selectedCheckbox = new ImageIcon("pics/check_box.png");
+        ImageIcon categoryArea = new ImageIcon("pics/category area.png");
+        JLabel leftSideCategory = new JLabel();
+        JRadioButton vegetarianButton = new JRadioButton("Vegetarian");
+        vegetarianButton.setFocusPainted(false);
+        vegetarianButton.setContentAreaFilled(false);
+        vegetarianButton.setBorder(new EmptyBorder(0, 15,0, 0));
+        vegetarianButton.setIcon(defaultCheckbox);
+        vegetarianButton.setSelectedIcon(selectedCheckbox);
+        vegetarianButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                cardLayout.next(rightFoodArea);
+
+            }
+        });
+
+        JRadioButton non_VegetariaButton =  new JRadioButton("Non-Vegetarian");
+        non_VegetariaButton.setFocusPainted(false);
+        non_VegetariaButton.setContentAreaFilled(false);
+        non_VegetariaButton.setBorder(new EmptyBorder(0, 15,0, 0));
+        non_VegetariaButton.setIcon(defaultCheckbox);
+        non_VegetariaButton.setSelectedIcon(selectedCheckbox);
+        non_VegetariaButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                System.out.println("non v");
+
+            }
+        });
+
+        ButtonGroup bGroup = new ButtonGroup();
+        bGroup.add(vegetarianButton);
+        bGroup.add(non_VegetariaButton);
+
+        JCheckBox spicyButton = new JCheckBox("Spicy");
+        spicyButton.setFocusPainted(false);
+        spicyButton.setBorderPainted(false);
+        spicyButton.setContentAreaFilled(false);
+        spicyButton.setBorder(new EmptyBorder(0, 25,0, 0));
+        spicyButton.setIcon(defaultCheckbox);
+        spicyButton.setSelectedIcon(selectedCheckbox);
+        spicyButton.addItemListener(new ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                {
+                    //put here addfood pero spicy category only, we ahve to amke meals pa......
+                    System.out.println("fuckyou");
+                }
+                else
+                {
+                    //its still gonna do something
+                }
+            }
+
+        });
+
+        leftSideCategory.setIcon(categoryArea);
+        leftSideCategory.setLayout(new GridLayout(2, 2));
+        leftSideCategory.setBounds(35,65, 250, 100);
+        leftSideCategory.add(vegetarianButton);
+        leftSideCategory.add(spicyButton);
+        leftSideCategory.add(non_VegetariaButton);
+
+        ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
+        JLabel leftSideCheckout = new JLabel();
+        leftSideCheckout.setIcon(checkoutArea);
+        leftSideCheckout.setBounds(35, 195, 250,320);
+        //maybe add another jscrollpane because if order is too much, you ahve to scroll it
+
+        ImageIcon checkoutButtonImage = new ImageIcon("pics/checkout button.png");
+        JButton checkoutButton = new JButton();
+        checkoutButton.setIcon(checkoutButtonImage);
+        checkoutButton.setBounds(35, 535, 110, 30);
+        checkoutButton.setContentAreaFilled(false);
+        checkoutButton.setFocusPainted(false);
+        checkoutButton.setBorder(null);
+        checkoutButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                showImageFrame("pics/pop up frame.png");
+            }
+        });
 
         // custom scrolling shit
         rightSideScrollPane.addMouseWheelListener(new MouseWheelListener() 
@@ -225,7 +241,7 @@ public class MainFrameEmployee extends JFrame {
         });
 
         rightSideWhole.add(exitPanel, BorderLayout.NORTH);
-        rightSideWhole.add(rightSideScrollPane, BorderLayout.CENTER);
+        rightSideWhole.add(rightFoodArea, BorderLayout.CENTER);
         leftSide.add(leftSideCategory);
         leftSide.add(leftSideCheckout);
         leftSide.add(checkoutButton);

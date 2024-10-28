@@ -62,12 +62,10 @@ public class AddFood extends JLabel {
     private ImageIcon hoverImage;
     private Timer hoverTimer;
 
-    public AddFood(ImageIcon foodImage, ImageIcon hoverImage) 
+    public AddFood(ImageIcon foodImage, ImageIcon hoverImage)
     {
-        this.setPreferredSize(new Dimension(300, 300));
+        this.setPreferredSize(new Dimension(300, 250));
         this.setIcon(foodImage);
-        // this.setContentAreaFilled(false);
-        // this.setBorderPainted(false);
 
         //below is timer for hovering over the foods, ilisan pa guro ni para ma inig hover kay ma display ang nutritional facts
         hoverTimer = new Timer(500, new ActionListener() 
@@ -75,7 +73,6 @@ public class AddFood extends JLabel {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                
                 AddFood.this.setIcon(hoverImage); 
                 hoverTimer.stop(); 
             }

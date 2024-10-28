@@ -125,7 +125,7 @@ public class LoginPage extends JFrame{
         newFrame.setUndecorated(true);
         newFrame.setLocationRelativeTo(null);
 
-        ImageIcon imageIcon = new ImageIcon("pics/burger.png");
+        ImageIcon imageIcon = new ImageIcon("pics/welcome splashscreen.png");
         Image image = imageIcon.getImage();
     
         FadePanel fadePanel = new FadePanel(image);
