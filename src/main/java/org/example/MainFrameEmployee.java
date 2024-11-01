@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.RoundRectangle2D;
@@ -15,7 +17,9 @@ import javax.swing.border.EmptyBorder;
 public class MainFrameEmployee extends JFrame {
     private JFrame mainFrame;
     private JButton exitButton;
-    public MainFrameEmployee() {
+
+    public MainFrameEmployee() 
+    {
         // Food icons
         ImageIcon fIcon = new ImageIcon("pics/fried chicken.png");
         ImageIcon fIconHover = new ImageIcon("pics/Rectangle 8 (1).png");
@@ -35,19 +39,6 @@ public class MainFrameEmployee extends JFrame {
             System.exit(0);
         });
 
-        // Create food items, change this pls, dapat connectted ni sa database so we can know its food details
-        AddFood[] foods = new AddFood[6];
-        for (int i = 0; i < foods.length; i++)
-        {
-            foods[i] = new AddFood(fIcon, fIconHover);
-//            BufferedImage image = ImageIO.read(new File("pics/fried chicken.png"));
-        }
-        AddFood[] foods2 = new AddFood[6];
-        for (int i = 0; i < foods.length; i++)
-        {
-            foods2[i] = new AddFood(fIcon2, fIconHover2);
-//            BufferedImage image = ImageIO.read(new File("pics/fried chicken.png"));
-        }
 
         // Frame initialization
         mainFrame = new JFrame();
@@ -59,7 +50,7 @@ public class MainFrameEmployee extends JFrame {
 
 
 
-        // Right side
+        // Right side tibuok
         JPanel rightSideWhole = new JPanel();
         rightSideWhole.setLayout(new BorderLayout());
         rightSideWhole.setPreferredSize(new Dimension(680, 2000));
@@ -72,51 +63,119 @@ public class MainFrameEmployee extends JFrame {
         exitPanel.add(exitButton);
 
         // Bottom area of right side
-
-
-        JPanel rightSideComponents = new JPanel();
-        rightSideComponents.setLayout(new GridLayout(0, 2, 0, 0)); // Adjust gap
-        rightSideComponents.setPreferredSize(new Dimension(680, 1000));
-        rightSideComponents.setBackground(Color.white);
-        for (AddFood food : foods)
-        {
-            rightSideComponents.add(food);
-        }
-        JScrollPane rightSideScrollPane = new JScrollPane(rightSideComponents);
-        rightSideScrollPane.setPreferredSize(new Dimension(680, 3000));
-        rightSideScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        rightSideScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        rightSideScrollPane.setBorder(null);
-
-        rightSideScrollPane.getViewport().setViewPosition(new java.awt.Point(0, 20));
-
-
-        JPanel rightSideComponents2 = new JPanel();
-        rightSideComponents2.setLayout(new GridLayout(0, 2, 0, 0)); // Adjust gap
-        rightSideComponents2.setPreferredSize(new Dimension(680, 1000));
-        rightSideComponents2.setBackground(Color.white);
-        for (AddFood food : foods)
-        {
-            rightSideComponents2.add(food);
-        }
-        JScrollPane rightSideScrollPane2 = new JScrollPane(rightSideComponents);
-        rightSideScrollPane2.setPreferredSize(new Dimension(680, 3000));
-        rightSideScrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        rightSideScrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        rightSideScrollPane2.setBorder(null);
-
-        rightSideScrollPane2.getViewport().setViewPosition(new java.awt.Point(0, 20));
-
-        //right food area scrooll
-        JPanel rightFoodArea = new JPanel();
+        JPanel rightSideBottom = new JPanel();
         CardLayout cardLayout = new CardLayout();
-        rightFoodArea.setLayout(cardLayout);
-        rightFoodArea.setPreferredSize(new Dimension(680,1000));
-        rightFoodArea.add(rightSideScrollPane, "1");
-        rightFoodArea.add(rightSideScrollPane2, "2");
+        rightSideBottom.setLayout(cardLayout);
+        rightSideBottom.setPreferredSize(new Dimension(680, 1000));
+
+        JPanel rightBottomParent = new JPanel();
+        rightBottomParent.setLayout(null);
+        rightBottomParent.setBounds(0,0,680, 1000);
+        rightBottomParent.setBackground(null);
+
+        //add foods 
+        ImageIcon burger = new ImageIcon("pics/foods/burger.png");
+        ImageIcon bicol = new ImageIcon("pics/foods/bicol express.png");
+        ImageIcon butong = new ImageIcon("pics/foods/butong.png");
+        ImageIcon cordon = new ImageIcon("pics/foods/cordon.png");
+        ImageIcon ginaling = new ImageIcon("pics/foods/ginaling.png");
+        ImageIcon larang = new ImageIcon("pics/foods/larang.png");
+        ImageIcon lemon = new ImageIcon("pics/foods/lemon.png");
+        ImageIcon pancit = new ImageIcon("pics/foods/pancit.png");
+        ImageIcon sinigang = new ImageIcon("pics/foods/sinigang.png");
+        ImageIcon sweetAndSour = new ImageIcon("pics/foods/sweet and sour.png");
+        ImageIcon taho = new ImageIcon("pics/foods/taho.png");
+        ImageIcon tapioca = new ImageIcon("pics/foods/tapioca drink.png");
+
+        AddFood burgerFood = new AddFood(burger, bicol);
+        AddFood bicolFood = new AddFood(bicol, burger);
+        AddFood butongFood = new AddFood(butong, burger);
+        AddFood cordonFood = new AddFood(cordon, burger);
+        AddFood ginalingFood = new AddFood(ginaling, burger);
+        AddFood larangFood = new AddFood(larang, burger);
+        AddFood lemonDrink = new AddFood(lemon, burger);
+        AddFood pancitFood = new AddFood(pancit, burger);
+        AddFood sinigangFood = new AddFood(sinigang, burger);
+        AddFood sweetAndSourFood = new AddFood(sweetAndSour, burger);
+        AddFood tahoFood = new AddFood(taho, burger);
+        AddFood tapiocaFood = new AddFood(tapioca, burger);
+
+        JPanel defaultPanel = new JPanel();
+        defaultPanel.setLayout(new GridLayout(10, 2, 0, 0));
+        defaultPanel.setPreferredSize(new Dimension(680, 3000));
+        defaultPanel.setBackground(Color.white);
+        defaultPanel.add(bicolFood);
+        defaultPanel.add(butongFood);
+        defaultPanel.add(cordonFood);
+        defaultPanel.add(ginalingFood);
+        defaultPanel.add(larangFood);
+        defaultPanel.add(lemonDrink); 
+        defaultPanel.add(pancitFood);
+        defaultPanel.add(sinigangFood);
+        defaultPanel.add(sweetAndSourFood);
+        defaultPanel.add(tahoFood);
+        defaultPanel.add(tapiocaFood);
+        defaultPanel.setVisible(true);
+
+        JPanel vegetarianPanel = new JPanel();
+        vegetarianPanel.setLayout(new GridLayout(0, 2, 0, 0)); 
+        vegetarianPanel.setPreferredSize(new Dimension(680, 3000));
+        vegetarianPanel.setBackground(null);
+        vegetarianPanel.add(lemonDrink);
+        vegetarianPanel.add(tahoFood);
+        vegetarianPanel.add(tapiocaFood);
+        vegetarianPanel.add(butongFood);
+
+        JPanel non_vegetarianPanel = new JPanel();
+        non_vegetarianPanel.setLayout(new GridLayout(0, 2, 0, 0)); 
+        non_vegetarianPanel.setPreferredSize(new Dimension(680, 3000));
+        non_vegetarianPanel.setBackground(null);
+        non_vegetarianPanel.setVisible(false);
+        non_vegetarianPanel.add(bicolFood);
+        non_vegetarianPanel.add(cordonFood);
+        non_vegetarianPanel.add(ginalingFood);
+        non_vegetarianPanel.add(larangFood);
+        non_vegetarianPanel.add(pancitFood);
+        non_vegetarianPanel.add(sinigangFood);
+        non_vegetarianPanel.add(sweetAndSourFood);
+
+        JPanel spicyPanel = new JPanel();
+        spicyPanel.setLayout(new GridLayout(0, 2, 0, 0)); 
+        spicyPanel.setPreferredSize(new Dimension(680, 3000));
+        spicyPanel.setBackground(null);
+        spicyPanel.setVisible(false);
+        spicyPanel.add(larangFood);
+
+        JPanel vegetarianSpicyPanel = new JPanel();
+        vegetarianSpicyPanel.setLayout(new GridLayout(0, 2, 0, 0)); 
+        vegetarianSpicyPanel.setPreferredSize(new Dimension(680, 3000));
+        vegetarianSpicyPanel.setBackground(null);
+        //as of now no food for this ^^^
+
+        JPanel non_vegetarianSpicyPanel = new JPanel();
+        non_vegetarianSpicyPanel.setLayout(new GridLayout(0, 2, 0, 0)); 
+        non_vegetarianSpicyPanel.setPreferredSize(new Dimension(680, 3000));
+        non_vegetarianSpicyPanel.setBackground(null);
+        non_vegetarianSpicyPanel.add(larangFood);
+
+        AddScrollPage dPage = new AddScrollPage(defaultPanel);
+        AddScrollPage vPage = new AddScrollPage(vegetarianPanel);
+        AddScrollPage nvPage = new AddScrollPage(non_vegetarianPanel);
+        AddScrollPage sPage = new AddScrollPage(spicyPanel);
+        AddScrollPage vsPage = new AddScrollPage(vegetarianSpicyPanel);
+        AddScrollPage nvsPage = new AddScrollPage(non_vegetarianSpicyPanel);
+
+        rightSideBottom.add("Default", dPage);
+        rightSideBottom.add("Vegetarian", vPage);
+        rightSideBottom.add("Non-Vegetarian", nvPage);
+        rightSideBottom.add("Spicy", sPage);
+        rightSideBottom.add("Spicy Vegetarian", vsPage);
+        rightSideBottom.add("Spicy Non-Vegetarian", nvsPage);
 
 
-        cardLayout.show(rightFoodArea, "1");
+
+
+
 
 
         // Left side
@@ -140,10 +199,19 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                cardLayout.next(rightFoodArea);
+                //cardLayout.next(rightFoodArea);
 
             }
         });
+        vegetarianButton.addMouseListener(new MouseAdapter() 
+        {
+            @Override
+            public void mouseClicked(MouseEvent e) 
+            {
+                cardLayout.show(rightSideBottom, "Vegetarian");
+            }
+        });
+        
 
         JRadioButton non_VegetariaButton =  new JRadioButton("Non-Vegetarian");
         non_VegetariaButton.setFocusPainted(false);
@@ -156,8 +224,7 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                System.out.println("non v");
-
+                cardLayout.show(rightSideBottom, "Non-Vegetarian");
             }
         });
 
@@ -177,15 +244,7 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void itemStateChanged(ItemEvent e)
             {
-                if (e.getStateChange() == ItemEvent.SELECTED)
-                {
-                    //put here addfood pero spicy category only, we ahve to amke meals pa......
-                    System.out.println("fuckyou");
-                }
-                else
-                {
-                    //its still gonna do something
-                }
+                cardLayout.show(rightSideBottom, "Spicy");
             }
 
         });
@@ -219,34 +278,26 @@ public class MainFrameEmployee extends JFrame {
             }
         });
 
-        // custom scrolling shit
-        rightSideScrollPane.addMouseWheelListener(new MouseWheelListener() 
-        {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                int currentY = rightSideScrollPane.getViewport().getViewPosition().y;
-                int newY = currentY + e.getWheelRotation() * 70; 
 
-                if (newY < 20) {
-                    newY = 20;
-                }
-                
-                rightSideScrollPane.getViewport().setViewPosition(
-                    new java.awt.Point(
-                        rightSideScrollPane.getViewport().getViewPosition().x,
-                        newY
-                    )
-                );
-            }
-        });
+
+        //rightBottomParent.add("Default page", dPage);
+
+
+
+
+
+
+        cardLayout.show(rightSideBottom, "Default page");
 
         rightSideWhole.add(exitPanel, BorderLayout.NORTH);
-        rightSideWhole.add(rightFoodArea, BorderLayout.CENTER);
+        rightSideWhole.add(rightSideBottom, BorderLayout.CENTER);
+        
         leftSide.add(leftSideCategory);
         leftSide.add(leftSideCheckout);
         leftSide.add(checkoutButton);
         mainFrame.add(leftSide, BorderLayout.WEST);
         mainFrame.add(rightSideWhole, BorderLayout.EAST);
+        
         
         mainFrame.setVisible(true);
     }

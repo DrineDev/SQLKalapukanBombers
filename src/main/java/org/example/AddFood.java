@@ -1,102 +1,47 @@
-// package org.example;
-
-// import java.awt.Dimension;
-// import java.awt.event.ActionEvent;
-// import java.awt.event.ActionListener;
-
-// import javax.swing.ImageIcon;
-// import javax.swing.JButton;
-// import javax.swing.Timer;
-
-// public class AddFood extends JButton {
-//     private ImageIcon foodImage;
-//     private ImageIcon hoverImage;
-//     private Timer hoverTimer;
-
-//     public AddFood(ImageIcon foodImage, ImageIcon hoverImage) 
-//     {
-//         this.setPreferredSize(new Dimension(300, 250));
-//         this.setIcon(foodImage);
-//         this.setContentAreaFilled(false);
-//         this.setBorderPainted(false);
-
-//         // Initialize the hover timer
-//         hoverTimer = new Timer(500, new ActionListener() 
-//         {
-//             @Override
-//             public void actionPerformed(ActionEvent e) 
-//             {
-//                 setIcon(hoverImage); // Change the icon to the hover image
-//                 hoverTimer.stop(); // Stop the timer
-//             }
-//         });
-
-//         this.addMouseListener(new java.awt.event.MouseAdapter() {
-//             @Override
-//             public void mouseEntered(java.awt.event.MouseEvent evt) {
-//                 hoverTimer.start(); // Start the timer on hover
-//             }
-
-//             @Override
-//             public void mouseExited(java.awt.event.MouseEvent evt) {
-//                 hoverTimer.stop(); // Stop the timer if mouse exits before delay
-//                 setIcon(foodImage); // Reset to original image
-//             }
-//         });
-//     }
-// }
-
-
 package org.example;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.GridLayout;
 
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.Timer;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
-public class AddFood extends JLabel {
+public class AddFood extends JPanel {
+    private ImageLabel foodLabel; // Use the custom ImageLabel
     private ImageIcon foodImage;
     private ImageIcon hoverImage;
-    private Timer hoverTimer;
 
-    public AddFood(ImageIcon foodImage, ImageIcon hoverImage)
-    {
-        this.setPreferredSize(new Dimension(300, 250));
-        this.setIcon(foodImage);
+    public AddFood(ImageIcon foodImage, ImageIcon hoverImage) {
+        this.foodImage = foodImage;
+        this.hoverImage = hoverImage;
 
-        //below is timer for hovering over the foods, ilisan pa guro ni para ma inig hover kay ma display ang nutritional facts
-        hoverTimer = new Timer(500, new ActionListener() 
-        {
+        // Parent container
+        this.setPreferredSize(new Dimension(300, 300));
+        this.setLayout(new GridLayout(2, 1, 0, 0)); // 2 rows, 1 column
+
+        // Food label
+        foodLabel = new ImageLabel(foodImage); // Use the custom ImageLabel
+
+        // Mouse listener for hover effect
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                AddFood.this.setIcon(hoverImage); 
-                hoverTimer.stop(); 
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                foodLabel.setImageIcon(hoverImage); // Change icon immediately on hover
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                foodLabel.setImageIcon(foodImage); // Reset to original image
             }
         });
 
-        this.addMouseListener(new java.awt.event.MouseAdapter() 
-        {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) 
-            {
-                hoverTimer.start(); 
-            }
+        // Button to order quantity
+        JButton orderButton = new JButton("Order");
+        orderButton.setPreferredSize(new Dimension(100, 50)); // Set preferred size
 
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) 
-            {
-                hoverTimer.stop(); 
-                setIcon(foodImage); 
-            }
-        });
-        
-    }
-    private void AddVegetarianFoods()
-    {
-
+        // Add components to the panel
+        this.add(foodLabel);
+        this.add(orderButton);
     }
 }
