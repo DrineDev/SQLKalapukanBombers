@@ -18,7 +18,7 @@ public class AddFood extends JPanel {
   private Timer hoverTimer;
   private final int HOVER_DELAY = 300; // Delay in milliseconds
 
-  private static final String DB_URL = "jdbc:sqlite:SQL/databse.db";
+  private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
   public AddFood(ImageIcon foodImage, ImageIcon hoverImage)
   {
