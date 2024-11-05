@@ -42,7 +42,7 @@ public class SQLInventory {
     }
 
     private static void deleteInventory(int Meal_Id) {
-        String deleteSQL = "DELETE FROM INVENTORY WHERE Meal_Id = ?";
+        String deleteSQL = "DELETE FROM INVENTORY WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
             preparedStatement.setInt(1, Meal_Id);

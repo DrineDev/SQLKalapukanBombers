@@ -1,9 +1,8 @@
 package org.example.SQLQueries;
 
-import org.example.Meal;
+import org.example.Classes.Meal;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
