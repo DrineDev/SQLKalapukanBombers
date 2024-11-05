@@ -7,7 +7,7 @@ public class SQLInventory {
 
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
-    private static void addInventory(int Meal_Id, int Quantity_Available, float Price, int Quantity_Sold) {
+    public static void addInventory(int Meal_Id, int Quantity_Available, float Price, int Quantity_Sold) {
         String insertSQL = "INSERT INTO INVENTORY (Meal_ID, Quantity_Available, Price, Quantity_Sold) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
