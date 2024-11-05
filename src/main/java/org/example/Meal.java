@@ -14,6 +14,7 @@ public class Meal implements Cloneable {
   private String nutritionFact;
   private BufferedImage image;
   private String category;
+  private boolean isSpicy;
   private static int instanceNumber = 0;
   private int idNumber;
 
@@ -25,12 +26,13 @@ public class Meal implements Cloneable {
     servingSize = "";
     image = ImageIO.read(new File("none.png"));
     nutritionFact = "";
+    isSpicy = false;
     idNumber = instanceNumber;
     instanceNumber++;
   }
 
   public Meal(String name, String type, String description, String ingredients,
-              String servingSize, BufferedImage image, String category, String nutritionFact) {
+              String servingSize, BufferedImage image, String category, String nutritionFact, boolean isSpicy) {
     this.name = name;
     this.type = type;
     this.description = description;
@@ -39,6 +41,7 @@ public class Meal implements Cloneable {
     this.image = image;
     this.category = category;
     this.nutritionFact = nutritionFact;
+    this.isSpicy = isSpicy;
     idNumber = instanceNumber;
     instanceNumber++;
   }
@@ -63,6 +66,7 @@ public class Meal implements Cloneable {
   }
   public void setNutritionFact(String nutritionFact) { this.nutritionFact = nutritionFact; }
   public void setImage(BufferedImage image) { this.image = image; }
+  public void setIsSpicy(boolean isSpicy) { this.isSpicy = isSpicy; }
 
   public String getName() {
     return name;
@@ -87,6 +91,7 @@ public class Meal implements Cloneable {
   }
   public String getNutritionFact() { return nutritionFact; }
   public BufferedImage getImage() { return image; }
+  public boolean getIsSpicy() { return isSpicy; }
 
 
   @Override
