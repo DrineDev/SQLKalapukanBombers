@@ -57,24 +57,6 @@ public class SQLUser {
         }
     }
 
-//    public static void listUsers() {
-//        String query = "SELECT * FROM Users";
-//        StringBuilder userList = new StringBuilder("Users:\n");
-//        try (Connection connection = DriverManager.getConnection(DB_URL);
-//             Statement statement = connection.createStatement();
-//             ResultSet resultSet = statement.executeQuery(query)) {
-//
-//            while (resultSet.next()) {
-//                userList.append("ID: ").append(resultSet.getInt("id"))
-//                        .append(", Username: ").append(resultSet.getString("username"))
-//                        .append(", Role: ").append(resultSet.getString("role")).append("\n");
-//            }
-//            JOptionPane.showMessageDialog(null, userList.toString());
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     public static boolean authenticateUser(String username, String password) {
         String query = "SELECT * FROM USERS WHERE username = ? AND password = ?";
 

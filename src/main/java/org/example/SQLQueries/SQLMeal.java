@@ -3,6 +3,7 @@ package org.example.SQLQueries;
 import org.example.Meal;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,6 +38,52 @@ public class SQLMeal {
                 System.out.println("Meal added.");
             }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void editMeal(int mealId, float price, String name, String category, String type, String ingredients, String description, String serving, BufferedImage image, boolean isSpicy) {
+        String updateSQL = "UPDATE MEALS SET Price = ?, Name = ?, Category = ?, Type = ?, Ingredients = ?, Description = ?, Serving_Size = ?, Image = ?, Is_Spicy = ? WHERE Meal_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+
+            preparedStatement.setFloat(1, price);
+            preparedStatement.setString(2, name);
+            preparedStatement.setString(3, category);
+            preparedStatement.setString(4, type);
+            preparedStatement.setString(5, ingredients);
+            preparedStatement.setString(6, description);
+            preparedStatement.setString(7, serving);
+
+            // Convert image to byte array if it is not null
+            if (image != null) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(image, "png", baos);
+                byte[] imageBytes = baos.toByteArray();
+                preparedStatement.setBytes(8, imageBytes);
+            } else {
+                preparedStatement.setNull(8, java.sql.Types.BLOB); // Handle null image case
+            }
+
+            preparedStatement.setBoolean(9, isSpicy);
+            preparedStatement.setInt(10, mealId); // Set Meal_ID for the WHERE clause
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Meal updated successfully.");
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void deleteMeal(int Meal_Id) {
+        String deleteSQL = "DELETE FROM MEALS WHERE Meal_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+            preparedStatement.setInt(1, Meal_Id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -80,16 +127,4 @@ public class SQLMeal {
 
         return meal;
     }
-
-//    public static void addIsSpicyColumn() {
-//        try (Connection conn = DriverManager.getConnection(DB_URL);
-//            Statement stmt =  conn.createStatement()) {
-//            // Add the Is_Spicy column to the meals table
-//            String sql = "ALTER TABLE meals ADD COLUMN Is_Spicy INTEGER DEFAULT 0";
-//            stmt.execute(sql);
-//            System.out.println("Column 'Is_Spicy' added successfully.");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

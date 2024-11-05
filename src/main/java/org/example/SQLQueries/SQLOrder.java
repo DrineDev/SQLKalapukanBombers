@@ -7,11 +7,10 @@ import java.sql.SQLException;
 
 public class SQLOrder {
 
-
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
-    private static void addOrder(int Meal_Id, int Meal_Quantity, String Date) {
-        String insertSQL = "INSERT INTO \"ORDER\" (Meal_Id, Meal_Quantity, Date) VALUES (?, ?, ?)";
+    public static void addOrder(int Meal_Id, int Meal_Quantity, String Date) {
+        String insertSQL = "INSERT INTO ORDERS (Meal_Id, Meal_Quantity, Date) VALUES (?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
@@ -28,5 +27,9 @@ public class SQLOrder {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void editOrder(int Order_Id, int Meal_Id, int Meal_Quantity, String Date) {
+        String updateSQL = "UPDATE ORDERS SET Meal_Id = ?, Meal_Quantity = ?, Date = ? WHERE Order_Id = ?";
     }
 }
