@@ -51,4 +51,88 @@ public class SQLInventory {
             e.printStackTrace();
         }
     }
+
+    // GETTERS & SETTERS
+    public static int getQuantityAvailable(int Meal_Id) {
+        String query = "SELECT Quantity_Available FROM INVENTORY WHERE Meal_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, Meal_Id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("Quantity_Available");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    public static float getPrice(int Meal_Id) {
+        String query = "SELECT Price FROM INVENTORY WHERE Meal_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, Meal_Id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getFloat("Price");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0f;
+    }
+    public static int getQuantitySold(int Meal_Id) {
+        String query = "SELECT Quantity_Sold FROM INVENTORY WHERE Meal_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, Meal_Id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("Quantity_Sold");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static void setQuantityAvailable(int Meal_Id, int Quantity_Available) {
+        String query = "UPDATE INVENTORY SET Quantity_Available = ? WHERE Meal_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, Quantity_Available);
+            preparedStatement.setInt(2, Meal_Id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void setPrice(int Meal_Id, float Price) {
+        String query = "UPDATE INVENTORY SET Price = ? WHERE Meal_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setFloat(1, Price);
+            preparedStatement.setInt(2, Meal_Id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void setQuantitySold(int Meal_Id, int Quantity_Sold) {
+        String query = "UPDATE INVENTORY SET Quantity_Sold = ? WHERE Meal_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, Quantity_Sold);
+            preparedStatement.setInt(2, Meal_Id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
