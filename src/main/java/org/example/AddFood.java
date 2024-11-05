@@ -1,20 +1,18 @@
 package org.example;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.Timer;
+import javax.swing.*;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 
-public class AddFood extends JLabel {
+public class AddFood extends JPanel {
   private ImageIcon foodImage;
   private ImageIcon hoverImage;
   private Timer hoverTimer;
@@ -22,24 +20,28 @@ public class AddFood extends JLabel {
 
   private static final String DB_URL = "jdbc:sqlite:SQL/databse.db";
 
-  public AddFood(ImageIcon foodImage, ImageIcon hoverImage) {
+  public AddFood(ImageIcon foodImage, ImageIcon hoverImage)
+  {
     this.foodImage = foodImage;
     this.hoverImage = hoverImage;
 
-    // Set the preferred size
     this.setPreferredSize(new Dimension(300, 300));
-    this.setIcon(foodImage); // Set initial icon
+    this.setLayout(null);
 
-    // Mouse listener for hover effect
-    this.addMouseListener(new MouseAdapter() {
+
+    JLabel foodBg = new JLabel();
+    foodBg.setBounds(0,0,300,250);
+    foodBg.setIcon(foodImage);
+
+    foodBg.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseEntered(MouseEvent evt) {
         if (hoverTimer != null && hoverTimer.isRunning()) {
-          hoverTimer.stop(); // Stop any existing timer
+          hoverTimer.stop();
         }
-        hoverTimer = new Timer(HOVER_DELAY, e -> setIcon(hoverImage));
-        hoverTimer.setRepeats(false); // Ensure it only runs once
-        hoverTimer.start(); // Start the timer
+        hoverTimer = new Timer(HOVER_DELAY, e -> foodBg.setIcon(hoverImage));
+        hoverTimer.setRepeats(false);
+        hoverTimer.start();
       }
 
       @Override
@@ -47,9 +49,53 @@ public class AddFood extends JLabel {
         if (hoverTimer != null && hoverTimer.isRunning()) {
           hoverTimer.stop(); // Stop the timer if it's running
         }
-        setIcon(foodImage); // Reset to original image
-      }
+        foodBg.setIcon(foodImage);
+        }
     });
+
+    ImageIcon bottom = new ImageIcon("pics/Rectangle 16.png");
+    JLabel bottomPic = new JLabel(bottom);
+    JPanel bottomArea = new JPanel();
+    bottomArea.setBounds(0,250,300,50);
+    bottomArea.add(bottomPic);
+
+    ImageIcon incre = new ImageIcon("pics/less.png");
+    JButton increment = new JButton(incre);
+    increment.setBounds(0, 280, 11, 14);
+    increment.setBorderPainted(false);
+    increment.setFocusPainted(false);
+    increment.setContentAreaFilled(false);
+
+    ImageIcon decre = new ImageIcon("pics/more.png");
+    JButton decrement = new JButton(decre);
+    decrement.setBounds(50, 280, 11, 14);
+    decrement.setBorderPainted(false);
+    decrement.setFocusPainted(false);
+    decrement.setContentAreaFilled(false);
+
+    ImageIcon order = new ImageIcon("pics/order button.png");
+    JButton orderButton = new JButton(order);
+    orderButton.setBounds(200, 260, 80, 25);
+    orderButton.setBorderPainted(false);
+    orderButton.setFocusPainted(false);
+    orderButton.setContentAreaFilled(false);
+
+    JLabel amountTextField = new JLabel();
+    ImageIcon amountField = new ImageIcon();
+    int x = 0;
+    amountTextField.setText("" + x);
+
+    this.add(foodBg);
+    bottomArea.add(increment);
+    bottomArea.add(amountTextField);
+    bottomArea.add(decrement);
+    bottomArea.add(orderButton);
+    this.add(bottomArea);
+//    this.add(decrement, 3);
+//    this.add(amountTextField, 3);
+//    this.add(decrement, 1);
+//    this.add(orderButton, 1);
+
   }
 
 }

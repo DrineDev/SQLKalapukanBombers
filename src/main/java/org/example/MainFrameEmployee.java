@@ -50,25 +50,26 @@ public class MainFrameEmployee extends JFrame {
         // Scrollable panel for food items
         JPanel foodItemsPanel = new JPanel();
         foodItemsPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns with spacing
-        foodItemsPanel.setBackground(Color.white);
+        foodItemsPanel.setBackground(Color.lightGray);
 
         // Add food items
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/burger.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/butong.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/cordon.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/ginaling.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/larang.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/lemon.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/pancit.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/sinigang.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/sweet and sour.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/taho.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/tapioca drink.png"), new ImageIcon("pics/foods/Frame 1.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/ginaling.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/ginaling.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+
 
         JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
-        scrollPane.setPreferredSize(new Dimension(680, 500)); // Set preferred size for the scroll pane
+        scrollPane.setPreferredSize(new Dimension(680, 500));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Change to AS_NEEDED if needed
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
 
         rightSideBottom.add(scrollPane);
