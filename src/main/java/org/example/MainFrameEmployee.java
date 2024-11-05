@@ -177,15 +177,6 @@ public class MainFrameEmployee extends JFrame {
             }
         });
 
-
-
-
-
-
-
-
-
-        
         leftSide.add(leftSideCategory);
         leftSide.add(leftSideCheckout);
         leftSide.add(checkoutButton);
