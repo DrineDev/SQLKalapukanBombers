@@ -1,10 +1,13 @@
 package org.example;
 
+import java.awt.Color;
+
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.geom.RoundRectangle2D.Float;
 
 import javax.swing.border.EmptyBorder;
 
@@ -45,26 +48,16 @@ public class MainFrameEmployee extends JFrame {
 
         // Bottom area of right side
         JPanel rightSideBottom = new JPanel();
+        rightSideBottom.setBackground(Color.white);
         rightSideBottom.setLayout(new BoxLayout(rightSideBottom, BoxLayout.Y_AXIS)); // Use BoxLayout for stacking
 
         // Scrollable panel for food items
         JPanel foodItemsPanel = new JPanel();
+        foodItemsPanel.setBackground(Color.white);
         foodItemsPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns with spacing
-        foodItemsPanel.setBackground(Color.lightGray);
+        
 
         // Add food items
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/ginaling.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/ginaling.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
-
         foodItemsPanel.add(new AddFood(1));
         foodItemsPanel.add(new AddFood(2));
         foodItemsPanel.add(new AddFood(3));
@@ -79,8 +72,9 @@ public class MainFrameEmployee extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
         scrollPane.setPreferredSize(new Dimension(680, 500));
+        scrollPane.setBackground(Color.white);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(null);
 
         rightSideBottom.add(scrollPane);
@@ -190,14 +184,6 @@ public class MainFrameEmployee extends JFrame {
         });
 
 
-
-
-
-
-
-
-
-
         leftSide.add(leftSideCategory);
         leftSide.add(leftSideCheckout);
         leftSide.add(checkoutButton);
@@ -232,7 +218,7 @@ public class MainFrameEmployee extends JFrame {
         panel.setPreferredSize(new Dimension(width, height));
         imageWindow.setContentPane(panel);
 
-        Shape shape = new RoundRectangle2D.Float(0, 0, width, height, 17, 17);
+        Float shape = new RoundRectangle2D.Float(0, 0, width, height, 17, 17);
         imageWindow.setShape(shape);
 
         imageWindow.setOpacity(0.0f);

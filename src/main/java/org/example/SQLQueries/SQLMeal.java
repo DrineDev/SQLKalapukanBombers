@@ -1,13 +1,18 @@
 package org.example.SQLQueries;
 
-import org.example.Classes.Meal;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.imageio.ImageIO;
+
+import org.example.Classes.Meal;
 
 public class SQLMeal {
 
@@ -251,7 +256,8 @@ public class SQLMeal {
         }
     }
 
-    private static void setImage(int mealId, BufferedImage image) {
+    public static void setImage(int mealId, BufferedImage image) 
+    {
         String query = "UPDATE MEALS SET Image = ? WHERE Meal_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL)) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
