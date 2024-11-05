@@ -141,7 +141,7 @@ public class SQLMeal {
         return "";
     }
 
-    private static BufferedImage getImage(int mealId) {
+    public static BufferedImage getImage(int mealId) {
         BufferedImage image = null;
         String query = "SELECT Image FROM MEALS WHERE Meal_Id = ?";
 
@@ -164,6 +164,23 @@ public class SQLMeal {
             throw new RuntimeException(e);
         }
         return image;
+    }
+
+    public static String getNutritionFact(int mealId) {
+        String query = "SELECT Nutrition_Fact FROM MEALS WHERE Meal_Id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, mealId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return "";
     }
 
     private static boolean getIsSpicy(int mealId) {

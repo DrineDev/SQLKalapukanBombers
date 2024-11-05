@@ -65,6 +65,17 @@ public class MainFrameEmployee extends JFrame {
 //        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
 //        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
 
+        foodItemsPanel.add(new AddFood(1));
+        foodItemsPanel.add(new AddFood(2));
+        foodItemsPanel.add(new AddFood(3));
+        foodItemsPanel.add(new AddFood(4));
+        foodItemsPanel.add(new AddFood(5));
+        foodItemsPanel.add(new AddFood(6));
+        foodItemsPanel.add(new AddFood(7));
+        foodItemsPanel.add(new AddFood(8));
+        foodItemsPanel.add(new AddFood(9));
+        foodItemsPanel.add(new AddFood(10));
+        foodItemsPanel.add(new AddFood(11));
 
         JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
         scrollPane.setPreferredSize(new Dimension(680, 500));
