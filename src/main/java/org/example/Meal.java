@@ -1,36 +1,44 @@
 package org.example;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class Meal implements Cloneable {
   private String name;
   private String type;
   private String description;
   private String ingredients;
   private String servingSize;
-  private String imagePath;
+  private String nutritionFact;
+  private BufferedImage image;
   private String category;
   private static int instanceNumber = 0;
   private int idNumber;
 
-  public Meal() {
+  public Meal() throws IOException {
     name = "";
     type = "";
     description = "";
     ingredients = "";
     servingSize = "";
+    image = ImageIO.read(new File("none.png"));
+    nutritionFact = "";
     idNumber = instanceNumber;
     instanceNumber++;
-    imagePath = "";
   }
 
   public Meal(String name, String type, String description, String ingredients,
-      String servingSize, String imagePath, String category) {
+              String servingSize, BufferedImage image, String category, String nutritionFact) {
     this.name = name;
     this.type = type;
     this.description = description;
     this.ingredients = ingredients;
     this.servingSize = servingSize;
-    this.imagePath = imagePath;
+    this.image = image;
     this.category = category;
+    this.nutritionFact = nutritionFact;
     idNumber = instanceNumber;
     instanceNumber++;
   }
@@ -38,58 +46,48 @@ public class Meal implements Cloneable {
   public void setName(String name) {
     this.name = name;
   }
-
   public void setType(String type) {
     this.type = type;
   }
-
   public void setDescription(String description) {
     this.description = description;
   }
-
   public void setIngredients(String ingredients) {
     this.ingredients = ingredients;
   }
-
   public void setServingSize(String servingSize) {
     this.servingSize = servingSize;
   }
-
   public void setCategory(String category) {
     this.category = category;
   }
+  public void setNutritionFact(String nutritionFact) { this.nutritionFact = nutritionFact; }
+  public void setImage(BufferedImage image) { this.image = image; }
 
   public String getName() {
     return name;
   }
-
   public String getType() {
     return type;
   }
-
   public String getDescription() {
     return description;
   }
-
   public String getIngredients() {
     return ingredients;
   }
-
   public String getServingSize() {
     return servingSize;
   }
-
   public int getInstanceNumber() {
     return instanceNumber;
   }
-
-  public String getImagePath() {
-    return imagePath;
-  }
-
   public String getCategory() {
     return category;
   }
+  public String getNutritionFact() { return nutritionFact; }
+  public BufferedImage getImage() { return image; }
+
 
   @Override
   public int hashCode() {

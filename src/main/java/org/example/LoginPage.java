@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.SQLQueries.SQLUser;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -87,7 +89,7 @@ public class LoginPage extends JFrame{
 
                 String userInput = userTextField.getText();
                 String passInput = new String(passTextField.getPassword());
-                if(SQLQueries.authenticateUser(userInput, passInput))
+                if(SQLUser.authenticateUser(userInput, passInput))
                 {
                     fadeInNewFrame();
                 }

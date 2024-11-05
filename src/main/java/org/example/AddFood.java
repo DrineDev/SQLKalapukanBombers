@@ -4,10 +4,14 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 
 public class AddFood extends JLabel {
@@ -60,26 +64,34 @@ public class AddFood extends JLabel {
 //    instanceNumber++;
 //  }
   public static Meal getMealInfo(int Meal_ID) {
-    String query = "SELECT Name, Category, Type, Ingredients, Description, Serving_Size, Image_Path FROM MEALS WHERE MEAL_ID = ?";
+    String query = "SELECT Name, Category, Type, Ingredients, Description, Serving_Size, Image_Path, Nutrition_Fact FROM MEALS WHERE Meal_Id = ?";
 
     Meal meal = null;
 
     try (Connection connection = DriverManager.getConnection(DB_URL)) {
       PreparedStatement preparedStatement = connection.prepareStatement(query);
-      {
-        preparedStatement.setInt(1, Meal_ID);
-        ResultSet resultSet = preparedStatement.executeQuery();
+      preparedStatement.setInt(1, Meal_ID);
+      ResultSet resultSet = preparedStatement.executeQuery();
 
-        if (resultSet.next()) {
-          meal = new Meal(
-              resultSet.getString("Name"),
-              resultSet.getString("Category"),
-              resultSet.getString("Type"),
-              resultSet.getString("Ingredients"),
-              resultSet.getString("Serving_Size"),
-              resultSet.getString("Image_Path"),
-              resultSet.getString("Category"));
+      if (resultSet.next()) {
+        String name = resultSet.getString("Name");
+        String type = resultSet.getString("Type");
+        String description = resultSet.getString("Description");
+        String ingredients = resultSet.getString("Ingredients");
+        String servingSize = resultSet.getString("Serving_Size");
+        String category = resultSet.getString("Category");
+        String nutritionFact = resultSet.getString("Nutrition_Fact");
+
+        // Load image from Image_Path
+        BufferedImage image = null;
+        String imagePath = resultSet.getString("Image_Path");
+        try {
+          image = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {
+          e.printStackTrace();
         }
+
+        meal = new Meal(name, type, description, ingredients, servingSize, image, category, nutritionFact);
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
