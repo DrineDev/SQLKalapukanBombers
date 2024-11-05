@@ -52,41 +52,4 @@ public class AddFood extends JLabel {
     });
   }
 
-  public static Meal getMealInfo(int Meal_ID) {
-    String query = "SELECT Name, Category, Type, Ingredients, Description, Serving_Size, Image_Path, Nutrition_Fact FROM MEALS WHERE Meal_Id = ?";
-
-    Meal meal = null;
-
-    try (Connection connection = DriverManager.getConnection(DB_URL)) {
-      PreparedStatement preparedStatement = connection.prepareStatement(query);
-      preparedStatement.setInt(1, Meal_ID);
-      ResultSet resultSet = preparedStatement.executeQuery();
-
-      if (resultSet.next()) {
-        String name = resultSet.getString("Name");
-        String type = resultSet.getString("Type");
-        String description = resultSet.getString("Description");
-        String ingredients = resultSet.getString("Ingredients");
-        String servingSize = resultSet.getString("Serving_Size");
-        String category = resultSet.getString("Category");
-        String nutritionFact = resultSet.getString("Nutrition_Fact");
-        boolean isSpicy = resultSet.getBoolean("Is_Spicy");
-
-        // Load image from Image_Path
-        BufferedImage image = null;
-        String imagePath = resultSet.getString("Image_Path");
-        try {
-          image = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-
-        meal = new Meal(name, type, description, ingredients, servingSize, image, category, nutritionFact, isSpicy);
-      }
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-
-    return meal;
-  }
 }
