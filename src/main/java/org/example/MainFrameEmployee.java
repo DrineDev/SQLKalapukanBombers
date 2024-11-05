@@ -50,31 +50,32 @@ public class MainFrameEmployee extends JFrame {
         // Scrollable panel for food items
         JPanel foodItemsPanel = new JPanel();
         foodItemsPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns with spacing
-        foodItemsPanel.setBackground(Color.white);
+        foodItemsPanel.setBackground(Color.lightGray);
 
         // Add food items
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/burger.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/butong.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/cordon.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/ginaling.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/larang.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/lemon.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/pancit.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/sinigang.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/sweet and sour.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/taho.png"), new ImageIcon("pics/foods/Frame 1.png")));
-        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/tapioca drink.png"), new ImageIcon("pics/foods/Frame 1.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/ginaling.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/ginaling.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+//        foodItemsPanel.add(new AddFood(new ImageIcon("pics/foods/bicol.png"), new ImageIcon("pics/foods/bicol.png")));
+
 
         JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
-        scrollPane.setPreferredSize(new Dimension(680, 500)); // Set preferred size for the scroll pane
+        scrollPane.setPreferredSize(new Dimension(680, 500));
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Change to AS_NEEDED if needed
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
 
         rightSideBottom.add(scrollPane);
         rightSideWhole.add(rightSideBottom, BorderLayout.CENTER);
 
-       
+
 
 
         // Left side
@@ -102,15 +103,15 @@ public class MainFrameEmployee extends JFrame {
 
             }
         });
-        vegetarianButton.addMouseListener(new MouseAdapter() 
+        vegetarianButton.addMouseListener(new MouseAdapter()
         {
             @Override
-            public void mouseClicked(MouseEvent e) 
+            public void mouseClicked(MouseEvent e)
             {
-                
+
             }
         });
-        
+
 
         JRadioButton non_VegetariaButton =  new JRadioButton("Non-Vegetarian");
         non_VegetariaButton.setFocusPainted(false);
@@ -123,7 +124,7 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-               
+
             }
         });
 
@@ -143,7 +144,7 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void itemStateChanged(ItemEvent e)
             {
-                
+
             }
 
         });
@@ -177,62 +178,71 @@ public class MainFrameEmployee extends JFrame {
             }
         });
 
+
+
+
+
+
+
+
+
+
         leftSide.add(leftSideCategory);
         leftSide.add(leftSideCheckout);
         leftSide.add(checkoutButton);
         mainFrame.add(leftSide, BorderLayout.WEST);
         mainFrame.add(rightSideWhole, BorderLayout.EAST);
-        
-        
+
+
         mainFrame.setVisible(true);
     }
-   
+
     //shit below is the same w/ login page popup after login (fadein adn fadeout)
-    private void showImageFrame(String imagePath) 
+    private void showImageFrame(String imagePath)
     {
         ImageIcon imageIcon = new ImageIcon(imagePath);
         Image image = imageIcon.getImage();
-    
+
         JWindow imageWindow = new JWindow();
         int width = image.getWidth(null);
         int height = image.getHeight(null);
         imageWindow.setSize(width, height);
         imageWindow.setLocationRelativeTo(mainFrame);
-    
+
         JPanel panel = new JPanel() {
             @Override
-            protected void paintComponent(Graphics g) 
+            protected void paintComponent(Graphics g)
             {
                 super.paintComponent(g);
                 g.drawImage(image, 0, 0, this);
             }
         };
-    
+
         panel.setPreferredSize(new Dimension(width, height));
         imageWindow.setContentPane(panel);
-        
-        Shape shape = new RoundRectangle2D.Float(0, 0, width, height, 17, 17); 
+
+        Shape shape = new RoundRectangle2D.Float(0, 0, width, height, 17, 17);
         imageWindow.setShape(shape);
-    
-        imageWindow.setOpacity(0.0f); 
+
+        imageWindow.setOpacity(0.0f);
         imageWindow.setVisible(true);
-    
+
         Timer fadeInTimer = new Timer(20, null);
-        fadeInTimer.addActionListener(new ActionListener() 
+        fadeInTimer.addActionListener(new ActionListener()
         {
             float opacity = 0.0f;
-    
+
             @Override
-            public void actionPerformed(ActionEvent e) 
+            public void actionPerformed(ActionEvent e)
             {
-                opacity += 0.05f; 
+                opacity += 0.05f;
                 if (opacity >= 1.0f) {
                     opacity = 1.0f;
-                    fadeInTimer.stop(); 
-                    new Timer(1000, new ActionListener() 
+                    fadeInTimer.stop();
+                    new Timer(1000, new ActionListener()
                     {
                         @Override
-                        public void actionPerformed(ActionEvent evt) 
+                        public void actionPerformed(ActionEvent evt)
                         {
                             startFadeOut(imageWindow);
                         }
@@ -244,27 +254,26 @@ public class MainFrameEmployee extends JFrame {
         });
         fadeInTimer.start();
     }
-    private void startFadeOut(JWindow imageWindow) 
+    private void startFadeOut(JWindow imageWindow)
     {
         Timer fadeOutTimer = new Timer(20, null);
-        fadeOutTimer.addActionListener(new ActionListener() 
+        fadeOutTimer.addActionListener(new ActionListener()
         {
             float opacity = 1.0f;
-    
+
             @Override
-            public void actionPerformed(ActionEvent e) 
+            public void actionPerformed(ActionEvent e)
             {
                 opacity -= 0.05f;
                 if (opacity <= 0.0f) {
                     opacity = 0.0f;
                     imageWindow.dispose();
-                    fadeOutTimer.stop(); 
+                    fadeOutTimer.stop();
                 }
                 imageWindow.setOpacity(opacity);
-                imageWindow.repaint(); 
+                imageWindow.repaint();
             }
         });
         fadeOutTimer.start();
     }
 }
-
