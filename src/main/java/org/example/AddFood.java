@@ -100,30 +100,7 @@ public class AddFood extends JPanel {
         imageWindow.setVisible(true);
 
         Timer fadeInTimer = new Timer(20, null);
-        fadeInTimer.addActionListener(new ActionListener()
-        {
-            float opacity = 0.0f;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                opacity += 0.05f;
-                if (opacity >= 1.0f) {
-                    opacity = 1.0f;
-                    fadeInTimer.stop();
-                    new Timer(1000, new ActionListener()
-                    {
-                        @Override
-                        public void actionPerformed(ActionEvent evt)
-                        {
-                            startFadeOut(imageWindow);
-                        }
-                    }).start();
-                }
-                imageWindow.setOpacity(opacity);
-                imageWindow.repaint();
-            }
-        });
+        fadeInTimer.addActionListener(createFadeInListener(imageWindow, fadeInTimer));
         fadeInTimer.start();
     }
 
@@ -167,7 +144,6 @@ public class AddFood extends JPanel {
         bottomLabel.setBackground(Color.white);
 
         return bottomLabel;
-
     }
 
     private MouseAdapter createHoverListener(JLabel nutritionLabel) {
@@ -204,8 +180,7 @@ public class AddFood extends JPanel {
 
     private JLabel createAmountTextField(ImageIcon amountField) {
         JLabel amountTextField = new JLabel(amountField);
-        x = 0;
-        amountTextField.setText("" + x);
+        amountTextField.setText("" + 0);
         amountTextField.setBounds(33, 15, 23, 25);
         amountTextField.setHorizontalTextPosition(JLabel.CENTER);
         amountTextField.setVerticalTextPosition(JLabel.CENTER);
@@ -293,6 +268,32 @@ public class AddFood extends JPanel {
             {
                 super.paintComponent(g);
                 g.drawImage(image, 0, 0, this);
+            }
+        };
+    }
+
+    private ActionListener createFadeInListener(JWindow imageWindow, Timer fadeInTimer) {
+        return new ActionListener() {
+            float opacity = 0.0f;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                opacity += 0.05f;
+                if (opacity >= 1.0f) {
+                    opacity = 1.0f;
+                    fadeInTimer.stop();
+                    new Timer(1000, new ActionListener()
+                    {
+                        @Override
+                        public void actionPerformed(ActionEvent evt)
+                        {
+                            startFadeOut(imageWindow);
+                        }
+                    }).start();
+                }
+                imageWindow.setOpacity(opacity);
+                imageWindow.repaint();
             }
         };
     }
