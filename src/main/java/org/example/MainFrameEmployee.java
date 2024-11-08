@@ -1,14 +1,34 @@
 package org.example;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.RoundRectangle2D.Float;
 
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JWindow;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 public class MainFrameEmployee extends JFrame {
@@ -129,7 +149,7 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-
+                
             }
         });
 
@@ -148,10 +168,23 @@ public class MainFrameEmployee extends JFrame {
         {
             @Override
             public void itemStateChanged(ItemEvent e)
-            {
+            {   
+                if(spicyButton.isSelected()) {
+                    Component[] componentList = foodItemsPanel.getComponents();
 
+                    for(Component c : componentList){
+
+                        //Find the components you want to remove
+                        if(c instanceof AddFood){
+                            if(true)
+                            //Remove it
+                            foodItemsPanel.remove(c);
+                        }
+                    }
+                    foodItemsPanel.revalidate();
+                    foodItemsPanel.repaint();
+                }
             }
-
         });
 
         leftSideCategory.setIcon(categoryArea);

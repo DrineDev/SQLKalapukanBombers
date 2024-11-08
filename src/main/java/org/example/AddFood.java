@@ -17,176 +17,85 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import org.example.SQLQueries.SQLMeal;
 
 public class AddFood extends JPanel {
-  private ImageIcon foodImage;
-  private int x;
-  private ImageIcon hoverImage;
-  private String nutritionFact;
-  private Timer hoverTimer;
-  private final int HOVER_DELAY = 500; // Delay in milliseconds
+    private ImageIcon foodImage;
+    private int x;
+    private String nutritionFact;
+    private Timer hoverTimer;
+    private final int HOVER_DELAY = 500; // Delay in milliseconds
 
-  private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
-
-  public AddFood(int mealID) {
-    // Retrieve food image and nutrition facts from database
-    this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
-    this.nutritionFact = SQLMeal.getNutritionFact(mealID);
-
-    this.setPreferredSize(new Dimension(300, 300));
-    this.setBackground(Color.white);
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-    // Food background label
-    JLabel foodBg = new JLabel();
-    foodBg.setIcon(foodImage);
-
-    // Nutrition fact label (displayed on hover)
-    JLabel nutritionLabel = new JLabel("<html>" + nutritionFact.replace("\n", "<br>") + "</html>");
-    nutritionLabel.setBounds(10, 10, 280, 230);  // Position within the bounds of food label
-    nutritionLabel.setForeground(Color.BLACK);    // Set text color
-    nutritionLabel.setBackground(new Color(255, 255, 255, 200)); // Semi-transparent background
-    nutritionLabel.setOpaque(true);
-    nutritionLabel.setVisible(false); // Initially hidden
-
-    // Add nutrition label as a child of foodBg for better overlay management
-    foodBg.add(nutritionLabel);
-
-    foodBg.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseEntered(MouseEvent evt) {
-        if (hoverTimer != null && hoverTimer.isRunning()) {
-          hoverTimer.stop();
-        }
-        hoverTimer = new Timer(HOVER_DELAY, e -> nutritionLabel.setVisible(true));
-        hoverTimer.setRepeats(false);
-        hoverTimer.start();
-      }
-
-      @Override
-      public void mouseExited(MouseEvent evt) {
-        if (hoverTimer != null && hoverTimer.isRunning()) {
-          hoverTimer.stop(); 
-        }
-        nutritionLabel.setVisible(false);
-      }
-    });
-
-    // Bottom area for buttons and other elements
-    ImageIcon bottom = new ImageIcon("pics/addfood bottom.png");
-    JLabel bottomLabel = new JLabel(bottom);
-    bottomLabel.setBounds(0,0,300,50);
-    bottomLabel.setBackground(Color.white);
-    JPanel bottomArea = new JPanel();
-    //bottomArea.setSize(300, 50);
-    bottomArea.setBackground(Color.white);
-    bottomArea.setLayout(null);
+    public AddFood(int mealID) {
+        // Retrieve food image and nutrition facts from database
+        this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
+        this.nutritionFact = SQLMeal.getNutritionFact(mealID);
     
-
+        this.setPreferredSize(new Dimension(300, 300));
+        this.setBackground(Color.white);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     
-    // Quantity label
-    ImageIcon amountField = new ImageIcon("pics/amount field.png");
-    JLabel amountTextField = new JLabel(amountField);
-    x = 0;
-    amountTextField.setText("" + x);
-    amountTextField.setBounds(33, 15, 23, 25);
-    amountTextField.setHorizontalTextPosition(JLabel.CENTER);
-    amountTextField.setVerticalTextPosition(JLabel.CENTER);
-
-    // Increment button
-    ImageIcon incre = new ImageIcon("pics/more.png");
-    JButton increment = new JButton(incre);
-    increment.setBounds(61,20,11, 14);
-    increment.setBorderPainted(false);
-    increment.setFocusPainted(false);
-    increment.setContentAreaFilled(false);
-    increment.addActionListener(new ActionListener()
-    {
-        @Override
-        public void actionPerformed(ActionEvent e) 
-        {
-          x += 1;
-          amountTextField.setText("" + x);
-        }
-    });
-
-    // Decrement button
-    ImageIcon decre = new ImageIcon("pics/less.png");
-    JButton decrement = new JButton(decre);
-    decrement.setBounds(15, 20, 11, 14);
-    decrement.setBorderPainted(false);
-    decrement.setFocusPainted(false);
-    decrement.setContentAreaFilled(false);
-    decrement.addActionListener(new ActionListener()
-    {
-        @Override
-        public void actionPerformed(ActionEvent e) 
-        {
-          if (x > 0)
-          {
-            x -= 1;
-            amountTextField.setText("" + x);
-          }
-            
-        }
-    });
-    // Order button
-    ImageIcon order = new ImageIcon("pics/order button.png");
-    JButton orderButton = new JButton(order);
-    orderButton.setBounds(210, 15, 80, 25);
-    orderButton.setBorderPainted(false);
-    orderButton.setFocusPainted(false);
-    orderButton.setContentAreaFilled(false);
-    orderButton.addActionListener(new ActionListener() 
-    {
-        @Override
-        public void actionPerformed(ActionEvent e) 
-        {
-            //ADD FUNCTIONALITY SOON
-            showImageFrame("pics/pop up frame order.png");
-            x = 0;
-            amountTextField.setText(""+ x);
-        }
-    });
+        // Food background label
+        JLabel foodBg = new JLabel();
+        foodBg.setIcon(foodImage);
     
-    // Add components to the panel
-    this.add(foodBg); // Add foodBg with nutritionLabel inside
-    bottomLabel.add(increment);
-    bottomLabel.add(amountTextField);
-    bottomLabel.add(decrement);
-    bottomLabel.add(orderButton);
-    bottomArea.add(bottomLabel);
-    this.add(bottomArea);
+        // Nutrition fact label (displayed on hover)
+        JLabel nutritionLabel = createNutritionLabel();
+    
+        // Add nutrition label as a child of foodBg for better overlay management
+        foodBg.add(nutritionLabel);
+        foodBg.addMouseListener(createHoverListener(nutritionLabel)); // FOR HOVERING ACTIONS
+    
+        // Bottom area for buttons and other elements
+        ImageIcon bottom = new ImageIcon("pics/addfood bottom.png");
+        JLabel bottomLabel = createBottomLabel(bottom);
+        JPanel bottomArea = createBottomArea();
+
+        // Quantity label
+        ImageIcon amountField = new ImageIcon("pics/amount field.png");
+        JLabel amountTextField = createAmountTextField(amountField);
+    
+        // Increment button
+        ImageIcon incre = new ImageIcon("pics/more.png");
+        JButton increment = createIncrementButton(incre);
+        increment.addActionListener(createIncrementListener(amountTextField)); // FOR ADDING ORDER
+    
+        // Decrement button
+        ImageIcon decre = new ImageIcon("pics/less.png");
+        JButton decrement = createDecrementButton(decre);
+        decrement.addActionListener(createDecrementListener(amountTextField));
+
+        // Order button
+        ImageIcon order = new ImageIcon("pics/order button.png");
+        JButton orderButton = createOrderButton(order);
+        orderButton.addActionListener(createOrderListener(amountTextField));
+        
+        // Add components to the panel
+        this.add(foodBg); // Add foodBg with nutritionLabel inside
+        bottomLabel.add(increment);
+        bottomLabel.add(amountTextField);
+        bottomLabel.add(decrement);
+        bottomLabel.add(orderButton);
+        bottomArea.add(bottomLabel);
+        this.add(bottomArea);
     }
 
     private void showImageFrame(String imagePath) {
         ImageIcon imageIcon = new ImageIcon(imagePath);
         Image image = imageIcon.getImage();
 
-        JWindow imageWindow = new JWindow();
-        int width = image.getWidth(null);
         int height = image.getHeight(null);
-        imageWindow.setSize(width, height);
-        imageWindow.setLocationRelativeTo(null);
+        int width = image.getWidth(null);
+        JWindow imageWindow = createImageWindow(image, width, height);
 
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g)
-            {
-                super.paintComponent(g);
-                g.drawImage(image, 0, 0, this);
-            }
-        };
-
+        JPanel panel = createPanel(image);
         panel.setPreferredSize(new Dimension(width, height));
         imageWindow.setContentPane(panel);
-
         Float shape = new RoundRectangle2D.Float(0, 0, width, height, 17, 17);
         imageWindow.setShape(shape);
-
         imageWindow.setOpacity(0.0f);
         imageWindow.setVisible(true);
 
@@ -240,4 +149,151 @@ public class AddFood extends JPanel {
         });
         fadeOutTimer.start();
     }
-}
+
+    private JLabel createNutritionLabel() {
+        JLabel nutritionLabel = new JLabel("<html>" + nutritionFact.replace("\n", "<br>") + "</html>");
+        nutritionLabel.setBounds(10, 10, 280, 230);  // Position within the bounds of food label
+        nutritionLabel.setForeground(Color.BLACK);    // Set text color
+        nutritionLabel.setBackground(new Color(255, 255, 255, 200)); // Semi-transparent background
+        nutritionLabel.setOpaque(true);
+        nutritionLabel.setVisible(false); // Initially hidden
+
+        return nutritionLabel;
+    }
+
+    private JLabel createBottomLabel(ImageIcon bottom) {
+        JLabel bottomLabel = new JLabel(bottom);
+        bottomLabel.setBounds(0,0,300,50);
+        bottomLabel.setBackground(Color.white);
+
+        return bottomLabel;
+
+    }
+
+    private MouseAdapter createHoverListener(JLabel nutritionLabel) {
+        return new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                if (hoverTimer != null && hoverTimer.isRunning()) {
+                    hoverTimer.stop();
+                }
+                hoverTimer = new Timer(HOVER_DELAY, e -> 
+                    SwingUtilities.invokeLater(() -> nutritionLabel.setVisible(true))
+                );
+                hoverTimer.setRepeats(false);
+                hoverTimer.start();
+            }
+    
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                if (hoverTimer != null && hoverTimer.isRunning()) {
+                    hoverTimer.stop();
+                }
+                SwingUtilities.invokeLater(() -> nutritionLabel.setVisible(false));
+            }
+        };
+    }
+
+    private JPanel createBottomArea() {
+        JPanel bottomArea = new JPanel();
+        bottomArea.setBackground(Color.white);
+        bottomArea.setLayout(null);
+
+        return bottomArea;
+    }
+
+    private JLabel createAmountTextField(ImageIcon amountField) {
+        JLabel amountTextField = new JLabel(amountField);
+        x = 0;
+        amountTextField.setText("" + x);
+        amountTextField.setBounds(33, 15, 23, 25);
+        amountTextField.setHorizontalTextPosition(JLabel.CENTER);
+        amountTextField.setVerticalTextPosition(JLabel.CENTER);
+
+        return amountTextField;
+    }
+
+    private JButton createIncrementButton(ImageIcon incre) {
+        JButton increment = new JButton(incre);
+        increment.setBounds(61,20,11, 14);
+        increment.setBorderPainted(false);
+        increment.setFocusPainted(false);
+        increment.setContentAreaFilled(false);
+
+        return increment;
+    }
+
+    private ActionListener createIncrementListener(JLabel amountTextField) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                x += 1;
+                amountTextField.setText("" + x);
+            }
+        };
+    }
+
+    private JButton createDecrementButton(ImageIcon decre) {
+        JButton decrement = new JButton(decre);
+        decrement.setBounds(15, 20, 11, 14);
+        decrement.setBorderPainted(false);
+        decrement.setFocusPainted(false);
+        decrement.setContentAreaFilled(false);
+
+        return decrement;
+    }
+
+    private ActionListener createDecrementListener(JLabel amountTextField) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (x > 0) {
+                    x -= 1;
+                    amountTextField.setText("" + x);
+                }   
+            }
+        };
+    }
+    
+    private JButton createOrderButton(ImageIcon order) {
+        JButton orderButton = new JButton(order);
+        orderButton.setBounds(210, 15, 80, 25);
+        orderButton.setBorderPainted(false);
+        orderButton.setFocusPainted(false);
+        orderButton.setContentAreaFilled(false);
+
+        return orderButton;
+    }
+    
+    private ActionListener createOrderListener(JLabel amountTextField) {
+    return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                //ADD FUNCTIONALITY SOON
+                showImageFrame("pics/pop up frame order.png");
+                x = 0;
+                amountTextField.setText(""+ x);
+            }
+        };
+    }
+
+    private JWindow createImageWindow(Image image, int width, int height) {
+        JWindow imageWindow = new JWindow();
+        imageWindow.setSize(width, height);
+        imageWindow.setLocationRelativeTo(null);
+
+        return imageWindow;
+    }
+
+    private JPanel createPanel(Image image) {
+        return new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g)
+            {
+                super.paintComponent(g);
+                g.drawImage(image, 0, 0, this);
+            }
+        };
+    }
+}  
