@@ -73,19 +73,6 @@ public class MainFrameEmployee extends JFrame {
         JPanel foodItemsPanel = new JPanel();
         foodItemsPanel.setBackground(Color.white);
         foodItemsPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns with spacing
-        
-        // Add food items
-        foodItemsPanel.add(new AddFood(1));
-        foodItemsPanel.add(new AddFood(2));
-        foodItemsPanel.add(new AddFood(3));
-        foodItemsPanel.add(new AddFood(4));
-        foodItemsPanel.add(new AddFood(5));
-        foodItemsPanel.add(new AddFood(6));
-        foodItemsPanel.add(new AddFood(7));
-        foodItemsPanel.add(new AddFood(8));
-        foodItemsPanel.add(new AddFood(9));
-        foodItemsPanel.add(new AddFood(10));
-        foodItemsPanel.add(new AddFood(11));
 
         JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
         scrollPane.setPreferredSize(new Dimension(680, 500));
@@ -108,6 +95,10 @@ public class MainFrameEmployee extends JFrame {
         ImageIcon categoryArea = new ImageIcon("pics/category area.png");
         JLabel leftSideCategory = new JLabel();
 
+        for(int i = 1; i <= 11; i++) {
+            foodItemsPanel.add(new AddFood(i));
+        }
+ 
         JCheckBox vegetarianButton = new JCheckBox("Vegetarian");
         vegetarianButton.setFocusPainted(false);
         vegetarianButton.setBorderPainted(false);
@@ -115,13 +106,7 @@ public class MainFrameEmployee extends JFrame {
         vegetarianButton.setBorder(new EmptyBorder(0, 15,0, 0));
         vegetarianButton.setIcon(defaultCheckbox);
         vegetarianButton.setSelectedIcon(selectedCheckbox);
-        vegetarianButton.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-
-            }
-        });
-
+        
         JCheckBox nonVegetarianButton = new JCheckBox("Non-Vegetarian");
         nonVegetarianButton.setFocusPainted(false);
         nonVegetarianButton.setBorderPainted(false);
@@ -129,12 +114,50 @@ public class MainFrameEmployee extends JFrame {
         nonVegetarianButton.setBorder(new EmptyBorder(0, 15,0, 0));
         nonVegetarianButton.setIcon(defaultCheckbox);
         nonVegetarianButton.setSelectedIcon(selectedCheckbox);
+
+        vegetarianButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {   
+                 if(vegetarianButton.isSelected()) {
+                    nonVegetarianButton.setSelected(false);
+                    Component[] componentList = foodItemsPanel.getComponents();
+
+                    for(Component c : componentList){
+                        if(c instanceof AddFood){
+                            foodItemsPanel.remove(c);
+                        }
+                    }
+                    foodItemsPanel.revalidate();
+                    foodItemsPanel.repaint();
+
+                    for(int i = 1; i <= 11; i++) {
+                        if(SQLMeal.getCategory(i).equals("Vegetarian")) 
+                            foodItemsPanel.add(new AddFood(i));
+                    }
+                } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()){
+                    Component[] componentList = foodItemsPanel.getComponents();
+
+                    for (Component c : componentList) {
+                        if (c instanceof AddFood) {
+                            foodItemsPanel.remove(c);
+                        }
+                    }
+                    foodItemsPanel.revalidate();
+                    foodItemsPanel.repaint();
+
+                    for (int i = 1; i <= 11; i++) {
+                        foodItemsPanel.add(new AddFood(i));
+                    }
+                }
+            }
+        });
+
         nonVegetarianButton.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {   
                 if(nonVegetarianButton.isSelected()) {
+                    vegetarianButton.setSelected(false);
                     Component[] componentList = foodItemsPanel.getComponents();
-
                     for(Component c : componentList){
                         if(c instanceof AddFood){
                             foodItemsPanel.remove(c);
@@ -147,28 +170,8 @@ public class MainFrameEmployee extends JFrame {
                         if(SQLMeal.getCategory(i).equals("Non-Vegetarian")) 
                             foodItemsPanel.add(new AddFood(i));
                     }
-                }
-                // TODO : ADD FUNCTIONALITY FOR WHEN UNCHECKED
-            }
-        });
-
-        // ButtonGroup bGroup = new ButtonGroup();
-        // bGroup.add(vegetarianButton);
-        // bGroup.add(non_VegetariaButton);
-
-        JCheckBox spicyButton = new JCheckBox("Spicy");
-        spicyButton.setFocusPainted(false);
-        spicyButton.setBorderPainted(false);
-        spicyButton.setContentAreaFilled(false);
-        spicyButton.setBorder(new EmptyBorder(0, 25,0, 0));
-        spicyButton.setIcon(defaultCheckbox);
-        spicyButton.setSelectedIcon(selectedCheckbox);
-        spicyButton.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {   
-                if(spicyButton.isSelected()) {
+                } else if(!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
                     Component[] componentList = foodItemsPanel.getComponents();
-
                     for(Component c : componentList){
                         if(c instanceof AddFood){
                             foodItemsPanel.remove(c);
@@ -178,12 +181,66 @@ public class MainFrameEmployee extends JFrame {
                     foodItemsPanel.repaint();
 
                     for(int i = 1; i <= 11; i++) {
-                        if(SQLMeal.getIsSpicy(i)) 
-                            foodItemsPanel.add(new AddFood(i));
+                        foodItemsPanel.add(new AddFood(i));
                     }
                 }
-                // TODO : ADD FUNCTIONALITY FOR WHEN UNCHECKED
             }
+        });
+        
+        JCheckBox spicyButton = new JCheckBox("Spicy");
+        spicyButton.setFocusPainted(false);
+        spicyButton.setBorderPainted(false);
+        spicyButton.setContentAreaFilled(false);
+        spicyButton.setBorder(new EmptyBorder(0, 25,0, 0));
+        spicyButton.setIcon(defaultCheckbox);
+        spicyButton.setSelectedIcon(selectedCheckbox);
+        spicyButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+            if (spicyButton.isSelected()) {
+                Component[] componentList = foodItemsPanel.getComponents();
+    
+                for (Component c : componentList) {
+                    if (c instanceof AddFood) {
+                        foodItemsPanel.remove(c);
+                    }
+                }
+                foodItemsPanel.revalidate();
+                foodItemsPanel.repaint();
+    
+                for (int i = 1; i <= 11; i++) {
+                    if (SQLMeal.getIsSpicy(i)) {
+                        if (vegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Vegetarian")) {
+                            foodItemsPanel.add(new AddFood(i));
+                        } else if (nonVegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
+                            foodItemsPanel.add(new AddFood(i));
+                        } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
+                            foodItemsPanel.add(new AddFood(i));
+                        }
+                    }
+                }
+            } else {
+                Component[] componentList = foodItemsPanel.getComponents();
+    
+                for (Component c : componentList) {
+                    if (c instanceof AddFood) {
+                        foodItemsPanel.remove(c);
+                    }
+                }
+                foodItemsPanel.revalidate();
+                foodItemsPanel.repaint();
+    
+                for (int i = 1; i <= 11; i++) {
+                if (vegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Vegetarian")) {
+                        foodItemsPanel.add(new AddFood(i));
+                    } else if (nonVegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
+                        foodItemsPanel.add(new AddFood(i));
+                    } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
+                        foodItemsPanel.add(new AddFood(i));
+                    }
+                }
+            }
+        }
         });
 
         leftSideCategory.setIcon(categoryArea);
