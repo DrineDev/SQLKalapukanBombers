@@ -1,7 +1,10 @@
 package org.example.SQLQueries;
 
-import javax.swing.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SQLUser {
 
@@ -27,7 +30,7 @@ public class SQLUser {
         }
     }
 
-    private static void editUser(int id, String username, String password, String role) {
+    public static void editUser(int id, String username, String password, String role) {
         String updateSQL = "UPDATE Users SET username = ?, password = ?, role = ? WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
@@ -44,7 +47,7 @@ public class SQLUser {
         }
     }
 
-    private static void deleteUser(int id) {
+    public static void deleteUser(int id) {
         String deleteSQL = "DELETE FROM Users WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
@@ -93,6 +96,7 @@ public class SQLUser {
         }
         return null;
     }
+
     public static String getPassword(int id) {
         String query = "SELECT password FROM USERS WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
@@ -109,6 +113,7 @@ public class SQLUser {
         }
         return null;
     }
+
     public static String getRole(int id) {
         String query = "SELECT role FROM USERS WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
@@ -125,6 +130,7 @@ public class SQLUser {
         }
         return null;
     }
+
     public static Integer getUserId(String username) {
         String query = "SELECT id FROM USERS WHERE username = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
@@ -155,6 +161,7 @@ public class SQLUser {
             e.printStackTrace();
         }
     }
+
     public static void setPassword(int id, String password) {
         String updateSQL = "UPDATE USERS SET password = ? WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
@@ -168,6 +175,7 @@ public class SQLUser {
             e.printStackTrace();
         }
     }
+
     public static void setRole(int id, String role) {
         String updateSQL = "UPDATE USERS SET role = ? WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);

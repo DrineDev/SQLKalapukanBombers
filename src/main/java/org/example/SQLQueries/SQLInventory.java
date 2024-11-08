@@ -1,7 +1,10 @@
 package org.example.SQLQueries;
 
-import javax.swing.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SQLInventory {
 
@@ -26,7 +29,7 @@ public class SQLInventory {
         }
     }
 
-    private static void editInventory(int Meal_ID, int Price, int Quantity_Available, int Quantity_Sold) {
+    public static void editInventory(int Meal_ID, int Price, int Quantity_Available, int Quantity_Sold) {
         String updateSQL = "UPDATE INVENTORY SET Price = ?, Quantity_Available = ?, Quantity_Sold = ? WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
@@ -41,7 +44,7 @@ public class SQLInventory {
         }
     }
 
-    private static void deleteInventory(int Meal_Id) {
+    public static void deleteInventory(int Meal_Id) {
         String deleteSQL = "DELETE FROM INVENTORY WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
