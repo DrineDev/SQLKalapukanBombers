@@ -91,62 +91,15 @@ public class AddFood extends JPanel {
         int width = image.getWidth(null);
         JWindow imageWindow = createImageWindow(image, width, height);
 
-        JPanel panel = createPanel(image);
-        panel.setPreferredSize(new Dimension(width, height));
-        imageWindow.setContentPane(panel);
-        Float shape = new RoundRectangle2D.Float(0, 0, width, height, 17, 17);
-        imageWindow.setShape(shape);
-        imageWindow.setOpacity(0.0f);
-        imageWindow.setVisible(true);
-
         Timer fadeInTimer = new Timer(20, null);
-        fadeInTimer.addActionListener(new ActionListener()
-        {
-            float opacity = 0.0f;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                opacity += 0.05f;
-                if (opacity >= 1.0f) {
-                    opacity = 1.0f;
-                    fadeInTimer.stop();
-                    new Timer(1000, new ActionListener()
-                    {
-                        @Override
-                        public void actionPerformed(ActionEvent evt)
-                        {
-                            startFadeOut(imageWindow);
-                        }
-                    }).start();
-                }
-                imageWindow.setOpacity(opacity);
-                imageWindow.repaint();
-            }
-        });
+        fadeInTimer.addActionListener(createFadeInListener(imageWindow, fadeInTimer));
         fadeInTimer.start();
     }
 
     private void startFadeOut(JWindow imageWindow)
     {
         Timer fadeOutTimer = new Timer(20, null);
-        fadeOutTimer.addActionListener(new ActionListener()
-        {
-            float opacity = 1.0f;
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                opacity -= 0.05f;
-                if (opacity <= 0.0f) {
-                    opacity = 0.0f;
-                    imageWindow.dispose();
-                    fadeOutTimer.stop();
-                }
-                imageWindow.setOpacity(opacity);
-                imageWindow.repaint();
-            }
-        });
+        fadeOutTimer.addActionListener(createFadeOutListener(imageWindow, fadeOutTimer));
         fadeOutTimer.start();
     }
 
@@ -157,7 +110,6 @@ public class AddFood extends JPanel {
         nutritionLabel.setBackground(new Color(255, 255, 255, 200)); // Semi-transparent background
         nutritionLabel.setOpaque(true);
         nutritionLabel.setVisible(false); // Initially hidden
-
         return nutritionLabel;
     }
 
@@ -165,9 +117,7 @@ public class AddFood extends JPanel {
         JLabel bottomLabel = new JLabel(bottom);
         bottomLabel.setBounds(0,0,300,50);
         bottomLabel.setBackground(Color.white);
-
         return bottomLabel;
-
     }
 
     private MouseAdapter createHoverListener(JLabel nutritionLabel) {
@@ -198,18 +148,15 @@ public class AddFood extends JPanel {
         JPanel bottomArea = new JPanel();
         bottomArea.setBackground(Color.white);
         bottomArea.setLayout(null);
-
         return bottomArea;
     }
 
     private JLabel createAmountTextField(ImageIcon amountField) {
         JLabel amountTextField = new JLabel(amountField);
-        x = 0;
-        amountTextField.setText("" + x);
+        amountTextField.setText("" + 0);
         amountTextField.setBounds(33, 15, 23, 25);
         amountTextField.setHorizontalTextPosition(JLabel.CENTER);
         amountTextField.setVerticalTextPosition(JLabel.CENTER);
-
         return amountTextField;
     }
 
@@ -219,7 +166,6 @@ public class AddFood extends JPanel {
         increment.setBorderPainted(false);
         increment.setFocusPainted(false);
         increment.setContentAreaFilled(false);
-
         return increment;
     }
 
@@ -227,6 +173,7 @@ public class AddFood extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // TODO : ADD FUNCTIONALITY HERE
                 x += 1;
                 amountTextField.setText("" + x);
             }
@@ -248,6 +195,7 @@ public class AddFood extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (x > 0) {
+                    // TODO : ADD FUNCTIONALITY HERE
                     x -= 1;
                     amountTextField.setText("" + x);
                 }   
@@ -261,7 +209,6 @@ public class AddFood extends JPanel {
         orderButton.setBorderPainted(false);
         orderButton.setFocusPainted(false);
         orderButton.setContentAreaFilled(false);
-
         return orderButton;
     }
     
@@ -270,7 +217,7 @@ public class AddFood extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                //ADD FUNCTIONALITY SOON
+                // TODO : ADD FUNCTIONALITY SOON
                 showImageFrame("pics/pop up frame order.png");
                 x = 0;
                 amountTextField.setText(""+ x);
@@ -282,7 +229,13 @@ public class AddFood extends JPanel {
         JWindow imageWindow = new JWindow();
         imageWindow.setSize(width, height);
         imageWindow.setLocationRelativeTo(null);
-
+         JPanel panel = createPanel(image);
+        panel.setPreferredSize(new Dimension(width, height));
+        imageWindow.setContentPane(panel);
+        Float shape = new RoundRectangle2D.Float(0, 0, width, height, 17, 17);
+        imageWindow.setShape(shape);
+        imageWindow.setOpacity(0.0f);
+        imageWindow.setVisible(true);
         return imageWindow;
     }
 
@@ -293,6 +246,50 @@ public class AddFood extends JPanel {
             {
                 super.paintComponent(g);
                 g.drawImage(image, 0, 0, this);
+            }
+        };
+    }
+
+    private ActionListener createFadeInListener(JWindow imageWindow, Timer fadeInTimer) {
+        return new ActionListener() {
+            float opacity = 0.0f;
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                opacity += 0.05f;
+                if (opacity >= 1.0f) {
+                    opacity = 1.0f;
+                    fadeInTimer.stop();
+                    new Timer(1000, new ActionListener()
+                    {
+                        @Override
+                        public void actionPerformed(ActionEvent evt)
+                        {
+                            startFadeOut(imageWindow);
+                        }
+                    }).start();
+                }
+                imageWindow.setOpacity(opacity);
+                imageWindow.repaint();
+            }
+        };
+    }
+
+    private ActionListener createFadeOutListener(JWindow imageWindow, Timer fadeOutTimer) {
+    return new ActionListener() {
+            float opacity = 1.0f;
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                opacity -= 0.05f;
+                if (opacity <= 0.0f) {
+                    opacity = 0.0f;
+                    imageWindow.dispose();
+                    fadeOutTimer.stop();
+                }
+                imageWindow.setOpacity(opacity);
+                imageWindow.repaint();
             }
         };
     }

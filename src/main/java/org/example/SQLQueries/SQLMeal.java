@@ -46,7 +46,7 @@ public class SQLMeal {
         }
     }
 
-    private static void editMeal(int mealId, String name, String category, String type, String ingredients, String description, String serving, BufferedImage image, boolean isSpicy) {
+    public static void editMeal(int mealId, String name, String category, String type, String ingredients, String description, String serving, BufferedImage image, boolean isSpicy) {
         String updateSQL = "UPDATE MEALS SET  Name = ?, Category = ?, Type = ?, Ingredients = ?, Description = ?, Serving_Size = ?, Image = ?, Is_Spicy = ? WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
@@ -80,7 +80,7 @@ public class SQLMeal {
         }
     }
 
-    private static void deleteMeal(int Meal_Id) {
+    public static void deleteMeal(int Meal_Id) {
         String deleteSQL = "DELETE FROM MEALS WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
@@ -188,7 +188,7 @@ public class SQLMeal {
         return "";
     }
 
-    private static boolean getIsSpicy(int mealId) {
+    public static boolean getIsSpicy(int mealId) {
         String query = "SELECT Is_Spicy FROM MEALS WHERE Meal_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL)) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -204,7 +204,7 @@ public class SQLMeal {
         return false;
     }
 
-    private static int getMealId(String name) {
+    public static int getMealId(String name) {
         String query = "SELECT Meal_Id FROM MEALS WHERE Name = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL)) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -276,7 +276,7 @@ public class SQLMeal {
         }
     }
 
-    private static void setIsSpicy(int mealId, boolean isSpicy) {
+    public static void setIsSpicy(int mealId, boolean isSpicy) {
         String query = "UPDATE MEALS SET Is_Spicy = ? WHERE Meal_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL)) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -288,7 +288,7 @@ public class SQLMeal {
         }
     }
 
-    private static void setMealId(String name, int mealId) {
+    public static void setMealId(String name, int mealId) {
         String query = "UPDATE MEALS SET Meal_Id = ? WHERE Name = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL)) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -301,27 +301,27 @@ public class SQLMeal {
     }
 
     // Setter methods for each column
-    private static void setName(int mealId, String name) {
+    public static void setName(int mealId, String name) {
         setStringValue("UPDATE MEALS SET Name = ? WHERE Meal_Id = ?", mealId, name);
     }
 
-    private static void setCategory(int mealId, String category) {
+    public static void setCategory(int mealId, String category) {
         setStringValue("UPDATE MEALS SET Category = ? WHERE Meal_Id = ?", mealId, category);
     }
 
-    private static void setType(int mealId, String type) {
+    public static void setType(int mealId, String type) {
         setStringValue("UPDATE MEALS SET Type = ? WHERE Meal_Id = ?", mealId, type);
     }
 
-    private static void setDescription(int mealId, String description) {
+    public static void setDescription(int mealId, String description) {
         setStringValue("UPDATE MEALS SET Description = ? WHERE Meal_Id = ?", mealId, description);
     }
 
-    private static void setIngredients(int mealId, String ingredients) {
+    public static void setIngredients(int mealId, String ingredients) {
         setStringValue("UPDATE MEALS SET Ingredients = ? WHERE Meal_Id = ?", mealId, ingredients);
     }
 
-    private static void setServingSize(int mealId, String servingSize) {
+    public static void setServingSize(int mealId, String servingSize) {
         setStringValue("UPDATE MEALS SET Serving_Size = ? WHERE Meal_Id = ?", mealId, servingSize);
     }
 }
