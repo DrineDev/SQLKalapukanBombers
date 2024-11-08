@@ -9,7 +9,8 @@ MainFrameEmployee.java
   3. Decrement functionality
   4. Add Item to order functionality
   5. Complete Order functionality
-
+  6. REFACTOR
+     
 InventoryCrud.java
 
 OrderCRUD.java
