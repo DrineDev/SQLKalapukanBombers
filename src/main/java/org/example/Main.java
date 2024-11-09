@@ -8,5 +8,6 @@ public class Main
     {
         // SwingUtilities.invokeLater(LoginPage::new);
         SwingUtilities.invokeLater(MainFrameEmployee::new);
+        
     }
 }

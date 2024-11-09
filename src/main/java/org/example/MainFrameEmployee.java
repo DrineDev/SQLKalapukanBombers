@@ -1,7 +1,5 @@
 package org.example;
 
-import java.awt.Color;
-
 import javax.swing.*;
 
 import java.awt.*;
@@ -71,12 +69,24 @@ public class MainFrameEmployee extends JFrame {
         foodItemsPanel.add(new AddFood(11));
 
         JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
-        scrollPane.setPreferredSize(new Dimension(680, 500));
+        scrollPane.setPreferredSize(new Dimension(680, 520));
         scrollPane.setBackground(Color.white);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
 
+        scrollPane.addMouseWheelListener(new MouseWheelListener() 
+        {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) 
+            {
+                JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+                    if (verticalScrollBar != null) {
+                        int amount = e.getUnitsToScroll() * 20;  
+                verticalScrollBar.setValue(verticalScrollBar.getValue() + amount);
+            }
+        }
+        });
         rightSideBottom.add(scrollPane);
         rightSideWhole.add(rightSideBottom, BorderLayout.CENTER);
 
@@ -93,6 +103,25 @@ public class MainFrameEmployee extends JFrame {
         ImageIcon selectedCheckbox = new ImageIcon("pics/check_box.png");
         ImageIcon categoryArea = new ImageIcon("pics/category area.png");
         JLabel leftSideCategory = new JLabel();
+
+        JCheckBox spicyButton = new JCheckBox("Spicy");
+        spicyButton.setFocusPainted(false);
+        spicyButton.setBorderPainted(false);
+        spicyButton.setContentAreaFilled(false);
+        spicyButton.setBorder(new EmptyBorder(0, 25,0, 0));
+        spicyButton.setIcon(defaultCheckbox);
+        spicyButton.setSelectedIcon(selectedCheckbox);
+        spicyButton.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                if((spicyButton.isSelected()) != false)
+                    System.out.println("hi");
+            }
+
+        });
+
         JRadioButton vegetarianButton = new JRadioButton("Vegetarian");
         vegetarianButton.setFocusPainted(false);
         vegetarianButton.setContentAreaFilled(false);
@@ -104,7 +133,7 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //cardLayout.next(rightFoodArea);
+                
 
             }
         });
@@ -113,7 +142,7 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e)
             {
-
+                
             }
         });
 
@@ -129,30 +158,13 @@ public class MainFrameEmployee extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-
+                
             }
         });
 
-        ButtonGroup bGroup = new ButtonGroup();
-        bGroup.add(vegetarianButton);
-        bGroup.add(non_VegetariaButton);
-
-        JCheckBox spicyButton = new JCheckBox("Spicy");
-        spicyButton.setFocusPainted(false);
-        spicyButton.setBorderPainted(false);
-        spicyButton.setContentAreaFilled(false);
-        spicyButton.setBorder(new EmptyBorder(0, 25,0, 0));
-        spicyButton.setIcon(defaultCheckbox);
-        spicyButton.setSelectedIcon(selectedCheckbox);
-        spicyButton.addItemListener(new ItemListener()
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e)
-            {
-
-            }
-
-        });
+       
+        
+        
 
         leftSideCategory.setIcon(categoryArea);
         leftSideCategory.setLayout(new GridLayout(2, 2));
@@ -183,7 +195,11 @@ public class MainFrameEmployee extends JFrame {
             }
         });
 
+        NavigatorButtonEmployee navButton = new NavigatorButtonEmployee();
+        navButton.setBounds(12, 7, 200, 183);
+        navButton.setBackground(null);
 
+        leftSide.add(navButton);
         leftSide.add(leftSideCategory);
         leftSide.add(leftSideCheckout);
         leftSide.add(checkoutButton);
@@ -273,4 +289,5 @@ public class MainFrameEmployee extends JFrame {
         });
         fadeOutTimer.start();
     }
+   
 }
