@@ -272,6 +272,10 @@ public class MainFrameEmployee extends JFrame {
             }
         });
 
+        NavigatorButtonEmployee navButton = new NavigatorButtonEmployee();
+        navButton.setBounds(12, 7, 200, 183);
+        navButton.setBackground(null);
+
         leftSide.add(leftSideCategory);
         leftSide.add(leftSideCheckout);
         leftSide.add(checkoutButton);
