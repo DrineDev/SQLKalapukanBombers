@@ -1,9 +1,10 @@
 package org.example;
+import org.example.SQLQueries.SQLInventory;
+
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -31,6 +32,20 @@ public class InventoryCRUD extends JFrame {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setLocationRelativeTo(null);
 
+
+        // Left side
+        JPanel leftSide = new JPanel();
+        leftSide.setLayout(new BorderLayout());
+        leftSide.setPreferredSize(new Dimension(320, 600));
+        leftSide.setBackground(new Color(248, 146, 137));
+
+
+        // katung panel sa left area nga pag log sa changes
+        JPanel leftContentPanel = new JPanel();
+        leftContentPanel.setLayout(new BoxLayout(leftContentPanel, BoxLayout.Y_AXIS));
+        leftContentPanel.setBackground(Color.WHITE);
+
+
         // Right side tibuok
         JPanel rightSideWhole = new JPanel();
         rightSideWhole.setLayout(new BorderLayout());
@@ -52,17 +67,17 @@ public class InventoryCRUD extends JFrame {
         JPanel foodItemsPanel = new JPanel();
         foodItemsPanel.setLayout(new GridLayout(0,2,10,10));
         foodItemsPanel.setBackground(Color.white);
-        foodItemsPanel.add(new AddInventory(1));
-        foodItemsPanel.add(new AddInventory(2));
-        foodItemsPanel.add(new AddInventory(3));
-        foodItemsPanel.add(new AddInventory(4));
-        foodItemsPanel.add(new AddInventory(5));
-        foodItemsPanel.add(new AddInventory(6));
-        foodItemsPanel.add(new AddInventory(7));
-        foodItemsPanel.add(new AddInventory(8));
-        foodItemsPanel.add(new AddInventory(9));
-        foodItemsPanel.add(new AddInventory(10));
-        foodItemsPanel.add(new AddInventory(11));
+        foodItemsPanel.add(new AddInventory(1,leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(2, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(3, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(4, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(5, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(6, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(7, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(8, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(9, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(10, leftContentPanel ));
+        foodItemsPanel.add(new AddInventory(11, leftContentPanel ));
 
         JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
         scrollPane.setPreferredSize(new Dimension(680, 500));
@@ -74,11 +89,6 @@ public class InventoryCRUD extends JFrame {
         rightSideBottom.add(scrollPane);
         rightSideWhole.add(rightSideBottom, BorderLayout.CENTER);
 
-        // Left side
-        JPanel leftSide = new JPanel();
-        leftSide.setLayout(new BorderLayout());
-        leftSide.setPreferredSize(new Dimension(320, 600));
-        leftSide.setBackground(new Color(248, 146, 137));
 
         // Create a container panel for the scrollpane and button with padding
         JPanel scrollPaneContainer = new JPanel();
@@ -86,10 +96,6 @@ public class InventoryCRUD extends JFrame {
         scrollPaneContainer.setBackground(new Color(248, 146, 137));
         scrollPaneContainer.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding on all sides
 
-        // katung panel sa left area
-        JPanel leftContentPanel = new JPanel();
-        leftContentPanel.setLayout(new BoxLayout(leftContentPanel, BoxLayout.Y_AXIS));
-        leftContentPanel.setBackground(Color.WHITE);
 
         // scrollpane para sa katong panel sa left area
         JScrollPane leftScrollPane = new JScrollPane(leftContentPanel);
@@ -111,6 +117,68 @@ public class InventoryCRUD extends JFrame {
         confirmButton.setForeground(Color.WHITE);
         confirmButton.setFocusPainted(false);
         confirmButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        confirmButton.addActionListener(e -> {
+            Component[] components = leftContentPanel.getComponents();
+            for (Component component : components) {
+                if (component instanceof JLabel) {
+                    JLabel label = (JLabel) component;
+                    String text = label.getText();
+                    if (text.startsWith("Updating quantity")) {
+                        try {
+                            // Extract mealID and newQuantity using more reliable string parsing
+                            // Example text: "Updating quantity for meal ID 1 from 5 to 10"
+                            String[] parts = text.split(" ");
+                            // Find the index of "ID" and get the number after it
+                            int mealIDIndex = -1;
+                            for (int i = 0; i < parts.length; i++) {
+                                if (parts[i].equals("ID")) {
+                                    mealIDIndex = i + 1;
+                                    break;
+                                }
+                            }
+
+                            // Find the index of "to" and get the number after it
+                            int newQuantityIndex = -1;
+                            for (int i = 0; i < parts.length; i++) {
+                                if (parts[i].equals("to")) {
+                                    newQuantityIndex = i + 1;
+                                    break;
+                                }
+                            }
+
+                            if (mealIDIndex != -1 && newQuantityIndex != -1) {
+                                int mealID = Integer.parseInt(parts[mealIDIndex]);
+                                int newQuantity = Integer.parseInt(parts[newQuantityIndex]);
+
+                                // Update the database
+                                SQLInventory.setQuantityAvailable(mealID, newQuantity);
+
+                                // Update the quantity label in the corresponding AddInventory panel
+                                Component[] foodItems = foodItemsPanel.getComponents();
+                                for (Component foodItem : foodItems) {
+                                    if (foodItem instanceof AddInventory) {
+                                        AddInventory addInventory = (AddInventory) foodItem;
+                                        if (addInventory.getMealID() == mealID) {
+                                            addInventory.updateQuantityLabel(newQuantity);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(mainFrame,
+                                    "Error updating quantity: " + ex.getMessage(),
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+            // Clear the log panel after processing
+            leftContentPanel.removeAll();
+            leftContentPanel.revalidate();
+            leftContentPanel.repaint();
+        });
 
         // Create a panel for the confirm button with some top margin pina katong sa exit button
         JPanel buttonPanel = new JPanel();
