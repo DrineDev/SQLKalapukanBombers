@@ -19,7 +19,7 @@ public class InventoryCRUDEmployee extends JFrame {
 
     private JFrame mainFrame;
     private JButton exitButton;
-    private NavigatorButtonEmployee navButton;
+    private NavigatorButtonInventory navButton;
 
     //himo sa GUI
     public InventoryCRUDEmployee() {
@@ -59,7 +59,7 @@ public class InventoryCRUDEmployee extends JFrame {
     }
     //initialize sa navbutton ibutang siya sa left part sa top panel
     private void initializeNavButton() {
-        navButton = new NavigatorButtonEmployee();
+        navButton = new NavigatorButtonInventory();
         // Add listeners for the navigation buttons
         navButton.addOrderButtonListener(e -> {
 

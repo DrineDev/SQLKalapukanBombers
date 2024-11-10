@@ -21,7 +21,7 @@ public class InventoryCRUD {
     private JButton confirmButton;
     private JPanel leftContentPanel;
     private Map<Integer, AddInventory> foodItemComponents;
-    private NavigatorButtonEmployee navButton;
+    private NavigatorButtonInventory navButton;
 
     public InventoryCRUD() {
         foodItemComponents = new HashMap<>();
@@ -308,7 +308,7 @@ public class InventoryCRUD {
     }
 
     private void initializeNavButton() {
-        navButton = new NavigatorButtonEmployee();
+        navButton = new NavigatorButtonInventory();
         // Add listeners for the navigation buttons
         navButton.addOrderButtonListener(e -> {
 
