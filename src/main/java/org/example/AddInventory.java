@@ -1,19 +1,10 @@
 package org.example;
 
-import java.awt.Color;
-import java.awt.Dimension;
-
-import javax.swing.ImageIcon;
-import javax.swing.InputVerifier;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class AddInventory extends JPanel {
     private ImageIcon foodImage;
