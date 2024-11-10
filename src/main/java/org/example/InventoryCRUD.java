@@ -1,216 +1,328 @@
 package org.example;
+
 import org.example.SQLQueries.SQLInventory;
-
 import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.*;
-
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 
-public class InventoryCRUD extends JFrame {
+public class InventoryCRUD {
+    private static final Color PRIMARY_COLOR = new Color(248, 146, 137);
+    private static final Dimension FRAME_SIZE = new Dimension(1000, 600);
+    private static final Dimension LEFT_PANEL_SIZE = new Dimension(320, 600);
+    private static final Dimension RIGHT_PANEL_SIZE = new Dimension(680, 2000);
+    private static final Dimension SCROLL_PANE_SIZE = new Dimension(680, 500);
+    private static final Dimension LEFT_SCROLL_PANE_SIZE = new Dimension(280, 400);
+
     private JFrame mainFrame;
     private JButton exitButton;
     private JButton confirmButton;
+    private JPanel leftContentPanel;
+    private Map<Integer, AddInventory> foodItemComponents;
+    private NavigatorButtonEmployee navButton;
 
     public InventoryCRUD() {
-        // Exit button
-        ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
-        exitButton = new JButton();
-        exitButton.setIcon(exitImageIcon);
-        exitButton.setContentAreaFilled(false);
-        exitButton.setFocusPainted(false);
-        exitButton.setBorderPainted(false);
-        exitButton.addActionListener(e -> System.exit(0));
+        foodItemComponents = new HashMap<>();
+        initializeGUI();
+    }
 
-        // Frame initialization
-        mainFrame = new JFrame();
-        mainFrame.setSize(1000, 600);
-        mainFrame.setUndecorated(true);
-        mainFrame.setLayout(new BorderLayout());
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setLocationRelativeTo(null);
-
-
-        // Left side
-        JPanel leftSide = new JPanel();
-        leftSide.setLayout(new BorderLayout());
-        leftSide.setPreferredSize(new Dimension(320, 600));
-        leftSide.setBackground(new Color(248, 146, 137));
-
-
-        // katung panel sa left area nga pag log sa changes
-        JPanel leftContentPanel = new JPanel();
-        leftContentPanel.setLayout(new BoxLayout(leftContentPanel, BoxLayout.Y_AXIS));
-        leftContentPanel.setBackground(Color.WHITE);
-
-
-        // Right side tibuok
-        JPanel rightSideWhole = new JPanel();
-        rightSideWhole.setLayout(new BorderLayout());
-        rightSideWhole.setPreferredSize(new Dimension(680, 2000));
-        rightSideWhole.setBackground(Color.white);
-        rightSideWhole.setBorder(new EmptyBorder(0, 20, 0, 0)); // Add left padding
-
-        //Panel for exit button
-        JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        exitPanel.setBackground(Color.white);
-        exitPanel.add(exitButton);
-        rightSideWhole.add(exitPanel, BorderLayout.NORTH);
-
-        // bottom sa right side ang babaw kay katong exiters
-        JPanel rightSideBottom = new JPanel();
-        rightSideBottom.setLayout(new BoxLayout(rightSideBottom, BoxLayout.Y_AXIS));
-
-        //Scrollable panel for food items
-        JPanel foodItemsPanel = new JPanel();
-        foodItemsPanel.setLayout(new GridLayout(0,2,10,10));
-        foodItemsPanel.setBackground(Color.white);
-        foodItemsPanel.add(new AddInventory(1,leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(2, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(3, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(4, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(5, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(6, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(7, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(8, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(9, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(10, leftContentPanel ));
-        foodItemsPanel.add(new AddInventory(11, leftContentPanel ));
-
-        JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
-        scrollPane.setPreferredSize(new Dimension(680, 500));
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setBorder(null);
-
-
-        rightSideBottom.add(scrollPane);
-        rightSideWhole.add(rightSideBottom, BorderLayout.CENTER);
-
-
-        // Create a container panel for the scrollpane and button with padding
-        JPanel scrollPaneContainer = new JPanel();
-        scrollPaneContainer.setLayout(new BoxLayout(scrollPaneContainer, BoxLayout.Y_AXIS));
-        scrollPaneContainer.setBackground(new Color(248, 146, 137));
-        scrollPaneContainer.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding on all sides
-
-
-        // scrollpane para sa katong panel sa left area
-        JScrollPane leftScrollPane = new JScrollPane(leftContentPanel);
-        leftScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        leftScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        leftScrollPane.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(Color.GRAY, 1), // Outer border
-                BorderFactory.createEmptyBorder(5, 5, 5, 5) // Inner padding
-        ));
-        leftScrollPane.getViewport().setBackground(Color.WHITE); // mga chuy2 nga edit gipalimpyo nakos gpt kaning mga nas ubos
-        leftScrollPane.setPreferredSize(new Dimension(280, 400)); // reduce hayt
-        leftScrollPane.setMaximumSize(new Dimension(280, 400)); // add max size ambot lng ngano
-
-        // Create confirm button sa ubos sa changelogs
-        confirmButton = new JButton("Confirm");
-        confirmButton.setPreferredSize(new Dimension(100, 30));
-        confirmButton.setMaximumSize(new Dimension(280, 30));
-        confirmButton.setBackground(new Color(248, 146, 137));
-        confirmButton.setForeground(Color.WHITE);
-        confirmButton.setFocusPainted(false);
-        confirmButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
-        confirmButton.addActionListener(e -> {
-            Component[] components = leftContentPanel.getComponents();
-            for (Component component : components) {
-                if (component instanceof JLabel) {
-                    JLabel label = (JLabel) component;
-                    String text = label.getText();
-                    if (text.startsWith("Updating quantity")) {
-                        try {
-                            // Extract mealID and newQuantity using more reliable string parsing
-                            // Example text: "Updating quantity for meal ID 1 from 5 to 10"
-                            String[] parts = text.split(" ");
-                            // Find the index of "ID" and get the number after it
-                            int mealIDIndex = -1;
-                            for (int i = 0; i < parts.length; i++) {
-                                if (parts[i].equals("ID")) {
-                                    mealIDIndex = i + 1;
-                                    break;
-                                }
-                            }
-
-                            // Find the index of "to" and get the number after it
-                            int newQuantityIndex = -1;
-                            for (int i = 0; i < parts.length; i++) {
-                                if (parts[i].equals("to")) {
-                                    newQuantityIndex = i + 1;
-                                    break;
-                                }
-                            }
-
-                            if (mealIDIndex != -1 && newQuantityIndex != -1) {
-                                int mealID = Integer.parseInt(parts[mealIDIndex]);
-                                int newQuantity = Integer.parseInt(parts[newQuantityIndex]);
-
-                                // Update the database
-                                SQLInventory.setQuantityAvailable(mealID, newQuantity);
-
-                                // Update the quantity label in the corresponding AddInventory panel
-                                Component[] foodItems = foodItemsPanel.getComponents();
-                                for (Component foodItem : foodItems) {
-                                    if (foodItem instanceof AddInventory) {
-                                        AddInventory addInventory = (AddInventory) foodItem;
-                                        if (addInventory.getMealID() == mealID) {
-                                            addInventory.updateQuantityLabel(newQuantity);
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(mainFrame,
-                                    "Error updating quantity: " + ex.getMessage(),
-                                    "Error",
-                                    JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                }
-            }
-            // Clear the log panel after processing
-            leftContentPanel.removeAll();
-            leftContentPanel.revalidate();
-            leftContentPanel.repaint();
-        });
-
-        // Create a panel for the confirm button with some top margin pina katong sa exit button
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.setBackground(new Color(248, 146, 137));
-        buttonPanel.setBorder(new EmptyBorder(15, 0, 0, 0)); // Add top margin
-        buttonPanel.add(confirmButton);
-
-        // Add components to the container
-        scrollPaneContainer.add(leftScrollPane);
-        scrollPaneContainer.add(buttonPanel);
-
-        // Add the container panel to the left side
-        leftSide.add(scrollPaneContainer, BorderLayout.CENTER);
+    private void initializeGUI() {
+        initializeFrame();
+        initializeNavButton();
+        JPanel leftSide = createLeftPanel();
+        JPanel rightSideWhole = createRightPanel();
 
         mainFrame.add(leftSide, BorderLayout.WEST);
         mainFrame.add(rightSideWhole, BorderLayout.EAST);
         mainFrame.setVisible(true);
+    }
 
-        // hover effect sa confirm button mu white ig hover niya normal ig hawa
-        confirmButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e)
-            {
-                confirmButton.setBackground(Color.WHITE);
-                confirmButton.setForeground(new Color(248, 146, 137));
-            }
-
-            public void mouseExited(MouseEvent e)
-            {
-                confirmButton.setBackground(new Color(248, 146, 137));
-                confirmButton.setForeground(Color.WHITE);
+    private void initializeFrame() {
+        mainFrame = new JFrame();
+        mainFrame.setSize(FRAME_SIZE);
+        mainFrame.setUndecorated(true);
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLocationRelativeTo(null);
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
             }
         });
+
+    }
+
+    private JPanel createLeftPanel() {
+        // Main container with BorderLayout
+        JPanel leftContainer = new JPanel(new BorderLayout());
+        leftContainer.setPreferredSize(LEFT_PANEL_SIZE);
+        leftContainer.setBackground(PRIMARY_COLOR);
+
+        // Create the navigation panel at the top
+        JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        navPanel.setBackground(PRIMARY_COLOR);
+
+        // Remove the duplicate creation and use the class field navButton that was initialized
+        navPanel.add(navButton);  // Add the class field navButton
+
+        // The following lines should be removed as they create a duplicate button:
+        // NavigatorButtonEmployee navButton = new NavigatorButtonEmployee();
+        // navButton.addInventoryButtonListener(e -> {});
+        // navButton.addOrderButtonListener(e -> { dispose(); });
+
+        // Create the main content panel
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(PRIMARY_COLOR);
+        contentPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+
+        // Create scroll pane container
+        JPanel scrollPaneContainer = new JPanel();
+        scrollPaneContainer.setLayout(new BoxLayout(scrollPaneContainer, BoxLayout.Y_AXIS));
+        scrollPaneContainer.setBackground(PRIMARY_COLOR);
+        scrollPaneContainer.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        // Set up content panel for inventory items
+        leftContentPanel = new JPanel();
+        leftContentPanel.setLayout(new BoxLayout(leftContentPanel, BoxLayout.Y_AXIS));
+        leftContentPanel.setBackground(Color.WHITE);
+
+        // Create scroll pane
+        JScrollPane leftScrollPane = createScrollPane(leftContentPanel, LEFT_SCROLL_PANE_SIZE);
+
+        // Create button panel
+        confirmButton = createConfirmButton();
+        JPanel buttonPanel = createButtonPanel();
+
+        // Build component hierarchy
+        scrollPaneContainer.add(leftScrollPane);
+        scrollPaneContainer.add(buttonPanel);
+        contentPanel.add(scrollPaneContainer);
+
+        // Add components to the main container
+        leftContainer.add(navPanel, BorderLayout.NORTH);
+        leftContainer.add(contentPanel, BorderLayout.CENTER);
+
+        return leftContainer;
+    }
+
+
+    private JButton createConfirmButton() {
+        JButton button = new JButton("Confirm");
+        button.setPreferredSize(new Dimension(100, 30));
+        button.setMaximumSize(new Dimension(280, 30));
+        button.setBackground(PRIMARY_COLOR);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+
+        button.addActionListener(e -> {
+            try {
+                updateInventory();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(mainFrame,
+                        "Error updating inventory: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(Color.WHITE);
+                button.setForeground(PRIMARY_COLOR);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(PRIMARY_COLOR);
+                button.setForeground(Color.WHITE);
+            }
+        });
+
+        return button;
+    }
+
+    private JPanel createRightPanel() {
+        JPanel rightSideWhole = new JPanel(new BorderLayout());
+        rightSideWhole.setPreferredSize(RIGHT_PANEL_SIZE);
+        rightSideWhole.setBackground(Color.WHITE);
+        rightSideWhole.setBorder(new EmptyBorder(0, 20, 0, 0));
+
+        exitButton = createExitButton();
+        JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        exitPanel.setBackground(Color.WHITE);
+        exitPanel.add(exitButton);
+        rightSideWhole.add(exitPanel, BorderLayout.NORTH);
+
+        JPanel foodItemsPanel = createFoodItemsPanel();
+        JScrollPane scrollPane = createScrollPane(foodItemsPanel, SCROLL_PANE_SIZE);
+
+        JPanel rightSideBottom = new JPanel();
+        rightSideBottom.setLayout(new BoxLayout(rightSideBottom, BoxLayout.Y_AXIS));
+        rightSideBottom.add(scrollPane);
+
+        rightSideWhole.add(rightSideBottom, BorderLayout.CENTER);
+
+        return rightSideWhole;
+    }
+
+    private JPanel createFoodItemsPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 2, 10, 10));
+        panel.setBackground(Color.WHITE);
+
+        try {
+            // Get all meals from inventory
+            java.sql.Connection conn = java.sql.DriverManager.getConnection("jdbc:sqlite:SQL/database.db");
+            java.sql.Statement stmt = conn.createStatement();
+            java.sql.ResultSet rs = stmt.executeQuery("SELECT Meal_ID FROM INVENTORY");
+
+            while (rs.next()) {
+                int mealID = rs.getInt("Meal_ID");
+                AddInventory addInventory = new AddInventory(mealID, leftContentPanel);
+                panel.add(addInventory);
+                foodItemComponents.put(mealID, addInventory);
+            }
+
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(mainFrame,
+                    "Error loading inventory items: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        return panel;
+    }
+
+    private void updateInventory() {
+        Component[] components = leftContentPanel.getComponents();
+        boolean updatesPerformed = false;
+
+        for (Component component : components) {
+            if (component instanceof JLabel) {
+                JLabel label = (JLabel) component;
+                String text = label.getText();
+                if (text != null && text.startsWith("Updating quantity")) {
+                    try {
+                        String[] parts = text.split(" ");
+                        int mealID = -1;
+                        int newQuantity = -1;
+
+                        for (int i = 0; i < parts.length; i++) {
+                            if (parts[i].equals("ID")) {
+                                mealID = Integer.parseInt(parts[i + 1]);
+                            } else if (parts[i].equals("to")) {
+                                newQuantity = Integer.parseInt(parts[i + 1]);
+                            }
+                        }
+
+                        if (mealID != -1 && newQuantity != -1) {
+                            // Update database
+                            SQLInventory.setQuantityAvailable(mealID, newQuantity);
+
+                            // Update UI
+                            AddInventory inventoryComponent = foodItemComponents.get(mealID);
+                            if (inventoryComponent != null) {
+                                inventoryComponent.updateQuantityLabel(newQuantity);
+                                updatesPerformed = true;
+                            }
+                        }
+                    } catch (Exception ex) {
+                        throw new RuntimeException("Error processing update: " + ex.getMessage());
+                    }
+                }
+            }
+        }
+
+        // Clear the log panel
+        leftContentPanel.removeAll();
+        leftContentPanel.revalidate();
+        leftContentPanel.repaint();
+
+        // Show success message if updates were performed
+        if (updatesPerformed) {
+            JOptionPane.showMessageDialog(mainFrame,
+                    "Inventory updated successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private JScrollPane createScrollPane(JComponent view, Dimension size) {
+        JScrollPane scrollPane = new JScrollPane(view);
+        scrollPane.setPreferredSize(size);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+
+        if (view instanceof JPanel && !(view.getLayout() instanceof GridLayout)) {
+            scrollPane.setBorder(BorderFactory.createCompoundBorder(
+                    new LineBorder(Color.GRAY, 1),
+                    BorderFactory.createEmptyBorder(5, 5, 5, 5)
+            ));
+            scrollPane.getViewport().setBackground(Color.WHITE);
+            scrollPane.setMaximumSize(size);
+        }
+
+        return scrollPane;
+    }
+
+    private JButton createExitButton() {
+        ImageIcon exitImageIcon;
+        try {
+            exitImageIcon = new ImageIcon("pics/exit button.png");
+            if (exitImageIcon.getImageLoadStatus() != MediaTracker.COMPLETE) {
+                throw new Exception("Failed to load exit button image");
+            }
+        } catch (Exception ex) {
+            System.err.println("Error loading exit button image: " + ex.getMessage());
+            exitImageIcon = new ImageIcon();
+        }
+
+        JButton button = new JButton();
+        button.setIcon(exitImageIcon);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.addActionListener(e -> dispose());
+        return button;
+    }
+
+    private JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(PRIMARY_COLOR);
+        buttonPanel.setBorder(new EmptyBorder(15, 0, 0, 0));
+        buttonPanel.add(confirmButton);
+        return buttonPanel;
+    }
+
+    private void initializeNavButton() {
+        navButton = new NavigatorButtonEmployee();
+        // Add listeners for the navigation buttons
+        navButton.addOrderButtonListener(e -> {
+
+            mainFrame.dispose(); // Close current window
+            // Open order window if naa natay order window
+        });
+
+        navButton.addInventoryButtonListener(e -> {
+            // already inventory so empty ra siya
+        });
+    }
+    public void dispose() {
+        if (mainFrame != null) {
+            mainFrame.dispose();
+        }
     }
 }
