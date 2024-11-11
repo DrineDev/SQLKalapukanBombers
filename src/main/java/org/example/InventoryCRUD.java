@@ -228,7 +228,11 @@ public class InventoryCRUD {
                             }
                         }
                     } catch (Exception ex) {
-                        throw new RuntimeException("Error processing update: " + ex.getMessage());
+                        JOptionPane.showMessageDialog(mainFrame,
+                                "Error updating inventory: " + ex.getMessage(),
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return; // Exit the method if an error occurs
                     }
                 }
             }
@@ -244,6 +248,11 @@ public class InventoryCRUD {
             JOptionPane.showMessageDialog(mainFrame,
                     "Inventory updated successfully!",
                     "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(mainFrame,
+                    "No inventory updates were made.",
+                    "Information",
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
