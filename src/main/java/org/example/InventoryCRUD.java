@@ -1,12 +1,37 @@
 package org.example;
 
-import org.example.SQLQueries.SQLInventory;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.MediaTracker;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+
+import org.example.Classes.Meal;
+import org.example.Classes.SharedData;
+import org.example.SQLQueries.SQLInventory;
+import org.example.SQLQueries.SQLMeal;
 
 public class InventoryCRUD {
     private static final Color PRIMARY_COLOR = new Color(248, 146, 137);
@@ -198,6 +223,29 @@ public class InventoryCRUD {
         Component[] components = leftContentPanel.getComponents();
         boolean updatesPerformed = false;
 
+        for(Meal updatedMeal : SharedData.getUpdatedMeals()) {
+            try {
+                SQLMeal.editMeal(
+                    updatedMeal.getMealId(),
+                    updatedMeal.getName(),
+                    updatedMeal.getCategory(),
+                    updatedMeal.getType(),
+                    updatedMeal.getIngredients(),
+                    updatedMeal.getDescription(),
+                    updatedMeal.getServingSize(),
+                    updatedMeal.getImage(),
+                    updatedMeal.getIsSpicy()
+                );
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(mainFrame,
+                    "Error updating inventory: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+                    return; // Exit the method if an error occurs
+            }
+            updatesPerformed = true;
+        }
+        
         for (Component component : components) {
             if (component instanceof JLabel) {
                 JLabel label = (JLabel) component;

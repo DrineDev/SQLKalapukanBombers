@@ -1,15 +1,36 @@
 package org.example;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import org.example.Classes.Meal;
+import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
-import org.example.Classes.Meal;
 
 public class AddInventory extends JPanel {
     private ImageIcon foodImage;
@@ -256,7 +277,8 @@ public class AddInventory extends JPanel {
                 }
             }
         });
-
+        
+        List<Meal> updatedMeals = new ArrayList<>();
         // Confirm Button
         JButton confirmEdit = new JButton("Save Changes");
         confirmEdit.setIcon(new ImageIcon("pics/update meal.png"));
@@ -275,17 +297,19 @@ public class AddInventory extends JPanel {
                 }
                 quantityAvailable=Integer.parseInt(stocksField.getText().trim());
                 // Update meal using the SQLMeal class
-                SQLMeal.editMeal(
-                        mealID,
-                        nameField.getText().trim(),
-                        categoryField.getText().trim(),
-                        typeField.getText().trim(),
-                        ingredientsArea.getText().trim(),
-                        descriptionArea.getText().trim(),
-                        servingSizeField.getText().trim(),
-                        selectedImage[0],
-                        spicyCheckBox.isSelected()
+                Meal updatedMeal = new Meal(
+                    mealID,
+                    nameField.getText().trim(),
+                    typeField.getText().trim(),
+                    descriptionArea.getText().trim(),
+                    ingredientsArea.getText().trim(),
+                    servingSizeField.getText().trim(),
+                    selectedImage[0],
+                    categoryField.getText().trim(),
+                    "", spicyCheckBox.isSelected()
                 );
+
+                SharedData.addUpdatedMeal(updatedMeal);
 
                 // Update stock quantity in the inventory table
                 int newStockQuantity = Integer.parseInt(stocksField.getText().trim());
