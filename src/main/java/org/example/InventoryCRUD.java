@@ -251,12 +251,15 @@ public class InventoryCRUD {
     private JScrollPane createScrollPane(JComponent view, Dimension size) {
         JScrollPane scrollPane = new JScrollPane(view);
         scrollPane.setPreferredSize(size);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
         scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        scrollPane.getHorizontalScrollBar().setUI(new customScrollBarUI());
+        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(8,4));
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
 
         if (view instanceof JPanel && !(view.getLayout() instanceof GridLayout)) {
             scrollPane.setBorder(BorderFactory.createCompoundBorder(
