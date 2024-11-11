@@ -1,36 +1,16 @@
 package org.example;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.Insets;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.InputVerifier;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.example.Classes.Meal;
-import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
+
 
 public class AddInventory extends JPanel {
     private ImageIcon foodImage;
@@ -115,7 +95,7 @@ public class AddInventory extends JPanel {
         editWindow.setLayout(null);
 
         // Set the frame and content pane background to white
-        editWindow.getContentPane().setBackground(Color.WHITE);
+        editWindow.getContentPane().setBackground(new Color(248, 146, 137));
 
         // Create a main panel with white background
         JPanel mainPanel = new JPanel();
@@ -126,40 +106,67 @@ public class AddInventory extends JPanel {
         // Labels
         JLabel editLabel = new JLabel("Edit Meal Details");
         editLabel.setBounds(50, 20, 300, 30);
-        editLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        editLabel.setFont(new Font("Inter", Font.BOLD, 16));
+        editLabel.setOpaque(true);
+        editLabel.setForeground(new Color(248, 146, 137));
+        editLabel.setBackground(new Color(255, 255, 255));
 
         JLabel nameLabel = new JLabel("Name:");
         nameLabel.setBounds(50, 60, 100, 30);
+        nameLabel.setOpaque(true);
+        nameLabel.setForeground(new Color(248, 146, 137));
+        nameLabel.setBackground(new Color(255, 255, 255));
 
         JLabel typeLabel = new JLabel("Type:");
         typeLabel.setBounds(50, 100, 100, 30);
+        typeLabel.setOpaque(true);
+        typeLabel.setForeground(new Color(248, 146, 137));
+        typeLabel.setBackground(new Color(255, 255, 255));
 
         JLabel descriptionLabel = new JLabel("Description:");
         descriptionLabel.setBounds(50, 140, 100, 30);
+        descriptionLabel.setOpaque(true);
+        descriptionLabel.setForeground(new Color(248, 146, 137));
+        descriptionLabel.setBackground(new Color(255, 255, 255));
 
         JLabel ingredientsLabel = new JLabel("Ingredients:");
         ingredientsLabel.setBounds(50, 200, 100, 30);
+        ingredientsLabel.setOpaque(true);
+        ingredientsLabel.setForeground(new Color(248, 146, 137));
+        ingredientsLabel.setBackground(new Color(255, 255, 255));
 
         JLabel servingSizeLabel = new JLabel("Serving Size:");
         servingSizeLabel.setBounds(50, 260, 100, 30);
+        servingSizeLabel.setOpaque(true);
+        servingSizeLabel.setForeground(new Color(248, 146, 137));
+        servingSizeLabel.setBackground(new Color(255, 255, 255));
 
         JLabel categoryLabel = new JLabel("Category:");
         categoryLabel.setBounds(50, 300, 100, 30);
+        categoryLabel.setOpaque(true);
+        categoryLabel.setForeground(new Color(248, 146, 137));
+        categoryLabel.setBackground(new Color(255, 255, 255));
 
         JLabel nutritionLabel = new JLabel("Nutrition Facts:");
         nutritionLabel.setBounds(50, 340, 100, 30);
+        nutritionLabel.setOpaque(true);
+        nutritionLabel.setForeground(new Color(248, 146, 137));
+        nutritionLabel.setBackground(new Color(255, 255, 255));
 
         JLabel stocksLabel = new JLabel("Stocks Available:");
         stocksLabel.setBounds(50, 400, 100, 30);
+        stocksLabel.setOpaque(true);
+        stocksLabel.setForeground(new Color(248, 146, 137));
+        stocksLabel.setBackground(new Color(255, 255, 255));
 
         // Text Fields and Areas
         JTextField nameField = new JTextField();
         nameField.setBounds(160, 60, 200, 30);
-        nameField.setBackground(new Color(217,217,217));
+        nameField.setBackground(new Color(255,255,255));
 
         JTextField typeField = new JTextField();
         typeField.setBounds(160, 100, 200, 30);
-        typeField.setBackground(new Color(217,217,217));
+        typeField.setBackground(new Color(255,255,255));
 
         JTextArea descriptionArea = new JTextArea();
         descriptionArea.setLineWrap(true);
@@ -170,7 +177,7 @@ public class AddInventory extends JPanel {
         descScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
         descScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
         descScrollPane.getVerticalScrollBar().setUnitIncrement(20);
-        descriptionArea.setBackground(new Color(217,217,217));
+        descriptionArea.setBackground(new Color(255,255,255));
 
         JTextArea ingredientsArea = new JTextArea();
         ingredientsArea.setLineWrap(true);
@@ -181,15 +188,15 @@ public class AddInventory extends JPanel {
         ingredScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
         ingredScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
         ingredScrollPane.getVerticalScrollBar().setUnitIncrement(20);
-        ingredientsArea.setBackground(new Color(217,217,217));
+        ingredientsArea.setBackground(new Color(255,255,255));
 
         JTextField servingSizeField = new JTextField();
         servingSizeField.setBounds(160, 260, 200, 30);
-        servingSizeField.setBackground(new Color(217,217,217));
+        servingSizeField.setBackground(new Color(255,255,255));
 
         JTextField categoryField = new JTextField();
         categoryField.setBounds(160, 300, 200, 30);
-        categoryField.setBackground(new Color(217,217,217));
+        categoryField.setBackground(new Color(255,255,255));
 
         JTextArea nutritionArea = new JTextArea();
         nutritionArea.setLineWrap(true);
@@ -200,23 +207,26 @@ public class AddInventory extends JPanel {
         nutritionScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
         nutritionScrollPane.getVerticalScrollBar().setUnitIncrement(20);
         nutritionScrollPane.setBounds(160, 340, 200, 50);
-        nutritionArea.setBackground(new Color(217,217,217));
+        nutritionArea.setBackground(new Color(255,255,255));
 
         JTextField stocksField = new JTextField();
         stocksField.setBounds(160, 400, 200, 30);
-        stocksField.setBackground(new Color(217,217,217));
+        stocksField.setBackground(new Color(255,255,255));
         stocksField.setText(String.valueOf(this.quantityAvailable));
 
         // Spicy Checkbox
         JCheckBox spicyCheckBox = new JCheckBox("Spicy");
         spicyCheckBox.setBounds(160, 440, 100, 30);
         spicyCheckBox.setBackground(Color.WHITE);
+        spicyCheckBox.setForeground(new Color(248, 146, 137));
 
         // Image Panel
         JPanel imagePanel = new JPanel();
         imagePanel.setBounds(400, 60, 300, 300);
-        imagePanel.setBorder(BorderFactory.createTitledBorder("Meal Image"));
         imagePanel.setBackground(Color.WHITE);
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Meal Image");
+        titledBorder.setTitleColor(new Color(248, 146, 137));
+        imagePanel.setBorder(titledBorder);
 
         JLabel imageLabel = new JLabel();
         imageLabel.setPreferredSize(new Dimension(280, 280));
