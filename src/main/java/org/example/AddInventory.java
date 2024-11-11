@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 import org.example.Classes.Meal;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
-import org.example.Classes.Meal;
+
 
 public class AddInventory extends JPanel {
     private ImageIcon foodImage;
@@ -287,7 +287,8 @@ public class AddInventory extends JPanel {
                 }
             }
         });
-
+        
+        List<Meal> updatedMeals = new ArrayList<>();
         // Confirm Button
         JButton confirmEdit = new JButton("Save Changes");
         confirmEdit.setIcon(new ImageIcon("pics/update meal.png"));
@@ -306,17 +307,19 @@ public class AddInventory extends JPanel {
                 }
                 quantityAvailable=Integer.parseInt(stocksField.getText().trim());
                 // Update meal using the SQLMeal class
-                SQLMeal.editMeal(
-                        mealID,
-                        nameField.getText().trim(),
-                        categoryField.getText().trim(),
-                        typeField.getText().trim(),
-                        ingredientsArea.getText().trim(),
-                        descriptionArea.getText().trim(),
-                        servingSizeField.getText().trim(),
-                        selectedImage[0],
-                        spicyCheckBox.isSelected()
+                Meal updatedMeal = new Meal(
+                    mealID,
+                    nameField.getText().trim(),
+                    typeField.getText().trim(),
+                    descriptionArea.getText().trim(),
+                    ingredientsArea.getText().trim(),
+                    servingSizeField.getText().trim(),
+                    selectedImage[0],
+                    categoryField.getText().trim(),
+                    "", spicyCheckBox.isSelected()
                 );
+
+                SharedData.addUpdatedMeal(updatedMeal);
 
                 // Update stock quantity in the inventory table
                 int newStockQuantity = Integer.parseInt(stocksField.getText().trim());

@@ -70,7 +70,7 @@ public class SQLCreate {
 
     public static void createOrderTable() {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS ORDERS ("
-                + "Order_Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "Order_Id INTEGER PRIMARY KEY, "
                 + "Meal_Id INTEGER NOT NULL, "
                 + "Meal_Quantity INTEGER NOT NULL, "
                 + "Date TEXT NOT NULL, "

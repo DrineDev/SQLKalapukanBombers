@@ -65,7 +65,7 @@ public class SQLSales {
         List<Sales> topSellingMeals = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, startDate);
             preparedStatement.setString(2, endDate);
