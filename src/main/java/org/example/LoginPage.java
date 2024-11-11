@@ -89,9 +89,20 @@ public class LoginPage extends JFrame{
 
                 String userInput = userTextField.getText();
                 String passInput = new String(passTextField.getPassword());
+
                 if(SQLUser.authenticateUser(userInput, passInput))
                 {
-                    fadeInNewFrame();
+                    String userName = userInput;
+                    int userID = SQLUser.getUserId(userName);
+                    if("Manager".equals(SQLUser.getRole(userID)))
+                    {
+                        fadeInNewFrameManager();
+                    }
+                    else
+                    {
+                        fadeInNewFrameEmployee();
+                    }
+                    
                 }
                 else
                 {
@@ -121,7 +132,7 @@ public class LoginPage extends JFrame{
 
 
     //everything below makes it so that welcome window fades in (burger.png is placeholder....)
-    private void fadeInNewFrame() {
+    private void fadeInNewFrameEmployee() {
         JFrame newFrame = new JFrame();
         newFrame.setSize(1000, 600);
         newFrame.setUndecorated(true);
@@ -144,6 +155,36 @@ public class LoginPage extends JFrame{
                     ((Timer) evt.getSource()).stop();
                     newFrame.dispose(); 
                     SwingUtilities.invokeLater(MainFrameEmployee::new);
+                }
+            }
+        });
+
+        fadeInTimer.start();
+    }
+
+    private void fadeInNewFrameManager() {
+        JFrame newFrame = new JFrame();
+        newFrame.setSize(1000, 600);
+        newFrame.setUndecorated(true);
+        newFrame.setLocationRelativeTo(null);
+
+        ImageIcon imageIcon = new ImageIcon("pics/welcome splashscreen.png");
+        Image image = imageIcon.getImage();
+    
+        FadePanel fadePanel = new FadePanel(image);
+        newFrame.add(fadePanel);
+        newFrame.setVisible(true);
+
+        Timer fadeInTimer = new Timer(45, new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                loginFrame.dispose();
+                fadePanel.incrementAlpha();
+                if (fadePanel.getAlpha() >= 255) {
+                    ((Timer) evt.getSource()).stop();
+                    newFrame.dispose(); 
+                    SwingUtilities.invokeLater(MainFrameManager::new);
                 }
             }
         });

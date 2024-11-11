@@ -10,13 +10,14 @@ mvn exec:java -Dexec.mainClass=org.example.SQLQueries.ExecuteQueries
 public class ExecuteQueries {
         
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
 
         // Example date range
         String startDate = "2024-01-01";
         String endDate = "2024-12-31";
 
-        // Get the sales data by range
+        // Get the sales data by range bn0
         List<Sales> salesReport = SQLSales.getSalesByRange(startDate, endDate);
         System.out.println("Sales Report:");
         salesReport.forEach(System.out::println);
@@ -30,6 +31,8 @@ public class ExecuteQueries {
         List<Sales> worstSellingMeals = SQLSales.getWorstSellingMeals(startDate, endDate, 5);
         System.out.println("\nWorst Selling Meals:");
         worstSellingMeals.forEach(System.out::println);
+
+        SQLUser.addUser("employee", "1234", "Employee");
 
     }
 }
