@@ -1,6 +1,10 @@
 package org.example.SQLQueries;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SQLOrder {
 
@@ -15,9 +19,14 @@ public class SQLOrder {
             preparedStatement.setInt(1, Meal_Id);
             preparedStatement.setInt(2, Meal_Quantity);
             preparedStatement.setString(3, Date);
+        
+            int rowsAffected = preparedStatement.executeUpdate();  // This returns the number of rows inserted
 
-            System.out.println("Order added successfully!");
-
+            if (rowsAffected > 0) {
+                System.out.println("Order added successfully!");
+            } else {
+                System.out.println("Failed to add the order.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

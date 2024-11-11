@@ -86,4 +86,24 @@ public class SQLCreate {
             e.printStackTrace();
         }
     }
+
+    public static void createSalesTable() {
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS SALES ("
+            + "Sale_Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + "Order_Id INTEGER NOT NULL, "
+            + "Quantity_Sold INTEGER NOT NULL, "
+            + "Sale_Date TEXT NOT NULL, "
+            + "Revenue REAL, "
+            + "FOREIGN KEY (Order_Id) REFERENCES ORDERS(Order_Id))";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+            Statement statement = connection.createStatement()) {
+
+            statement.execute(createTableSQL);
+            System.out.println("Table 'SALES' created successfully!");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
