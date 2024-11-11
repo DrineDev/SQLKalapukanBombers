@@ -79,6 +79,9 @@ public class MainFrameEmployee extends JFrame {
         scrollPane.setBackground(Color.white);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         scrollPane.setBorder(null);
 
         rightSideBottom.add(scrollPane);
@@ -95,15 +98,16 @@ public class MainFrameEmployee extends JFrame {
         ImageIcon categoryArea = new ImageIcon("pics/category area.png");
         JLabel leftSideCategory = new JLabel();
 
-        for (int i = 1; i <= 11; i++) {
+        for(int i = 1; i <= 11; i++) {
             foodItemsPanel.add(new AddFood(i));
         }
+
 
         JCheckBox vegetarianButton = new JCheckBox("Vegetarian");
         vegetarianButton.setFocusPainted(false);
         vegetarianButton.setBorderPainted(false);
         vegetarianButton.setContentAreaFilled(false);
-        vegetarianButton.setBorder(new EmptyBorder(0, 15, 0, 0));
+        vegetarianButton.setBorder(new EmptyBorder(0, 15,0, 0));
         vegetarianButton.setIcon(defaultCheckbox);
         vegetarianButton.setSelectedIcon(selectedCheckbox);
 
@@ -111,7 +115,7 @@ public class MainFrameEmployee extends JFrame {
         nonVegetarianButton.setFocusPainted(false);
         nonVegetarianButton.setBorderPainted(false);
         nonVegetarianButton.setContentAreaFilled(false);
-        nonVegetarianButton.setBorder(new EmptyBorder(0, 15, 0, 0));
+        nonVegetarianButton.setBorder(new EmptyBorder(0, 15,0, 0));
         nonVegetarianButton.setIcon(defaultCheckbox);
         nonVegetarianButton.setSelectedIcon(selectedCheckbox);
 
@@ -119,7 +123,7 @@ public class MainFrameEmployee extends JFrame {
         spicyButton.setFocusPainted(false);
         spicyButton.setBorderPainted(false);
         spicyButton.setContentAreaFilled(false);
-        spicyButton.setBorder(new EmptyBorder(0, 25, 0, 0));
+        spicyButton.setBorder(new EmptyBorder(0, 25,0, 0));
         spicyButton.setIcon(defaultCheckbox);
         spicyButton.setSelectedIcon(selectedCheckbox);
 
@@ -142,9 +146,12 @@ public class MainFrameEmployee extends JFrame {
                             if (SQLMeal.getCategory(i).equals("Vegetarian") && SQLMeal.getIsSpicy(i))
                                 foodItemsPanel.add(new AddFood(i));
                     } else {
-                        for (int i = 1; i < 11; i++)
-                            if (SQLMeal.getCategory(i).equals("Vegetarian"))
+                        for (int i = 1; i <= 11; i++)
+                            if (SQLMeal.getCategory(i).equals("Vegetarian") && !SQLMeal.getIsSpicy(i)) {
                                 foodItemsPanel.add(new AddFood(i));
+                            } else if (SQLMeal.getCategory(i).equals("Vegetarian")) {
+                                foodItemsPanel.add(new AddFood(i));
+                            }
                     }
                 } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()
                         && !spicyButton.isSelected()) {
@@ -152,7 +159,9 @@ public class MainFrameEmployee extends JFrame {
                         foodItemsPanel.add(new AddFood(i));
                 } else if (!vegetarianButton.isSelected() && spicyButton.isSelected()) {
                     for (int i = 1; i <= 11; i++)
-                        if (SQLMeal.getCategory(i).equals("Vegetarian") && SQLMeal.getIsSpicy(i))
+                        if (SQLMeal.getCategory(i).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(i) && !nonVegetarianButton.isSelected())
+                            foodItemsPanel.add(new AddFood(i));
+                        else if (SQLMeal.getIsSpicy(i) && !nonVegetarianButton.isSelected())
                             foodItemsPanel.add(new AddFood(i));
                 }
             }
@@ -235,9 +244,11 @@ public class MainFrameEmployee extends JFrame {
             }
         });
 
+
+
         leftSideCategory.setIcon(categoryArea);
         leftSideCategory.setLayout(new GridLayout(2, 2));
-        leftSideCategory.setBounds(35, 65, 250, 100);
+        leftSideCategory.setBounds(35,65, 250, 100);
         leftSideCategory.add(vegetarianButton);
         leftSideCategory.add(spicyButton);
         leftSideCategory.add(nonVegetarianButton);
@@ -245,9 +256,8 @@ public class MainFrameEmployee extends JFrame {
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         JLabel leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
-        leftSideCheckout.setBounds(35, 195, 250, 320);
-        // maybe add another jscrollpane because if order is too much, you ahve to
-        // scroll it
+        leftSideCheckout.setBounds(35, 195, 250,320);
+        //maybe add another jscrollpane because if order is too much, you ahve to scroll it
 
         ImageIcon checkoutButtonImage = new ImageIcon("pics/checkout button.png");
         JButton checkoutButton = new JButton();
@@ -256,9 +266,11 @@ public class MainFrameEmployee extends JFrame {
         checkoutButton.setContentAreaFilled(false);
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(new ActionListener() {
+        checkoutButton.addActionListener(new ActionListener()
+        {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 showImageFrame("pics/pop up frame.png");
             }
         });
@@ -277,9 +289,10 @@ public class MainFrameEmployee extends JFrame {
         mainFrame.setVisible(true);
     }
 
-    // shit below is the same w/ login page popup after login (fadein adn fadeout)
+    //shit below is the same w/ login page popup after login (fadein adn fadeout)
     // TODO : REFACTOR... SAME FUNCTIONS IN ADDFOOD.JAVA
-    private void showImageFrame(String imagePath) {
+    private void showImageFrame(String imagePath)
+    {
         ImageIcon imageIcon = new ImageIcon(imagePath);
         Image image = imageIcon.getImage();
 
@@ -291,7 +304,8 @@ public class MainFrameEmployee extends JFrame {
 
         JPanel panel = new JPanel() {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g)
+            {
                 super.paintComponent(g);
                 g.drawImage(image, 0, 0, this);
             }
@@ -307,18 +321,22 @@ public class MainFrameEmployee extends JFrame {
         imageWindow.setVisible(true);
 
         Timer fadeInTimer = new Timer(20, null);
-        fadeInTimer.addActionListener(new ActionListener() {
+        fadeInTimer.addActionListener(new ActionListener()
+        {
             float opacity = 0.0f;
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 opacity += 0.05f;
                 if (opacity >= 1.0f) {
                     opacity = 1.0f;
                     fadeInTimer.stop();
-                    new Timer(1000, new ActionListener() {
+                    new Timer(1000, new ActionListener()
+                    {
                         @Override
-                        public void actionPerformed(ActionEvent evt) {
+                        public void actionPerformed(ActionEvent evt)
+                        {
                             startFadeOut(imageWindow);
                         }
                     }).start();
@@ -329,14 +347,16 @@ public class MainFrameEmployee extends JFrame {
         });
         fadeInTimer.start();
     }
-
-    private void startFadeOut(JWindow imageWindow) {
+    private void startFadeOut(JWindow imageWindow)
+    {
         Timer fadeOutTimer = new Timer(20, null);
-        fadeOutTimer.addActionListener(new ActionListener() {
+        fadeOutTimer.addActionListener(new ActionListener()
+        {
             float opacity = 1.0f;
 
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 opacity -= 0.05f;
                 if (opacity <= 0.0f) {
                     opacity = 0.0f;

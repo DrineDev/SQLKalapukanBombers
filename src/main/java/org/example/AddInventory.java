@@ -12,9 +12,7 @@ public class AddInventory extends JPanel {
     private JLabel quantityLabel;
     private JPanel leftContentPanel;
     private int mealID;
-    private final int HOVER_DELAY = 300;
 
-    private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
     public AddInventory(int mealID,JPanel leftContentPanel) {
         // get food image niya quantity available sad sa database

@@ -4,7 +4,7 @@ public class ExecuteQueries {
 
     public static void main(String[] args) 
     {
-      
+      SQLMeal.setCategory(6, "Vegetarian");
   
         
     }

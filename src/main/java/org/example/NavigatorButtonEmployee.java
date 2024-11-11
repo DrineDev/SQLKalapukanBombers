@@ -1,16 +1,10 @@
 package org.example;
 
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 
@@ -80,7 +74,9 @@ public class NavigatorButtonEmployee extends JPanel
             {
                 if (inventoryButton.isSelected())
                 {
-                    inventoryButton.setSelected(true);
+                    Window window = SwingUtilities.getWindowAncestor(NavigatorButtonEmployee.this);
+                    SwingUtilities.invokeLater(InventoryCRUDEmployee::new);
+                    window.dispose();
                 }
                 else
                 {

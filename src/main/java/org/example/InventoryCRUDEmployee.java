@@ -62,7 +62,7 @@ public class InventoryCRUDEmployee extends JFrame {
         navButton = new NavigatorButtonInventory();
         // Add listeners for the navigation buttons
         navButton.addOrderButtonListener(e -> {
-
+            SwingUtilities.invokeLater(MainFrameEmployee::new);
             mainFrame.dispose(); // Close current window
             // Open order window if naa natay order window
         });
@@ -139,7 +139,7 @@ public class InventoryCRUDEmployee extends JFrame {
     //fooditems nga panel ra jud
     private JPanel createFoodItemsPanel() {
         JPanel foodItemsPanel = new JPanel();
-        foodItemsPanel.setLayout(new GridLayout(0, 2, GRID_GAP, GRID_GAP));
+        foodItemsPanel.setLayout(new GridLayout(0, 3, GRID_GAP, GRID_GAP));
         foodItemsPanel.setBackground(Color.WHITE);
 
         List<Integer> mealIds = getActiveMealIds();

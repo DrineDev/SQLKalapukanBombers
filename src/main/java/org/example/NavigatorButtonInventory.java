@@ -109,7 +109,7 @@ public class NavigatorButtonInventory extends JToggleButton {
         ImageIcon orderSelected = new ImageIcon("pics/order selected.png");
         orderButton = createRadioButton(orderDeselected, orderSelected);
         orderButton.setBounds(PADDING, PADDING, BUTTON_WIDTH, BUTTON_HEIGHT);
-        orderButton.setSelected(true);
+
 
         // Create inventory button radio siya para di ma click ang order ug inventory same time so either or ra
         ImageIcon inventoryDeselected = new ImageIcon("pics/inventory deselected.png");
@@ -117,6 +117,7 @@ public class NavigatorButtonInventory extends JToggleButton {
         inventoryButton = createRadioButton(inventoryDeselected, inventorySelected);
         inventoryButton.setBounds(PADDING, PADDING + BUTTON_HEIGHT + VERTICAL_SPACING,
                 BUTTON_WIDTH, BUTTON_HEIGHT);
+        inventoryButton.setSelected(true);
 
         // e group ang duha ka buttons
         buttonGroup = new ButtonGroup();
