@@ -64,14 +64,7 @@ public class InventoryCRUD {
         // Create the navigation panel at the top
         JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         navPanel.setBackground(PRIMARY_COLOR);
-
-        // Remove the duplicate creation and use the class field navButton that was initialized
         navPanel.add(navButton);  // Add the class field navButton
-
-        // The following lines should be removed as they create a duplicate button:
-        // NavigatorButtonEmployee navButton = new NavigatorButtonEmployee();
-        // navButton.addInventoryButtonListener(e -> {});
-        // navButton.addOrderButtonListener(e -> { dispose(); });
 
         // Create the main content panel
         JPanel contentPanel = new JPanel();
@@ -258,12 +251,15 @@ public class InventoryCRUD {
     private JScrollPane createScrollPane(JComponent view, Dimension size) {
         JScrollPane scrollPane = new JScrollPane(view);
         scrollPane.setPreferredSize(size);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
         scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        scrollPane.getHorizontalScrollBar().setUI(new customScrollBarUI());
+        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(8,4));
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
 
         if (view instanceof JPanel && !(view.getLayout() instanceof GridLayout)) {
             scrollPane.setBorder(BorderFactory.createCompoundBorder(
@@ -311,9 +307,8 @@ public class InventoryCRUD {
         navButton = new NavigatorButtonInventory();
         // Add listeners for the navigation buttons
         navButton.addOrderButtonListener(e -> {
-
-            mainFrame.dispose(); // Close current window
-            // Open order window if naa natay order window
+            SwingUtilities.invokeLater(MainFrameEmployee::new);
+            mainFrame.dispose(); //open order window niya e dispose ni nga window
         });
 
         navButton.addInventoryButtonListener(e -> {

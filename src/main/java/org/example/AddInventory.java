@@ -32,13 +32,14 @@ public class AddInventory extends JPanel {
 
         // Label to display quantity available
         quantityLabel = new JLabel();
-        quantityLabel.setText("Stocks Available: " + this.quantityAvailable);
-        quantityLabel.setBounds(0, 250, 300, 50);
+        quantityLabel.setText("Stocks: " + this.quantityAvailable);
+        quantityLabel.setBounds(0, 250, 200, 50);
         quantityLabel.setHorizontalAlignment(JLabel.LEFT);
 
         // Edit button pang abli sa openEditWindow nga pop up
-        JButton editButton = new JButton("Edit");
-        editButton.setBounds(200, 250, 90, 50);
+        ImageIcon edit = new ImageIcon("pics/edit.png");
+        JButton editButton = new JButton(edit);
+        editButton.setBounds(210, 255, 62,34);
         editButton.addActionListener(e -> openEditWindow(mealID));
 
         // Add the components to the panel
