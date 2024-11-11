@@ -8,9 +8,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import org.example.Classes.Meal;
+import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
-
+import java.util.*;
+import java.util.List;
 
 public class AddInventory extends JPanel {
     private ImageIcon foodImage;
@@ -287,7 +289,7 @@ public class AddInventory extends JPanel {
                 }
             }
         });
-        
+
         List<Meal> updatedMeals = new ArrayList<>();
         // Confirm Button
         JButton confirmEdit = new JButton("Save Changes");
@@ -305,25 +307,23 @@ public class AddInventory extends JPanel {
                     errorLabel.setText("Meal name is required");
                     return;
                 }
-                quantityAvailable=Integer.parseInt(stocksField.getText().trim());
                 // Update meal using the SQLMeal class
                 Meal updatedMeal = new Meal(
-                    mealID,
-                    nameField.getText().trim(),
-                    typeField.getText().trim(),
-                    descriptionArea.getText().trim(),
-                    ingredientsArea.getText().trim(),
-                    servingSizeField.getText().trim(),
-                    selectedImage[0],
-                    categoryField.getText().trim(),
-                    "", spicyCheckBox.isSelected()
+                        mealID,
+                        nameField.getText().trim(),
+                        typeField.getText().trim(),
+                        descriptionArea.getText().trim(),
+                        ingredientsArea.getText().trim(),
+                        servingSizeField.getText().trim(),
+                        selectedImage[0],
+                        categoryField.getText().trim(),
+                        "", spicyCheckBox.isSelected()
                 );
 
                 SharedData.addUpdatedMeal(updatedMeal);
 
                 // Update stock quantity in the inventory table
-                int newStockQuantity = Integer.parseInt(stocksField.getText().trim());
-                    SQLInventory.setQuantityAvailable(mealID, newStockQuantity);
+                this.quantityAvailable = Integer.parseInt(stocksField.getText().trim());
 
                 // Add log message
                 JLabel logMessage = new JLabel("Updated meal: " + nameField.getText());
@@ -331,8 +331,7 @@ public class AddInventory extends JPanel {
                 leftContentPanel.revalidate();
                 leftContentPanel.repaint();
 
-                // Update the quantity label in the AddInventory panel
-                quantityLabel.setText("Stocks: " + newStockQuantity);
+
 
                 editWindow.dispose();
 
@@ -428,8 +427,9 @@ public class AddInventory extends JPanel {
     //helper method kuhag markedForDeletion
     public boolean isMarkedForDeletion() {return markedForDeletion;}
     //helper method pang update sa quantity label ig human confirm edit sa inventory crud
+    public int getQuantityAvailable(){return this.quantityAvailable;}
     public void updateQuantityLabel(int newQuantity) {
         this.quantityAvailable = newQuantity;
-        quantityLabel.setText("Stocks Available: " + newQuantity);
+        quantityLabel.setText("Stocks: " + newQuantity);
     }
 }

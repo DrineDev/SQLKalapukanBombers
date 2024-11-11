@@ -223,85 +223,36 @@ public class InventoryCRUD {
         Component[] components = leftContentPanel.getComponents();
         boolean updatesPerformed = false;
 
-        for(Meal updatedMeal : SharedData.getUpdatedMeals()) {
+        for (Meal updatedMeal : SharedData.getUpdatedMeals()) {
             try {
                 SQLMeal.editMeal(
-                    updatedMeal.getMealId(),
-                    updatedMeal.getName(),
-                    updatedMeal.getCategory(),
-                    updatedMeal.getType(),
-                    updatedMeal.getIngredients(),
-                    updatedMeal.getDescription(),
-                    updatedMeal.getServingSize(),
-                    updatedMeal.getImage(),
-                    updatedMeal.getIsSpicy()
+                        updatedMeal.getMealId(),
+                        updatedMeal.getName(),
+                        updatedMeal.getCategory(),
+                        updatedMeal.getType(),
+                        updatedMeal.getIngredients(),
+                        updatedMeal.getDescription(),
+                        updatedMeal.getServingSize(),
+                        updatedMeal.getImage(),
+                        updatedMeal.getIsSpicy()
                 );
+
+                // Update the quantity in the inventory table
+                int mealID = updatedMeal.getMealId();
+                AddInventory inventoryComponent = foodItemComponents.get(mealID);
+                if (inventoryComponent != null) {
+                    int newStockQuantity = inventoryComponent.getQuantityAvailable();
+                    SQLInventory.setQuantityAvailable(mealID, newStockQuantity);
+                    inventoryComponent.updateQuantityLabel(newStockQuantity);
+                    updatesPerformed = true;
+                }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(mainFrame,
-                    "Error updating inventory: " + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-                    return; // Exit the method if an error occurs
+                        "Error updating inventory: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return; // Exit the method if an error occurs
             }
-            updatesPerformed = true;
-        }
-        
-        for (Component component : components) {
-            if (component instanceof JLabel) {
-                JLabel label = (JLabel) component;
-                String text = label.getText();
-                if (text != null && text.startsWith("Updating quantity")) {
-                    try {
-                        String[] parts = text.split(" ");
-                        int mealID = -1;
-                        int newQuantity = -1;
-
-                        for (int i = 0; i < parts.length; i++) {
-                            if (parts[i].equals("ID")) {
-                                mealID = Integer.parseInt(parts[i + 1]);
-                            } else if (parts[i].equals("to")) {
-                                newQuantity = Integer.parseInt(parts[i + 1]);
-                            }
-                        }
-
-                        if (mealID != -1 && newQuantity != -1) {
-                            // Update database
-                            SQLInventory.setQuantityAvailable(mealID, newQuantity);
-
-                            // Update UI
-                            AddInventory inventoryComponent = foodItemComponents.get(mealID);
-                            if (inventoryComponent != null) {
-                                inventoryComponent.updateQuantityLabel(newQuantity);
-                                updatesPerformed = true;
-                            }
-                        }
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(mainFrame,
-                                "Error updating inventory: " + ex.getMessage(),
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        return; // Exit the method if an error occurs
-                    }
-                }
-            }
-        }
-
-        // Clear the log panel
-        leftContentPanel.removeAll();
-        leftContentPanel.revalidate();
-        leftContentPanel.repaint();
-
-        // Show success message if updates were performed
-        if (updatesPerformed) {
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Inventory updated successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(mainFrame,
-                    "No inventory updates were made.",
-                    "Information",
-                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
