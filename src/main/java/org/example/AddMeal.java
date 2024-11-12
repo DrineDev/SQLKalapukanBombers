@@ -1,18 +1,9 @@
 package org.example;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 public class AddMeal extends JFrame {
@@ -27,156 +18,179 @@ public class AddMeal extends JFrame {
         initializeJFrame();
 
         JTextField nameTextField = createNameTextField();
+        JLabel nameLabel = createLabel("Name");
+
         JTextField ingredientsTextField = createIngredientsTextField();
+        JLabel ingredientsLabel = createLabel("Ingredients");
+
         JTextField descriptionTextField = createDescriptionTextField();
+        JLabel descriptionLabel = createLabel("Description");
+
         JTextField nutritionalFactsTextField = createNutritionalFactsTextField();
+        JLabel nutritionalFactsLabel = createLabel("Nutritional Facts");
+
         JTextField servingSizeTextField = createServingSizeTextField();
+        JLabel servingSizeLabel = createLabel("Serving Size");
 
         JCheckBox vegetarianCheckBox = createVegetarianCheckBox();
         JCheckBox nonVegetarianCheckBox = createNonVegetarianCheckBox();
+        JLabel categoryLabel = createLabel("Category");
+
         JCheckBox breakfastCheckBox = createBreakfastCheckBox();
         JCheckBox lunchCheckBox = createLunchCheckBox();
         JCheckBox dinnerCheckBox = createDinnerCheckBox();
-        
-        JButton exitIcon = createExitIcon();
+        JLabel typeLabel = createLabel("Type");
 
-        JLabel spacer = new JLabel();
-        spacer.setSize(300,200);
+        JCheckBox spicyCheckBox = createIsSpicyCheckBox();
+
+        JButton exitButton = createExitIcon();
+        JButton addButton = createAddButton();
+        JButton insertImageButton = createInsertButton();
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 10;
-        gbc.gridheight = 3;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(nameTextField, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 10;
-        gbc.gridheight = 10;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(ingredientsTextField, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 10;
-        gbc.gridheight = 5;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(descriptionTextField, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.gridwidth = 10;
-        gbc.gridheight = 5;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(nutritionalFactsTextField, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(servingSizeTextField, gbc); 
-        gbc.gridx = 0;
-        gbc.gridy = 8;
-        gbc.gridwidth = 2;
-        gbc.gridheight = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(spacer, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 9;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(vegetarianCheckBox, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 10;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(nonVegetarianCheckBox, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 11;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(spacer, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 12;
-        gbc.gridwidth = 2;
-        gbc.gridheight = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(breakfastCheckBox, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 13;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(lunchCheckBox, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 14;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(dinnerCheckBox, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.NORTHEAST;
-        mainPanel.add(exitIcon, gbc);
+        FlowLayout FlowLayoutLeft = new FlowLayout(FlowLayout.LEFT, 0, 0);
+        FlowLayout FlowLayoutCenter = new FlowLayout(FlowLayout.CENTER, 0, 0);
 
+        // NAME PANEL
+        JPanel nameTextPanel = new JPanel(FlowLayoutLeft);
+        JPanel nameLabelPanel = new JPanel(FlowLayoutLeft);
+        nameTextPanel.add(nameTextField);
+        nameLabelPanel.add(nameLabel);
 
-        this.add(mainPanel);
+        // INGREDIENTS PANEL
+        JPanel ingredientsTextPanel = new JPanel(FlowLayoutLeft);
+        JPanel ingredientsLabelPanel = new JPanel(FlowLayoutLeft);
+        ingredientsTextPanel.add(ingredientsTextField);
+        ingredientsLabelPanel.add(ingredientsLabel);
+
+        // DESCRIPTION PANEL
+        JPanel descriptionTextPanel = new JPanel(FlowLayoutLeft);
+        JPanel descriptionLabelPanel = new JPanel(FlowLayoutLeft);
+        descriptionTextPanel.add(descriptionTextField);
+        descriptionLabelPanel.add(descriptionLabel);
+
+        // NUTRITIONAL FACTS PANEL
+        JPanel nutritionalFactsTextPanel = new JPanel(FlowLayoutLeft);
+        JPanel nutritionalFactsLabelPanel = new JPanel(FlowLayoutLeft);
+        nutritionalFactsTextPanel.add(nutritionalFactsTextField);
+        nutritionalFactsLabelPanel.add(nutritionalFactsLabel);
+
+        // SERVING SIZE PANEL
+        JPanel servingSizeTextPanel = new JPanel(FlowLayoutLeft);
+        JPanel servingSizeLabelPanel = new JPanel(FlowLayoutLeft);
+        servingSizeTextPanel.add(servingSizeTextField);
+        servingSizeLabelPanel.add(servingSizeLabel);
+        servingSizeTextPanel.add(spicyCheckBox);
+
+        // CATEGORY PANEL
+        JPanel categoryPanel = new JPanel(FlowLayoutLeft);
+        categoryPanel.add(categoryLabel);
+        categoryPanel.add(vegetarianCheckBox);
+        categoryPanel.add(nonVegetarianCheckBox);
+
+        // TYPE PANEL
+        JPanel typePanel = new JPanel(FlowLayoutLeft);
+        typePanel.add(typeLabel);
+        typePanel.add(breakfastCheckBox);
+        typePanel.add(lunchCheckBox);
+        typePanel.add(dinnerCheckBox);
+
+        // EXIT ICON PANEL (if you need it in the layout)
+        JPanel exitButtonPanel = new JPanel(FlowLayoutLeft);
+        exitButtonPanel.add(exitButton);
+
+        JPanel confirmButtonPanel = new JPanel(FlowLayoutCenter);
+        confirmButtonPanel.add(insertImageButton);
+        confirmButtonPanel.add(addButton);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.NORTHEAST;  // Top-left position
+        c.weightx = 1;
+        c.weighty = 1;
+        c.gridx = 0;
+        c.gridy = 0;
+        mainPanel.add(exitButtonPanel, c);  // Add exit icon to top-left
+
+        // Center the main content
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0, 10, 0, 0);
+
+        c.gridy = 1;
+        mainPanel.add(nameTextPanel, c);
+        c.gridy = 2;
+        mainPanel.add(nameLabelPanel, c);
+        c.gridy = 3;
+        mainPanel.add(ingredientsTextPanel, c);
+        c.gridy = 4;
+        mainPanel.add(ingredientsLabelPanel, c);
+        c.gridy = 5;
+        mainPanel.add(descriptionTextPanel, c);
+        c.gridy = 6;
+        mainPanel.add(descriptionLabelPanel, c);
+        c.gridy = 7;
+        mainPanel.add(nutritionalFactsTextPanel, c);
+        c.gridy = 8;
+        mainPanel.add(nutritionalFactsLabelPanel, c);
+        c.gridy = 9;
+        mainPanel.add(servingSizeTextPanel, c);
+        c.gridy = 10;
+        mainPanel.add(servingSizeLabelPanel, c);
+        c.gridy = 11;
+        mainPanel.add(categoryPanel, c);
+        c.gridy = 12;
+        mainPanel.add(typePanel, c);
+        c.gridy = 13;
+        mainPanel.add(confirmButtonPanel, c);
+
+        // Add the main panel to the frame content pane
+        this.getContentPane().add(mainPanel);
     }
 
     private void initializeJFrame() {
-        this.setSize(new Dimension(435, 520));
-        this.setPreferredSize(new Dimension(435, 520));
+        this.setUndecorated(true);
+        this.setSize(new Dimension(480, 570));
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setBackground(new Color(255, 255, 255));
-        this.setLocationRelativeTo(this);
-        this.setUndecorated(false);
+        this.setBackground(new Color(255, 255, 255, 0));
+        this.setLocationRelativeTo(null);
+        this.setLayout(new BorderLayout()); // For better centering of main panel
+        this.setAlwaysOnTop(true);
         this.setVisible(true);
     }
 
     private JTextField createNameTextField() {
-        JTextField nameTextField = new JTextField("Name");
-        nameTextField.setPreferredSize(new Dimension(383, 30));
+        JTextField nameTextField = new JTextField();
+        nameTextField.setPreferredSize(new Dimension(430, 30));
         nameTextField.setBackground(new Color(217, 217, 217));
-
         return nameTextField;
     }
 
     private JTextField createIngredientsTextField() {
-        JTextField ingredientsTextField = new JTextField("Ingredients");
-        ingredientsTextField.setPreferredSize(new Dimension(383, 104));
+        JTextField ingredientsTextField = new JTextField();
+        ingredientsTextField.setPreferredSize(new Dimension(430, 104));
         ingredientsTextField.setBackground(new Color(217, 217, 217));
-
         return ingredientsTextField;
     }
 
     private JTextField createDescriptionTextField() {
-        JTextField descriptionTextField = new JTextField("Description");
-        descriptionTextField.setPreferredSize(new Dimension(383, 30));
+        JTextField descriptionTextField = new JTextField();
+        descriptionTextField.setPreferredSize(new Dimension(430, 30));
         descriptionTextField.setBackground(new Color(217, 217, 217));
-
         return descriptionTextField;
     }
 
     private JTextField createNutritionalFactsTextField() {
-        JTextField nutritionalFactsTextField = new JTextField("Nutritional Facts");
-        nutritionalFactsTextField.setPreferredSize(new Dimension(384, 50));
+        JTextField nutritionalFactsTextField = new JTextField();
+        nutritionalFactsTextField.setPreferredSize(new Dimension(430, 50));
         nutritionalFactsTextField.setBackground(new Color(217, 217, 217));
-
         return nutritionalFactsTextField;
     }
 
     private JTextField createServingSizeTextField() {
-        JTextField servingSizeTextField = new JTextField("Serving Size");
-        servingSizeTextField.setPreferredSize(new Dimension(180, 50));
+        JTextField servingSizeTextField = new JTextField();
+        servingSizeTextField.setPreferredSize(new Dimension(250, 50));
         servingSizeTextField.setBackground(new Color(217, 217, 217));
-
         return servingSizeTextField;
     }
 
@@ -188,7 +202,6 @@ public class AddMeal extends JFrame {
         vegetarianCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         vegetarianCheckBox.setIcon(defaultCheckbox);
         vegetarianCheckBox.setSelectedIcon(selectedCheckbox);
-
         return vegetarianCheckBox;
     }
 
@@ -200,7 +213,6 @@ public class AddMeal extends JFrame {
         nonVegetarianCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         nonVegetarianCheckBox.setIcon(defaultCheckbox);
         nonVegetarianCheckBox.setSelectedIcon(selectedCheckbox);
-
         return nonVegetarianCheckBox;
     }
 
@@ -212,7 +224,6 @@ public class AddMeal extends JFrame {
         breakfastCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         breakfastCheckBox.setIcon(defaultCheckbox);
         breakfastCheckBox.setSelectedIcon(selectedCheckbox);
-
         return breakfastCheckBox;
     }
 
@@ -224,7 +235,6 @@ public class AddMeal extends JFrame {
         lunchCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         lunchCheckBox.setIcon(defaultCheckbox);
         lunchCheckBox.setSelectedIcon(selectedCheckbox);
-
         return lunchCheckBox;
     }
 
@@ -236,19 +246,71 @@ public class AddMeal extends JFrame {
         dinnerCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         dinnerCheckBox.setIcon(defaultCheckbox);
         dinnerCheckBox.setSelectedIcon(selectedCheckbox);
-
         return dinnerCheckBox;
+    }
+
+    private JCheckBox createIsSpicyCheckBox() {
+        JCheckBox spicyCheckBox = new JCheckBox("Spicy");
+        spicyCheckBox.setFocusPainted(false);
+        spicyCheckBox.setBorderPainted(false);
+        spicyCheckBox.setContentAreaFilled(false);
+        spicyCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
+        spicyCheckBox.setIcon(defaultCheckbox);
+        spicyCheckBox.setSelectedIcon(selectedCheckbox);
+        return spicyCheckBox;
     }
 
     private JButton createExitIcon() {
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         JButton exitButton = new JButton();
         exitButton.setIcon(exitImageIcon);
-        exitButton.setBounds(408, 12, 20, 20);
+        exitButton.setBounds(0, 0, 20, 20);
         exitButton.setContentAreaFilled(false);
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
-
         return exitButton;
+    }
+
+    private JButton createAddButton() {
+        ImageIcon addImageIcon = new ImageIcon("pics/Add Meal.png");
+        JButton addButton = new JButton();
+        addButton.setIcon(addImageIcon);
+        addButton.setBounds(0, 0, 20, 20);
+        addButton.setContentAreaFilled(false);
+        addButton.setFocusPainted(false);
+        addButton.setBorderPainted(false);
+        return addButton;
+    }
+
+    private JButton createInsertButton() {
+        ImageIcon addImageIcon = new ImageIcon("pics/Insert Image.png");
+        JButton addButton = new JButton();
+        addButton.setIcon(addImageIcon);
+        addButton.setBounds(0, 0, 20, 20);
+        addButton.setContentAreaFilled(false);
+        addButton.setFocusPainted(false);
+        addButton.setBorderPainted(false);
+        return addButton;
+    }
+
+    private JButton createUpdateButton() {
+        ImageIcon addImageIcon = new ImageIcon("pics/Update Meal.png");
+        JButton addButton = new JButton();
+        addButton.setIcon(addImageIcon);
+        addButton.setBounds(0, 0, 20, 20);
+        addButton.setContentAreaFilled(false);
+        addButton.setFocusPainted(false);
+        addButton.setBorderPainted(false);
+        return addButton;
+    }
+
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setPreferredSize(new Dimension(100, 30));
+        return label;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(AddMeal::new);
     }
 }
