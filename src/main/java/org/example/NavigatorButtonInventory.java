@@ -4,21 +4,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Window;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JRootPane;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -26,16 +14,18 @@ public class NavigatorButtonInventory extends JToggleButton {
     private JPopupMenu popupMenu;
     private JRadioButton orderButton;
     private JRadioButton inventoryButton;
+    private JRadioButton mainMenuButton;
+    private JRadioButton promotionsButton;
+    private JRadioButton salesButton;
     private ButtonGroup buttonGroup;
 
     // Constants for sizing
     private static final int BUTTON_WIDTH = 190;
     private static final int BUTTON_HEIGHT = 56;
-    private static final int VERTICAL_SPACING = 2; // Space between buttons
-    private static final int PADDING = 15; // Padding from edge of popup to buttons
+    private static final int VERTICAL_SPACING = 2;
+    private static final int VERTICAL_PADDING = 15; // Renamed from PADDING to clarify it's only for vertical
 
     public NavigatorButtonInventory() {
-        // Initialize the main menu button
         ImageIcon menuIcon = new ImageIcon("pics/menu button.png");
         setIcon(menuIcon);
         setBorder(null);
@@ -43,10 +33,8 @@ public class NavigatorButtonInventory extends JToggleButton {
         setContentAreaFilled(false);
         setPreferredSize(new Dimension(48, 48));
 
-        // himuon ang actual pop up menu naay function anis ubos
         createPopupMenu();
 
-        // action listener para ig click sa katong menu button mu pop up ang inventory ug order
         addActionListener(e -> {
             if (isSelected()) {
                 Point p = getLocation();
@@ -56,15 +44,11 @@ public class NavigatorButtonInventory extends JToggleButton {
             }
         });
 
-        // Component listener sa pop up menu
         addComponentListener(new ComponentAdapter() {
-            //kani if gi click na ang menu button aka nag show na ang katung order ug inventory
             @Override
             public void componentShown(ComponentEvent e) {
                 Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
                 if (window != null) {
-                    // window focus listener ni siya kung nag show na ang pop up niya
-                    // if mu click ka sa gawas mu despawn siya
                     window.addWindowFocusListener(new WindowAdapter() {
                         @Override
                         public void windowLostFocus(WindowEvent e) {
@@ -73,14 +57,11 @@ public class NavigatorButtonInventory extends JToggleButton {
                         }
                     });
 
-                    // Ang gamit ani kay kwaon ang rootpane para ma display
-                    // babaw sa other components ang pop up menu aka di matabunan
                     JRootPane rootPane = SwingUtilities.getRootPane(NavigatorButtonInventory.this);
                     if (rootPane != null) {
                         rootPane.getLayeredPane().setLayer(popupMenu, JLayeredPane.POPUP_LAYER);
                     }
 
-                    // Remove this listener since we only need to set up once
                     removeComponentListener(this);
                 }
             }
@@ -98,14 +79,14 @@ public class NavigatorButtonInventory extends JToggleButton {
         popupMenu.setOpaque(false);
         popupMenu.setBorder(null);
 
-        // Calculate total height needed for the panel
-        int totalHeight = (BUTTON_HEIGHT * 2) + VERTICAL_SPACING + (PADDING * 2);
+        // Calculate total height for 5 buttons
+        int totalHeight = (BUTTON_HEIGHT * 5) + (VERTICAL_SPACING * 4) + (VERTICAL_PADDING * 2);
 
-        // Panel nga mu hold sa buttons katong order ug inventory
-        JPanel buttonPanel = new JPanel(null) {
+        // Create panel with fixed size - removed horizontal padding
+        JPanel buttonPanel = new JPanel() {
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(BUTTON_WIDTH + (PADDING * 2), totalHeight);
+                return new Dimension(BUTTON_WIDTH, totalHeight);
             }
 
             @Override
@@ -118,54 +99,84 @@ public class NavigatorButtonInventory extends JToggleButton {
                 return getPreferredSize();
             }
         };
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(false);
 
-        // Create order button radio siya para di ma click ang order ug inventory same time so either or ra
-        ImageIcon orderDeselected = new ImageIcon("pics/order deselected.png");
-        ImageIcon orderSelected = new ImageIcon("pics/order selected.png");
-        orderButton = createRadioButton(orderDeselected, orderSelected);
-        orderButton.setBounds(PADDING, PADDING, BUTTON_WIDTH, BUTTON_HEIGHT);
+        // Main Menu Button
+        ImageIcon mainMenuDeselected = new ImageIcon("pics/main menu deselected.png");
+        ImageIcon mainMenuSelected = new ImageIcon("pics/main menu selected.png");
+        mainMenuButton = createRadioButton(mainMenuDeselected, mainMenuSelected);
+        mainMenuButton.addActionListener(e -> {
+            if (mainMenuButton.isSelected()) {
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                SwingUtilities.invokeLater(MainFrameManager::new);
+                window.dispose();
+            }
+        });
 
-
-        // Create inventory button radio siya para di ma click ang order ug inventory same time so either or ra
+        // Inventory Button
         ImageIcon inventoryDeselected = new ImageIcon("pics/inventory deselected.png");
         ImageIcon inventorySelected = new ImageIcon("pics/inventory selected.png");
         inventoryButton = createRadioButton(inventoryDeselected, inventorySelected);
-        inventoryButton.setBounds(PADDING, PADDING + BUTTON_HEIGHT + VERTICAL_SPACING,
-                BUTTON_WIDTH, BUTTON_HEIGHT);
         inventoryButton.setSelected(true);
-
-        // e group ang duha ka buttons
-        buttonGroup = new ButtonGroup();
-        buttonGroup.add(orderButton);
-        buttonGroup.add(inventoryButton);
-
-        // Add action listeners
-        orderButton.addActionListener(e -> {
-            if (orderButton.isSelected()) {
-                popupMenu.setVisible(false);
-                setSelected(false);
-            }
-        });
-
         inventoryButton.addActionListener(e -> {
             if (inventoryButton.isSelected()) {
-                popupMenu.setVisible(false);
-                setSelected(false);
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                SwingUtilities.invokeLater(InventoryCRUD::new);
+                window.dispose();
             }
         });
 
-        // Add buttons to panel
-        buttonPanel.add(orderButton);
+        // Order Button
+        ImageIcon orderDeselected = new ImageIcon("pics/order deselected.png");
+        ImageIcon orderSelected = new ImageIcon("pics/order selected.png");
+        orderButton = createRadioButton(orderDeselected, orderSelected);
+        orderButton.addActionListener(e -> {
+            if (orderButton.isSelected()) {
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                SwingUtilities.invokeLater(OrderCrud::new);
+                window.dispose();
+            }
+        });
+
+        // Sales Button
+        ImageIcon salesDeselected = new ImageIcon("pics/sales deselected.png");
+        ImageIcon salesSelected = new ImageIcon("pics/sales selected.png");
+        salesButton = createRadioButton(salesDeselected, salesSelected);
+
+        // Promotions Button
+        ImageIcon promotionsDeselected = new ImageIcon("pics/promotions deselected.png");
+        ImageIcon promotionsSelected = new ImageIcon("pics/promotions selected.png");
+        promotionsButton = createRadioButton(promotionsDeselected, promotionsSelected);
+
+        // Group buttons
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(mainMenuButton);
+        buttonGroup.add(inventoryButton);
+        buttonGroup.add(orderButton);
+        buttonGroup.add(salesButton);
+        buttonGroup.add(promotionsButton);
+
+        // Add buttons to panel with proper spacing
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_PADDING));
+        buttonPanel.add(mainMenuButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
         buttonPanel.add(inventoryButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
+        buttonPanel.add(orderButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
+        buttonPanel.add(salesButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
+        buttonPanel.add(promotionsButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_PADDING));
 
         // Add panel to popup menu
         popupMenu.add(buttonPanel);
 
-        // Force the popup menu to be exactly the size we want
+        // Set popup size
         popupMenu.setPopupSize(buttonPanel.getPreferredSize());
 
-        // Add popup menu listener to handle button state
+        // Add popup menu listener
         popupMenu.addPopupMenuListener(new PopupMenuListener() {
             @Override
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
@@ -181,7 +192,7 @@ public class NavigatorButtonInventory extends JToggleButton {
             }
         });
     }
-    //function muhimo sa radio button 2 ka parameters ang pic nga default ug pic if e select ang icon
+
     private JRadioButton createRadioButton(ImageIcon defaultIcon, ImageIcon selectedIcon) {
         JRadioButton button = new JRadioButton(defaultIcon);
         button.setFocusPainted(false);
@@ -193,14 +204,10 @@ public class NavigatorButtonInventory extends JToggleButton {
         return button;
     }
 
-    //function imo tawagon para makaedit kas action listener sa order button
-    // wa pa koy order so wala pani
     public void addOrderButtonListener(ActionListener listener) {
         orderButton.addActionListener(listener);
     }
 
-    //function imo tawagon para makaedit kas action listener sa inventory button
-    // since inventory man ko so wala ray mahitabo kay naa naman kas inventory window daan
     public void addInventoryButtonListener(ActionListener listener) {
         inventoryButton.addActionListener(listener);
     }
