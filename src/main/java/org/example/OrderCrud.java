@@ -1,9 +1,13 @@
 package org.example;
+import org.example.Classes.Meal;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 public class OrderCrud extends JFrame {
     private JFrame Frame;
@@ -19,6 +23,9 @@ public class OrderCrud extends JFrame {
         ExitButton.setBorderPainted(false);
         ExitButton.setBounds(962,15,20,20);
         ExitButton.addActionListener(e -> System.exit(0));
+        ExitButton.setVisible(true);
+
+
 
         //Frame Initialization
         Frame = new JFrame();
@@ -36,62 +43,94 @@ public class OrderCrud extends JFrame {
 
 
 
-        //Initialize Bottom Left Panel that pops up after clicking Add Order
-        JPanel BottomLeftPanel = new JPanel();
-        BottomLeftPanel.setBounds(33,327,240,324);
-        BottomLeftPanel.setBackground(Color.WHITE);
-        BottomLeftPanel.setLayout(new BoxLayout(BottomLeftPanel, BoxLayout.Y_AXIS));
+
 
         //Initialize Bottom Left buttons
-        JButton Order_ID_Button = new JButton("Order_ID");
-        JButton Meal_ID_Button = new JButton("Meal_ID");
-        JButton Meal_Quantity_Button = new JButton("Meal_Quantity");
-        JButton Date_Button = new JButton("Date");
+        ImageIcon BottomLeftImage = new ImageIcon("pics/rectanglebtmleftorder.png");
+        JButton Order_ID_Button = new JButton(BottomLeftImage);
+        Order_ID_Button.setBounds(195,30,195,30);
+        JButton Meal_ID_Button = new JButton(BottomLeftImage);
+        Meal_ID_Button.setBounds(195,30,195,30);
+        JButton Meal_Quantity_Button = new JButton(BottomLeftImage);
+        Meal_Quantity_Button.setBounds(195,30,195,30);
+        JButton Date_Button = new JButton(BottomLeftImage);
+        Date_Button.setBounds(195,30,195,30);
 
-        JPanel BottomLeftAddButton = new JPanel();
-        BottomLeftAddButton.setBackground(Color.PINK);
-        BottomLeftAddButton.setBounds(103,593, 100, 40);
-        BottomLeftAddButton.setLayout(new BoxLayout(BottomLeftAddButton, BoxLayout.Y_AXIS));
+        ImageIcon BottomLeftAddButtonImage = new ImageIcon("pics/rectangle 11.png");
+        JButton BottomLeftAddButton = new JButton(BottomLeftAddButtonImage);
+
+        //Initialize Bottom Left Panel that pops up after clicking Add Order
+        JPanel BottomLeftPanel = new JPanel();
+        BottomLeftPanel.setBackground(Color.WHITE);
+        BottomLeftPanel.setBounds(33,327,240,324);
+        BottomLeftPanel.setLayout(new BoxLayout(BottomLeftPanel, BoxLayout.Y_AXIS));
         BottomLeftPanel.add(Order_ID_Button);
         BottomLeftPanel.add(Meal_ID_Button);
         BottomLeftPanel.add(Meal_Quantity_Button);
         BottomLeftPanel.add(Date_Button);
         BottomLeftPanel.add(BottomLeftAddButton);
 
-        JButton AddButton = new JButton("Add Order");
+
+//        JPanel BottomLeftAddButton = new JPanel();
+//        BottomLeftAddButton.setBackground(Color.PINK);
+//        BottomLeftAddButton.setBounds(103,593, 100, 40);
+//        BottomLeftAddButton.setLayout(new BoxLayout(BottomLeftAddButton, BoxLayout.Y_AXIS));
+//        BottomLeftPanel.add(Order_ID_Button);
+//        BottomLeftPanel.add(Meal_ID_Button);
+//        BottomLeftPanel.add(Meal_Quantity_Button);
+//        BottomLeftPanel.add(Date_Button);
+//        BottomLeftPanel.add(BottomLeftAddButton);
+
+        Frame.add(BottomLeftPanel);
+        BottomLeftPanel.setVisible(false);
+
+        ImageIcon AddButtonImage = new ImageIcon("pics/add order.png");
+        JButton AddButton = new JButton(AddButtonImage);
         AddButton.setBackground(Color.GRAY);
         AddButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Frame.add(BottomLeftPanel);
                 BottomLeftPanel.setVisible(true);
             }
         });
 
 
-        JButton EditButton = new JButton("Update Order");
-        EditButton.setBackground(new Color(0xF89289));
-        JButton DeleteButton = new JButton("Delete Order");
+        ImageIcon UpdateButtonImage = new ImageIcon("pics/update.png");
+        JButton UpdateButton = new JButton(UpdateButtonImage);
+        UpdateButton.setPreferredSize(new Dimension(130,40));
+        ImageIcon DeleteButtonImage = new ImageIcon("pics/deleteorder.png");
+        JButton DeleteButton = new JButton(DeleteButtonImage);
+        DeleteButton.setPreferredSize(new Dimension(130,40));
 
 
         //Warning Panel after pressing Delete Button
         JPanel WarningPanel = new JPanel();
-        WarningPanel.setBounds(300,45,660,620);
+        ImageIcon WarningTextImage = new ImageIcon("pics/warningtext.png");
+        JLabel WarningText = new JLabel(WarningTextImage);
+        WarningText.setBounds(55,32,190,32);
         WarningPanel.setBackground(Color.WHITE);
+        WarningPanel.setBounds(300,45,660,620);
+        WarningPanel.setBorder(new LineBorder(new Color(208,108,108,255)));
         WarningPanel.setLayout(null);
+        WarningPanel.add(WarningText);
 
         //new Frame for delete pop up
         JFrame DeletePopUpFrame = new JFrame();
         DeletePopUpFrame.setBounds(300,45,300,200);
-        DeletePopUpFrame.setBackground(Color.WHITE);
-        DeletePopUpFrame.add(WarningPanel, BorderLayout.CENTER);
+        DeletePopUpFrame.setUndecorated(true);
         DeletePopUpFrame.setLocationRelativeTo(null);
+        DeletePopUpFrame.add(WarningPanel);
 
-
-        JButton NoButton = new JButton("No");
+        ImageIcon NoImage = new ImageIcon("pics/no.png");
+        JButton NoButton = new JButton(NoImage);
+        NoButton.setContentAreaFilled(false);
+        NoButton.setBorderPainted(false);
         NoButton.setBounds(40,129,90,30);
         NoButton.addActionListener(e -> DeletePopUpFrame.setVisible(false));
-        JButton YesButton = new JButton("Yes");
+        ImageIcon YesImage = new ImageIcon("pics/yes.png");
+        JButton YesButton = new JButton(YesImage);
+        YesButton.setContentAreaFilled(false);
+        YesButton.setBorderPainted(false);
         YesButton.setBounds(170,129,90,30);
         YesButton.addActionListener(new ActionListener() {
             @Override
@@ -118,23 +157,26 @@ public class OrderCrud extends JFrame {
 
 
         AddButton.setBackground(Color.pink);
-        EditButton.setBackground(Color.pink);
+        AddButton.setContentAreaFilled(false);
+        AddButton.setBorderPainted(false);
+        UpdateButton.setBackground(Color.pink);
+        UpdateButton.setContentAreaFilled(false);
+        UpdateButton.setBorderPainted(false);
         DeleteButton.setBackground(Color.red);
-
+        DeleteButton.setContentAreaFilled(false);
+        DeleteButton.setBorderPainted(false);
 
 
         //Top Left Panel for Order options
+
         JPanel TopLeftPanel = new JPanel();
         TopLeftPanel.setBounds(33, 59,240,254);
         TopLeftPanel.setBackground(Color.WHITE);
-        TopLeftPanel.setBorder(new EmptyBorder(0, 15, 0, 0));
+        TopLeftPanel.setBorder(new EmptyBorder(59, 33, 0, 0));
         TopLeftPanel.setLayout(new BoxLayout(TopLeftPanel, BoxLayout.Y_AXIS));
         TopLeftPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-        AddButton.setAlignmentY(Component.CENTER_ALIGNMENT);
-        EditButton.setAlignmentY(Component.CENTER_ALIGNMENT);
-        DeleteButton.setAlignmentY(Component.CENTER_ALIGNMENT);
         TopLeftPanel.add(AddButton);
-        TopLeftPanel.add(EditButton);
+        TopLeftPanel.add(UpdateButton);
         TopLeftPanel.add(DeleteButton);
 
 
@@ -144,10 +186,11 @@ public class OrderCrud extends JFrame {
         RightSideBottom.setLayout(new BoxLayout(RightSideBottom, BoxLayout.Y_AXIS));
 
 
-        Frame.add(RightSide);
-        Frame.add(TopLeftPanel);
-        Frame.add(RightSideBottom);
+
         Frame.add(ExitButton);
+        Frame.add(RightSideBottom);
+        Frame.add(TopLeftPanel);
+        Frame.add(RightSide);
         Frame.setVisible(true);
 
     }
