@@ -33,7 +33,7 @@ import org.example.SQLQueries.SQLMeal;
 public class MainFrameManager extends JFrame {
     private JFrame mainFrame;
     private JButton exitButton;
-
+    private JPanel loggingTextArea;
     public MainFrameManager() {
         // Exit button
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
@@ -99,9 +99,15 @@ public class MainFrameManager extends JFrame {
         ImageIcon categoryArea = new ImageIcon("pics/category area.png");
         JLabel leftSideCategory = new JLabel();
 
+        //logging text for checkout
+        loggingTextArea = new JPanel();
+        loggingTextArea.setBounds(10,10, 230, 265);
+        loggingTextArea.setLayout(new BoxLayout(loggingTextArea, BoxLayout.Y_AXIS));
+
         List<Integer> activeIDs = SQLMeal.getActiveMealIds();
-        for(Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId));
+        for(Integer activeId : activeIDs)
+        {
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
         }
 
 
@@ -146,25 +152,25 @@ public class MainFrameManager extends JFrame {
                     if (spicyButton.isSelected()) {
                         for (int i = 1; i <= 11; i++)
                             if (SQLMeal.getCategory(i).equals("Vegetarian") && SQLMeal.getIsSpicy(i))
-                                foodItemsPanel.add(new AddFood(i));
+                                foodItemsPanel.add(new AddFood(i, loggingTextArea));
                     } else {
                         for (int i = 1; i <= 11; i++)
                             if (SQLMeal.getCategory(i).equals("Vegetarian") && !SQLMeal.getIsSpicy(i)) {
-                                foodItemsPanel.add(new AddFood(i));
+                                foodItemsPanel.add(new AddFood(i, loggingTextArea));
                             } else if (SQLMeal.getCategory(i).equals("Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(i));
+                                foodItemsPanel.add(new AddFood(i, loggingTextArea));
                             }
                     }
                 } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()
                         && !spicyButton.isSelected()) {
                     for (int i = 1; i <= 11; i++)
-                        foodItemsPanel.add(new AddFood(i));
+                        foodItemsPanel.add(new AddFood(i, loggingTextArea));
                 } else if (!vegetarianButton.isSelected() && spicyButton.isSelected()) {
                     for (int i = 1; i <= 11; i++)
                         if (SQLMeal.getCategory(i).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(i) && !nonVegetarianButton.isSelected())
-                            foodItemsPanel.add(new AddFood(i));
+                            foodItemsPanel.add(new AddFood(i, loggingTextArea));
                         else if (SQLMeal.getIsSpicy(i) && !nonVegetarianButton.isSelected())
-                            foodItemsPanel.add(new AddFood(i));
+                            foodItemsPanel.add(new AddFood(i, loggingTextArea));
                 }
             }
         });
@@ -185,66 +191,66 @@ public class MainFrameManager extends JFrame {
                     if (spicyButton.isSelected()) {
                         for (int i = 1; i <= 11; i++)
                             if (SQLMeal.getCategory(i).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(i))
-                                foodItemsPanel.add(new AddFood(i));
+                                foodItemsPanel.add(new AddFood(i, loggingTextArea));
                     } else {
                         for (int i = 1; i <= 11; i++) {
                             if (SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(i));
+                                foodItemsPanel.add(new AddFood(i,loggingTextArea));
                             }
                         }
                     }
                 } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()
                         && !spicyButton.isSelected()) {
                     for (int i = 1; i <= 11; i++)
-                        foodItemsPanel.add(new AddFood(i));
+                        foodItemsPanel.add(new AddFood(i, loggingTextArea));
                 } else if (!vegetarianButton.isSelected() && spicyButton.isSelected()) {
                     for (int i = 1; i <= 11; i++) {
                         if (SQLMeal.getCategory(i).equals("Vegetarian") && SQLMeal.getIsSpicy(i)) {
-                            foodItemsPanel.add(new AddFood(i));
+                            foodItemsPanel.add(new AddFood(i, loggingTextArea));
                         }
                     }
                 }
             }
         });
 
-        spicyButton.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                Component[] componentList = foodItemsPanel.getComponents();
-                for (Component c : componentList) {
-                    if (c instanceof AddFood)
-                        foodItemsPanel.remove(c);
-                }
-
-                foodItemsPanel.revalidate();
-                foodItemsPanel.repaint();
-
-                if (spicyButton.isSelected()) {
-                    for (int i = 1; i <= 11; i++) {
-                        if (SQLMeal.getIsSpicy(i)) {
-                            if (vegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(i));
-                            } else if (nonVegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(i));
-                            } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
-                                foodItemsPanel.add(new AddFood(i));
-                            }
-                        }
-                    }
-                } else {
-                    for (int i = 1; i <= 11; i++) {
-                        if (vegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Vegetarian")) {
-                            foodItemsPanel.add(new AddFood(i));
-                        } else if (nonVegetarianButton.isSelected()
-                                && SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
-                            foodItemsPanel.add(new AddFood(i));
-                        } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
-                            foodItemsPanel.add(new AddFood(i));
-                        }
-                    }
-                }
-            }
-        });
+//        spicyButton.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                Component[] componentList = foodItemsPanel.getComponents();
+//                for (Component c : componentList) {
+//                    if (c instanceof AddFood)
+//                        foodItemsPanel.remove(c);
+//                }
+//
+//                foodItemsPanel.revalidate();
+//                foodItemsPanel.repaint();
+//
+//                if (spicyButton.isSelected()) {
+//                    for (int i = 1; i <= 11; i++) {
+//                        if (SQLMeal.getIsSpicy(i)) {
+//                            if (vegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Vegetarian")) {
+//                                foodItemsPanel.add(new AddFood(i));
+//                            } else if (nonVegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
+//                                foodItemsPanel.add(new AddFood(i));
+//                            } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
+//                                foodItemsPanel.add(new AddFood(i));
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    for (int i = 1; i <= 11; i++) {
+//                        if (vegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Vegetarian")) {
+//                            foodItemsPanel.add(new AddFood(i));
+//                        } else if (nonVegetarianButton.isSelected()
+//                                && SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
+//                            foodItemsPanel.add(new AddFood(i));
+//                        } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
+//                            foodItemsPanel.add(new AddFood(i));
+//                        }
+//                    }
+//                }
+//            }
+//        });
 
 
 
@@ -255,10 +261,13 @@ public class MainFrameManager extends JFrame {
         leftSideCategory.add(spicyButton);
         leftSideCategory.add(nonVegetarianButton);
 
+
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         JLabel leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
+        leftSideCheckout.setLayout(null);
         leftSideCheckout.setBounds(35, 195, 250,320);
+        leftSideCheckout.add(loggingTextArea);
         //maybe add another jscrollpane because if order is too much, you ahve to scroll it
 
         ImageIcon checkoutButtonImage = new ImageIcon("pics/checkout button.png");

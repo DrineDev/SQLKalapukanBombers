@@ -16,6 +16,10 @@ public class Order {
         _date = LocalDate.of(1, 1, 1);
     }
 
+    Order (int mealID, int mealQuan)
+    {
+        _mealId = mealID; _mealQuantity = mealQuan;
+    }
     Order(int orderId, int mealId, int mealQuantity, LocalDate date) {
         _orderId = orderId; _mealId = mealId; _mealQuantity = mealQuantity; _date = date;
     }
