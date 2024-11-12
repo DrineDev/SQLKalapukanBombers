@@ -9,8 +9,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 import org.example.Classes.Meal;
 
@@ -298,6 +301,24 @@ public class SQLMeal {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static List<Integer> getActiveMealIds() {
+        List<Integer> mealIds = new ArrayList<>();
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            String query = "SELECT Meal_ID FROM INVENTORY ORDER BY Meal_ID";
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    mealIds.add(rs.getInt("Meal_ID"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return mealIds;
     }
 
     // Setter methods for each column

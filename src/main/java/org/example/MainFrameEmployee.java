@@ -14,6 +14,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.RoundRectangle2D.Float;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -98,8 +100,9 @@ public class MainFrameEmployee extends JFrame {
         ImageIcon categoryArea = new ImageIcon("pics/category area.png");
         JLabel leftSideCategory = new JLabel();
 
-        for(int i = 1; i <= 11; i++) {
-            foodItemsPanel.add(new AddFood(i));
+        List<Integer> activeIDs = SQLMeal.getActiveMealIds();
+        for(Integer activeId : activeIDs) {
+            foodItemsPanel.add(new AddFood(activeId));
         }
 
 
