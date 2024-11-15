@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 
 import org.example.Classes.Meal;
 
@@ -21,7 +20,7 @@ public class SQLMeal {
 
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
-    public static void addMeal(Meal meal) {
+    public static void addMeal(Meal meal) throws SQLException {
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             String sql = "INSERT INTO meals (Name, Type, Description, ingredients, Serving_Size, Category, Nutrition_Fact, Image, Is_Spicy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -49,10 +48,11 @@ public class SQLMeal {
         }
     }
 
-    public static void editMeal(int mealId, String name, String category, String type, String ingredients, String description, String serving, BufferedImage image, boolean isSpicy) {
+    public static void editMeal(int mealId, String name, String category, String type, String ingredients,
+            String description, String serving, BufferedImage image, boolean isSpicy) {
         String updateSQL = "UPDATE MEALS SET  Name = ?, Category = ?, Type = ?, Ingredients = ?, Description = ?, Serving_Size = ?, Image = ?, Is_Spicy = ? WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
 
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, category);
@@ -86,7 +86,7 @@ public class SQLMeal {
     public static void deleteMeal(int Meal_Id) {
         String deleteSQL = "DELETE FROM MEALS WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
             preparedStatement.setInt(1, Meal_Id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -125,7 +125,8 @@ public class SQLMeal {
                     }
                 }
 
-                meal = new Meal(name, type, description, ingredients, servingSize, image, category, nutritionFact, isSpicy);
+                meal = new Meal(name, type, description, ingredients, servingSize, image, category, nutritionFact,
+                        isSpicy);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -259,8 +260,7 @@ public class SQLMeal {
         }
     }
 
-    public static void setImage(int mealId, BufferedImage image) 
-    {
+    public static void setImage(int mealId, BufferedImage image) {
         String query = "UPDATE MEALS SET Image = ? WHERE Meal_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL)) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -308,6 +308,24 @@ public class SQLMeal {
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             String query = "SELECT Meal_ID FROM INVENTORY ORDER BY Meal_ID";
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    mealIds.add(rs.getInt("Meal_ID"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return mealIds;
+    }
+
+    public static List<Integer> getAllMealIds() {
+        List<Integer> mealIds = new ArrayList<>();
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            String query = "SELECT Meal_ID FROM MEAL ORDER BY Meal_ID";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
