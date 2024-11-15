@@ -29,7 +29,6 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import org.example.SQLQueries.SQLMeal;
-
 public class MainFrameManager extends JFrame {
     private JFrame mainFrame;
     private JButton exitButton;
@@ -150,27 +149,29 @@ public class MainFrameManager extends JFrame {
                 if (vegetarianButton.isSelected()) {
                     nonVegetarianButton.setSelected(false);
                     if (spicyButton.isSelected()) {
-                        for (int i = 1; i <= 11; i++)
-                            if (SQLMeal.getCategory(i).equals("Vegetarian") && SQLMeal.getIsSpicy(i))
-                                foodItemsPanel.add(new AddFood(i, loggingTextArea));
+                        for(Integer activeId : activeIDs) {
+                            if (SQLMeal.getCategory(activeId).equals("Vegetarian") && SQLMeal.getIsSpicy(activeId))
+                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                        }
                     } else {
-                        for (int i = 1; i <= 11; i++)
-                            if (SQLMeal.getCategory(i).equals("Vegetarian") && !SQLMeal.getIsSpicy(i)) {
-                                foodItemsPanel.add(new AddFood(i, loggingTextArea));
-                            } else if (SQLMeal.getCategory(i).equals("Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(i, loggingTextArea));
+                        for(Integer activeId : activeIDs) {
+                            if (SQLMeal.getCategory(activeId).equals("Vegetarian") && !SQLMeal.getIsSpicy(activeId)) {
+                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                            } else if (SQLMeal.getCategory(activeId).equals("Vegetarian")) {
+                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
                             }
+                        }
                     }
                 } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()
                         && !spicyButton.isSelected()) {
-                    for (int i = 1; i <= 11; i++)
-                        foodItemsPanel.add(new AddFood(i, loggingTextArea));
+                        for(Integer activeId : activeIDs)
+                        foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
                 } else if (!vegetarianButton.isSelected() && spicyButton.isSelected()) {
-                    for (int i = 1; i <= 11; i++)
-                        if (SQLMeal.getCategory(i).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(i) && !nonVegetarianButton.isSelected())
-                            foodItemsPanel.add(new AddFood(i, loggingTextArea));
-                        else if (SQLMeal.getIsSpicy(i) && !nonVegetarianButton.isSelected())
-                            foodItemsPanel.add(new AddFood(i, loggingTextArea));
+                        for(Integer activeId : activeIDs)
+                        if (SQLMeal.getCategory(activeId).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(activeId) && !nonVegetarianButton.isSelected())
+                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                        else if (SQLMeal.getIsSpicy(activeId) && !nonVegetarianButton.isSelected())
+                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
                 }
             }
         });
@@ -189,68 +190,67 @@ public class MainFrameManager extends JFrame {
                 if (nonVegetarianButton.isSelected()) {
                     vegetarianButton.setSelected(false);
                     if (spicyButton.isSelected()) {
-                        for (int i = 1; i <= 11; i++)
-                            if (SQLMeal.getCategory(i).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(i))
-                                foodItemsPanel.add(new AddFood(i, loggingTextArea));
+                        for(Integer activeId : activeIDs)
+                            if (SQLMeal.getCategory(activeId).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(activeId))
+                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
                     } else {
-                        for (int i = 1; i <= 11; i++) {
-                            if (SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(i,loggingTextArea));
+                        for(Integer activeId : activeIDs) {
+                            if (SQLMeal.getCategory(activeId).equals("Non-Vegetarian")) {
+                                foodItemsPanel.add(new AddFood(activeId,loggingTextArea));
                             }
                         }
                     }
                 } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()
                         && !spicyButton.isSelected()) {
-                    for (int i = 1; i <= 11; i++)
-                        foodItemsPanel.add(new AddFood(i, loggingTextArea));
+                    for(Integer activeId : activeIDs)
+                        foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
                 } else if (!vegetarianButton.isSelected() && spicyButton.isSelected()) {
-                    for (int i = 1; i <= 11; i++) {
-                        if (SQLMeal.getCategory(i).equals("Vegetarian") && SQLMeal.getIsSpicy(i)) {
-                            foodItemsPanel.add(new AddFood(i, loggingTextArea));
+                    for(Integer activeId : activeIDs) {
+                        if (SQLMeal.getCategory(activeId).equals("Vegetarian") && SQLMeal.getIsSpicy(activeId)) {
+                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
                         }
                     }
                 }
             }
         });
 
-//        spicyButton.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent e) {
-//                Component[] componentList = foodItemsPanel.getComponents();
-//                for (Component c : componentList) {
-//                    if (c instanceof AddFood)
-//                        foodItemsPanel.remove(c);
-//                }
-//
-//                foodItemsPanel.revalidate();
-//                foodItemsPanel.repaint();
-//
-//                if (spicyButton.isSelected()) {
-//                    for (int i = 1; i <= 11; i++) {
-//                        if (SQLMeal.getIsSpicy(i)) {
-//                            if (vegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Vegetarian")) {
-//                                foodItemsPanel.add(new AddFood(i));
-//                            } else if (nonVegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
-//                                foodItemsPanel.add(new AddFood(i));
-//                            } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
-//                                foodItemsPanel.add(new AddFood(i));
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    for (int i = 1; i <= 11; i++) {
-//                        if (vegetarianButton.isSelected() && SQLMeal.getCategory(i).equals("Vegetarian")) {
-//                            foodItemsPanel.add(new AddFood(i));
-//                        } else if (nonVegetarianButton.isSelected()
-//                                && SQLMeal.getCategory(i).equals("Non-Vegetarian")) {
-//                            foodItemsPanel.add(new AddFood(i));
-//                        } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
-//                            foodItemsPanel.add(new AddFood(i));
-//                        }
-//                    }
-//                }
-//            }
-//        });
+        spicyButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                Component[] componentList = foodItemsPanel.getComponents();
+                for (Component c : componentList) {
+                    if (c instanceof AddFood)
+                        foodItemsPanel.remove(c);
+                }
+
+                foodItemsPanel.revalidate();
+                foodItemsPanel.repaint();
+                if (spicyButton.isSelected()) {
+                    for(Integer activeId : activeIDs) {
+                        if (SQLMeal.getIsSpicy(activeId)) {
+                            if (vegetarianButton.isSelected() && SQLMeal.getCategory(activeId).equals("Vegetarian")) {
+                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                            } else if (nonVegetarianButton.isSelected() && SQLMeal.getCategory(activeId).equals("Non-Vegetarian")) {
+                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                            } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
+                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                            }
+                        }
+                    }
+                } else {
+                    for(Integer activeId : activeIDs) {
+                        if (vegetarianButton.isSelected() && SQLMeal.getCategory(activeId).equals("Vegetarian")) {
+                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                        } else if (nonVegetarianButton.isSelected()
+                                && SQLMeal.getCategory(activeId).equals("Non-Vegetarian")) {
+                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                        } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
+                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea));
+                        }
+                    }
+                }
+            }
+        });
 
 
 
