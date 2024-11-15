@@ -10,15 +10,16 @@ public class SQLOrder {
 
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
-    public static void addOrder(int Meal_Id, int Meal_Quantity, String Date) {
-        String insertSQL = "INSERT INTO ORDERS (Meal_Id, Meal_Quantity, Date) VALUES (?, ?, ?)";
+    public static void addOrder(int Order_Id, int Meal_Id, int Meal_Quantity, String Date) {
+        String insertSQL = "INSERT INTO ORDERS (Order_Id, Meal_Id, Meal_Quantity, Date) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
 
-            preparedStatement.setInt(1, Meal_Id);
-            preparedStatement.setInt(2, Meal_Quantity);
-            preparedStatement.setString(3, Date);
+            preparedStatement.setInt(1, Order_Id);
+            preparedStatement.setInt(2, Meal_Id);
+            preparedStatement.setInt(3, Meal_Quantity);
+            preparedStatement.setString(4, Date);
         
             int rowsAffected = preparedStatement.executeUpdate();  // This returns the number of rows inserted
 
