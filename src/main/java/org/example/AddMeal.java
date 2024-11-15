@@ -23,6 +23,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -201,8 +202,8 @@ public class AddMeal extends JFrame {
         this.setBackground(new Color(255, 255, 255, 0));
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout()); // For better centering of main panel
-        this.setAlwaysOnTop(true);
         this.setVisible(true);
+        this.toFront();
     }
 
     private JTextField createNameTextField() {
@@ -368,41 +369,119 @@ public class AddMeal extends JFrame {
         addButton.setContentAreaFilled(false);
         addButton.setFocusPainted(false);
         addButton.setBorderPainted(false);
+
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(vegetarianCheckBox.isSelected())
-                    tempMeal.setCategory("Vegetarian");
-                if(nonVegetarianCheckBox.isSelected())
-                    tempMeal.setCategory("Non-Vegetarian");
-                if(breakfastCheckBox.isSelected())
-                    tempMeal.setType("Breakfast");
-                if(lunchCheckBox.isSelected())
-                    tempMeal.setType("Lunch");
-                if(dinnerCheckBox.isSelected())
-                    tempMeal.setType("Dinner");
-
-                if(spicyCheckBox.isSelected())
-                    tempMeal.setIsSpicy(true);
-                else
-                    tempMeal.setIsSpicy(false);
-
-                tempMeal.setName(nameTextField.getText().trim());
-                tempMeal.setIngredients(ingredientsTextField.getText().trim());
-                tempMeal.setDescription(descriptionTextField.getText().trim());
-                tempMeal.setServingSize(servingSizeTextField.getText().trim());
-                tempMeal.setNutritionFact(nutritionalFactsTextField.getText().trim());
-                tempMeal.setImage(selectedImage);
-
                 try {
+                    // Validate input
+                    if (!validateInput()) {
+                        return;
+                    }
+
+                    // Set category
+                    if (vegetarianCheckBox.isSelected()) {
+                        tempMeal.setCategory("Vegetarian");
+                    } else if (nonVegetarianCheckBox.isSelected()) {
+                        tempMeal.setCategory("Non-Vegetarian");
+                    }
+
+                    // Set type
+                    if (breakfastCheckBox.isSelected())
+                        tempMeal.setType("Breakfast");
+                    if (lunchCheckBox.isSelected())
+                        tempMeal.setType("Lunch");
+                    if (dinnerCheckBox.isSelected())
+                        tempMeal.setType("Dinner");
+
+                    // Set other properties
+                    tempMeal.setIsSpicy(spicyCheckBox.isSelected());
+                    tempMeal.setName(nameTextField.getText().trim());
+                    tempMeal.setIngredients(ingredientsTextField.getText().trim());
+                    tempMeal.setDescription(descriptionTextField.getText().trim());
+                    tempMeal.setServingSize(servingSizeTextField.getText().trim());
+                    tempMeal.setNutritionFact(nutritionalFactsTextField.getText().trim());
+                    tempMeal.setImage(selectedImage);
+
+                    // Save meal to database
                     SQLMeal.addMeal(tempMeal);
+                    JOptionPane.showMessageDialog(null, "Meal added successfully!", "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("Meal added...");
+
+                    // Clear the form
+                    clearForm();
+
                 } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Error saving meal: " + ex.getMessage(), "Database Error",
+                            JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             }
         });
+
         return addButton;
+    }
+
+    private void clearForm() {
+        vegetarianCheckBox.setSelected(false);
+        nonVegetarianCheckBox.setSelected(false);
+        breakfastCheckBox.setSelected(false);
+        lunchCheckBox.setSelected(false);
+        dinnerCheckBox.setSelected(false);
+        spicyCheckBox.setSelected(false);
+        nameTextField.setText("");
+        ingredientsTextField.setText("");
+        descriptionTextField.setText("");
+        servingSizeTextField.setText("");
+        nutritionalFactsTextField.setText("");
+        selectedImage = null;
+    }
+
+    // Validate all required inputs
+    private boolean validateInput() {
+        if (!vegetarianCheckBox.isSelected() && !nonVegetarianCheckBox.isSelected()) {
+            JOptionPane.showMessageDialog(null, "Please select a category (Vegetarian/Non-Vegetarian).",
+                    "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (!breakfastCheckBox.isSelected() && !lunchCheckBox.isSelected() && !dinnerCheckBox.isSelected()) {
+            JOptionPane.showMessageDialog(null,
+                    "Please select at least one meal type (Breakfast/Lunch/Dinner).", "Validation Error",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (nameTextField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter a meal name.", "Validation Error",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (ingredientsTextField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter ingredients.", "Validation Error",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (descriptionTextField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter a description.", "Validation Error",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (servingSizeTextField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter a serving size.", "Validation Error",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (nutritionalFactsTextField.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter nutritional facts.", "Validation Error",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        if (selectedImage == null) {
+            JOptionPane.showMessageDialog(null, "Please select an image.", "Validation Error",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     private JButton createInsertButton() {
@@ -413,14 +492,14 @@ public class AddMeal extends JFrame {
         addButton.setContentAreaFilled(false);
         addButton.setFocusPainted(false);
         addButton.setBorderPainted(false);
-        
+
         addButton.addActionListener(new ActionListener() { // Changed to ActionListener for better handling
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setDialogTitle("Choose an image");
                 fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-                    "Images", "(*.jpg, *.jpeg, *.png, *.gif)", "jpg", "jpeg", "png", "gif"));
+                        "Images", "(*.jpg, *.jpeg, *.png, *.gif)", "jpg", "jpeg", "png", "gif"));
 
                 int result = fileChooser.showOpenDialog(AddMeal.this); // Use AddMeal.this as parent
                 if (result == JFileChooser.APPROVE_OPTION) {
@@ -436,16 +515,17 @@ public class AddMeal extends JFrame {
                         ex.printStackTrace();
                         // Optional: Show error dialog to user
                         javax.swing.JOptionPane.showMessageDialog(AddMeal.this,
-                            "Error loading image: " + ex.getMessage(),
-                            "Error",
-                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                                "Error loading image: " + ex.getMessage(),
+                                "Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
         });
-        
+
         return addButton;
-    }   
+    }
+
     // TEMP FOR REUSE WITH EDITMEAL
     private JButton createUpdateButton() {
         ImageIcon addImageIcon = new ImageIcon("pics/Update Meal.png");
