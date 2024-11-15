@@ -1,13 +1,24 @@
 package org.example;
 
-import org.example.SQLQueries.SQLInventory;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.border.EmptyBorder;
-import java.sql.*;
-import java.util.ArrayList;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+
+import org.example.SQLQueries.SQLMeal;
 
 public class InventoryCRUDEmployee extends JFrame {
     private static final Color PRIMARY_COLOR = new Color(248, 146, 137);
@@ -21,11 +32,12 @@ public class InventoryCRUDEmployee extends JFrame {
     private JButton exitButton;
     private NavigatorButtonInventory navButton;
 
-    //himo sa GUI
+    // himo sa GUI
     public InventoryCRUDEmployee() {
         initializeGUI();
     }
-    //function muhimo sa GUI
+
+    // function muhimo sa GUI
     private void initializeGUI() {
         initializeFrame();
         initializeExitButton();
@@ -38,7 +50,9 @@ public class InventoryCRUDEmployee extends JFrame {
         mainFrame.add(rightSidePanel, BorderLayout.CENTER);
         mainFrame.setVisible(true);
     }
-    //mu initialize sa frame kung asa gibutang ang gui borderlayout siya so north east west gang
+
+    // mu initialize sa frame kung asa gibutang ang gui borderlayout siya so north
+    // east west gang
     private void initializeFrame() {
         mainFrame = new JFrame();
         mainFrame.setSize(FRAME_SIZE);
@@ -47,7 +61,8 @@ public class InventoryCRUDEmployee extends JFrame {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setLocationRelativeTo(null);
     }
-    //initialize sa exit button ibutang siya sa right part sa top panel
+
+    // initialize sa exit button ibutang siya sa right part sa top panel
     private void initializeExitButton() {
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
@@ -57,7 +72,8 @@ public class InventoryCRUDEmployee extends JFrame {
         exitButton.setBorderPainted(false);
         exitButton.addActionListener(e -> System.exit(0));
     }
-    //initialize sa navbutton ibutang siya sa left part sa top panel
+
+    // initialize sa navbutton ibutang siya sa left part sa top panel
     private void initializeNavButton() {
         navButton = new NavigatorButtonInventory();
         // Add listeners for the navigation buttons
@@ -71,13 +87,13 @@ public class InventoryCRUDEmployee extends JFrame {
             // already inventory so empty ra siya
         });
     }
-    //top panel contains nav and exit button
+
+    // top panel contains nav and exit button
     private JPanel createTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setBackground(PRIMARY_COLOR);
         topPanel.setBorder(BorderFactory.createMatteBorder(
-                BORDER_THICKNESS, 0, 0, 0, PRIMARY_COLOR
-        ));
+                BORDER_THICKNESS, 0, 0, 0, PRIMARY_COLOR));
 
         // Use BorderLayout for the top panel
         topPanel.setLayout(new BorderLayout());
@@ -98,51 +114,28 @@ public class InventoryCRUDEmployee extends JFrame {
 
         return topPanel;
     }
-    //rightside panel pero basically everything under sa top panel
+
+    // rightside panel pero basically everything under sa top panel
     private JPanel createRightSidePanel() {
         JPanel rightSidePanel = new JPanel();
         rightSidePanel.setLayout(new BorderLayout());
         rightSidePanel.setBackground(Color.WHITE);
         rightSidePanel.setBorder(new EmptyBorder(
-                BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS
-        ));
-        //isud ang scrollpane sa kani nga panel
+                BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS));
+        // isud ang scrollpane sa kani nga panel
         JScrollPane scrollPane = createScrollPane(createFoodItemsPanel());
         rightSidePanel.add(scrollPane, BorderLayout.CENTER);
 
         return rightSidePanel;
     }
-    //pang get sa mga meals nga naa sa inventory
-    // (para di fixed 11 ang size sa meals ig add kay mu adjust ra siya)
-    private List<Integer> getActiveMealIds() {
-        List<Integer> mealIds = new ArrayList<>();
-        String dbUrl = "jdbc:sqlite:SQL/database.db";
 
-        try (Connection conn = DriverManager.getConnection(dbUrl)) {
-            String query = "SELECT Meal_ID FROM INVENTORY ORDER BY Meal_ID";
-            try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    mealIds.add(rs.getInt("Meal_ID"));
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Error retrieving meal IDs: " + e.getMessage(),
-                    "Database Error",
-                    JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-
-        return mealIds;
-    }
-    //fooditems nga panel ra jud
+    // fooditems nga panel ra jud
     private JPanel createFoodItemsPanel() {
         JPanel foodItemsPanel = new JPanel();
         foodItemsPanel.setLayout(new GridLayout(0, 3, GRID_GAP, GRID_GAP));
         foodItemsPanel.setBackground(Color.WHITE);
 
-        List<Integer> mealIds = getActiveMealIds();
+        List<Integer> mealIds = SQLMeal.getAllMealIds();
 
         for (Integer mealId : mealIds) {
             foodItemsPanel.add(new AddInventory(mealId, "employee"));
@@ -156,7 +149,8 @@ public class InventoryCRUDEmployee extends JFrame {
 
         return foodItemsPanel;
     }
-    //scrollpane para butanganan sa fooditemspanel
+
+    // scrollpane para butanganan sa fooditemspanel
     private JScrollPane createScrollPane(JPanel contentPanel) {
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

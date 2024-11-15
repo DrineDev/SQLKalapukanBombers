@@ -1,51 +1,97 @@
 package org.example;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 
-import javax.swing.*;
-import javax.swing.border.Border;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+
+import org.example.Classes.Meal;
+import org.example.SQLQueries.SQLMeal;
 
 public class AddMeal extends JFrame {
     private static ImageIcon defaultCheckbox = new ImageIcon("pics/checkbox default.png");
     private static ImageIcon selectedCheckbox = new ImageIcon("pics/check_box.png");
+    private JTextField nameTextField;
+    private JTextField descriptionTextField;
+    private JTextField ingredientsTextField;
+    private JTextField nutritionalFactsTextField;
+    private JTextField servingSizeTextField;
+    private JCheckBox vegetarianCheckBox;
+    private JCheckBox nonVegetarianCheckBox;
+    private JCheckBox breakfastCheckBox;
+    private JCheckBox lunchCheckBox;
+    private JCheckBox dinnerCheckBox;
+    private JButton exitButton;
+    private JButton addButton;
+    private JButton insertImageButton;
+    private Meal tempMeal;
+    private BufferedImage selectedImage;
+    private File storedImage;
 
-    public AddMeal() {
+    private JCheckBox spicyCheckBox;
+
+    public AddMeal() throws IOException {
+        selectedImage = null;
+        storedImage = null;
+        tempMeal = new Meal();
         initializeGUI();
     }
 
     private void initializeGUI() {
         initializeJFrame();
 
-        JTextField nameTextField = createNameTextField();
+        nameTextField = createNameTextField();
         JLabel nameLabel = createLabel("Name");
 
-        JTextField ingredientsTextField = createIngredientsTextField();
+        ingredientsTextField = createIngredientsTextField();
         JLabel ingredientsLabel = createLabel("Ingredients");
 
-        JTextField descriptionTextField = createDescriptionTextField();
+        descriptionTextField = createDescriptionTextField();
         JLabel descriptionLabel = createLabel("Description");
 
-        JTextField nutritionalFactsTextField = createNutritionalFactsTextField();
+        nutritionalFactsTextField = createNutritionalFactsTextField();
         JLabel nutritionalFactsLabel = createLabel("Nutritional Facts");
 
-        JTextField servingSizeTextField = createServingSizeTextField();
+        servingSizeTextField = createServingSizeTextField();
         JLabel servingSizeLabel = createLabel("Serving Size");
 
-        JCheckBox vegetarianCheckBox = createVegetarianCheckBox();
-        JCheckBox nonVegetarianCheckBox = createNonVegetarianCheckBox();
+        vegetarianCheckBox = createVegetarianCheckBox();
+        nonVegetarianCheckBox = createNonVegetarianCheckBox();
         JLabel categoryLabel = createLabel("Category");
 
-        JCheckBox breakfastCheckBox = createBreakfastCheckBox();
-        JCheckBox lunchCheckBox = createLunchCheckBox();
-        JCheckBox dinnerCheckBox = createDinnerCheckBox();
+        breakfastCheckBox = createBreakfastCheckBox();
+        lunchCheckBox = createLunchCheckBox();
+        dinnerCheckBox = createDinnerCheckBox();
         JLabel typeLabel = createLabel("Type");
 
-        JCheckBox spicyCheckBox = createIsSpicyCheckBox();
+        spicyCheckBox = createIsSpicyCheckBox();
 
-        JButton exitButton = createExitIcon();
-        JButton addButton = createAddButton();
-        JButton insertImageButton = createInsertButton();
+        exitButton = createExitIcon();
+        addButton = createAddButton();
+        insertImageButton = createInsertButton();
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
 
@@ -105,12 +151,12 @@ public class AddMeal extends JFrame {
         confirmButtonPanel.add(addButton);
 
         GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.NORTHEAST;  // Top-left position
+        c.anchor = GridBagConstraints.NORTHEAST; // Top-left position
         c.weightx = 1;
         c.weighty = 1;
         c.gridx = 0;
         c.gridy = 0;
-        mainPanel.add(exitButtonPanel, c);  // Add exit icon to top-left
+        mainPanel.add(exitButtonPanel, c); // Add exit icon to top-left
 
         // Center the main content
         c.anchor = GridBagConstraints.CENTER;
@@ -202,6 +248,14 @@ public class AddMeal extends JFrame {
         vegetarianCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         vegetarianCheckBox.setIcon(defaultCheckbox);
         vegetarianCheckBox.setSelectedIcon(selectedCheckbox);
+        vegetarianCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (vegetarianCheckBox.isSelected())
+                    nonVegetarianCheckBox.setSelected(false);
+            }
+        });
+
         return vegetarianCheckBox;
     }
 
@@ -213,6 +267,14 @@ public class AddMeal extends JFrame {
         nonVegetarianCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         nonVegetarianCheckBox.setIcon(defaultCheckbox);
         nonVegetarianCheckBox.setSelectedIcon(selectedCheckbox);
+        nonVegetarianCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (nonVegetarianCheckBox.isSelected())
+                    vegetarianCheckBox.setSelected(false);
+            }
+        });
+
         return nonVegetarianCheckBox;
     }
 
@@ -224,6 +286,15 @@ public class AddMeal extends JFrame {
         breakfastCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         breakfastCheckBox.setIcon(defaultCheckbox);
         breakfastCheckBox.setSelectedIcon(selectedCheckbox);
+        breakfastCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (breakfastCheckBox.isSelected()) {
+                    lunchCheckBox.setSelected(false);
+                    dinnerCheckBox.setSelected(false);
+                }
+            }
+        });
         return breakfastCheckBox;
     }
 
@@ -235,6 +306,15 @@ public class AddMeal extends JFrame {
         lunchCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         lunchCheckBox.setIcon(defaultCheckbox);
         lunchCheckBox.setSelectedIcon(selectedCheckbox);
+        lunchCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (lunchCheckBox.isSelected()) {
+                    breakfastCheckBox.setSelected(false);
+                    dinnerCheckBox.setSelected(false);
+                }
+            }
+        });
         return lunchCheckBox;
     }
 
@@ -246,6 +326,15 @@ public class AddMeal extends JFrame {
         dinnerCheckBox.setBorder(new EmptyBorder(0, 25, 0, 0));
         dinnerCheckBox.setIcon(defaultCheckbox);
         dinnerCheckBox.setSelectedIcon(selectedCheckbox);
+        dinnerCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (dinnerCheckBox.isSelected()) {
+                    breakfastCheckBox.setSelected(false);
+                    lunchCheckBox.setSelected(false);
+                }
+            }
+        });
         return dinnerCheckBox;
     }
 
@@ -279,6 +368,40 @@ public class AddMeal extends JFrame {
         addButton.setContentAreaFilled(false);
         addButton.setFocusPainted(false);
         addButton.setBorderPainted(false);
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(vegetarianCheckBox.isSelected())
+                    tempMeal.setCategory("Vegetarian");
+                if(nonVegetarianCheckBox.isSelected())
+                    tempMeal.setCategory("Non-Vegetarian");
+                if(breakfastCheckBox.isSelected())
+                    tempMeal.setType("Breakfast");
+                if(lunchCheckBox.isSelected())
+                    tempMeal.setType("Lunch");
+                if(dinnerCheckBox.isSelected())
+                    tempMeal.setType("Dinner");
+
+                if(spicyCheckBox.isSelected())
+                    tempMeal.setIsSpicy(true);
+                else
+                    tempMeal.setIsSpicy(false);
+
+                tempMeal.setName(nameTextField.getText().trim());
+                tempMeal.setIngredients(ingredientsTextField.getText().trim());
+                tempMeal.setDescription(descriptionTextField.getText().trim());
+                tempMeal.setServingSize(servingSizeTextField.getText().trim());
+                tempMeal.setNutritionFact(nutritionalFactsTextField.getText().trim());
+                tempMeal.setImage(selectedImage);
+
+                try {
+                    SQLMeal.addMeal(tempMeal);
+                    System.out.println("Meal added...");
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         return addButton;
     }
 
@@ -290,9 +413,40 @@ public class AddMeal extends JFrame {
         addButton.setContentAreaFilled(false);
         addButton.setFocusPainted(false);
         addButton.setBorderPainted(false);
-        return addButton;
-    }
+        
+        addButton.addActionListener(new ActionListener() { // Changed to ActionListener for better handling
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Choose an image");
+                fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                    "Images", "(*.jpg, *.jpeg, *.png, *.gif)", "jpg", "jpeg", "png", "gif"));
 
+                int result = fileChooser.showOpenDialog(AddMeal.this); // Use AddMeal.this as parent
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        storedImage = fileChooser.getSelectedFile();
+                        selectedImage = ImageIO.read(storedImage);
+                        if (selectedImage == null) {
+                            throw new IOException("Failed to read image file");
+                        }
+                        // Optional: Add visual feedback that image was loaded
+                        addButton.setToolTipText("Image loaded: " + storedImage.getName());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        // Optional: Show error dialog to user
+                        javax.swing.JOptionPane.showMessageDialog(AddMeal.this,
+                            "Error loading image: " + ex.getMessage(),
+                            "Error",
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+        
+        return addButton;
+    }   
+    // TEMP FOR REUSE WITH EDITMEAL
     private JButton createUpdateButton() {
         ImageIcon addImageIcon = new ImageIcon("pics/Update Meal.png");
         JButton addButton = new JButton();
@@ -311,6 +465,13 @@ public class AddMeal extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(AddMeal::new);
+        SwingUtilities.invokeLater(() -> {
+            try {
+                new AddMeal();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
     }
 }
