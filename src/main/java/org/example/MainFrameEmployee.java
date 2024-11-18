@@ -144,7 +144,7 @@ public class MainFrameEmployee extends JFrame {
 
         activeIDs = SQLMeal.getActiveMealIds();
         for (Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, priceLabel));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
         }
 
         vegetarianButton = new JCheckBox("Vegetarian");
@@ -344,7 +344,7 @@ public class MainFrameEmployee extends JFrame {
                 continue;
 
             // Add the filtered item to the panel
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, priceLabel));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
         }
 
         // Refresh the panel

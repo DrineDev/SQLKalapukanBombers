@@ -144,7 +144,7 @@ public class MainFrameManager extends JFrame {
 
         activeIDs = SQLMeal.getActiveMealIds();
         for(Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, priceLabel));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
         }
 
         vegetarianButton = new JCheckBox("Vegetarian");
@@ -291,10 +291,24 @@ public class MainFrameManager extends JFrame {
         checkoutButton.setContentAreaFilled(false);
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(new ActionListener() {
+        checkoutButton.addActionListener(new ActionListener()
+        {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                JLabel realPrice = new JLabel();
+                for (Component component : priceLabel.getComponents())
+                {
+                    if (component instanceof JLabel)
+                    {
+                        String text =((JLabel) component).getText();
+                        System.out.println(text);
+//                        String text = priceLabel.getText().trim();
+//                        //text = text.replaceAll("[^\\d.]", ""); // Optional: remove currency symbol
+//                        realPrice.setText(text);
+                    }
+                }
+
                 showImageFrame("pics/pop up frame.png");
             }
         });
@@ -351,7 +365,7 @@ public class MainFrameManager extends JFrame {
                 continue;
 
             // Add the filtered item to the panel
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, priceLabel));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
         }
 
         // Refresh the panel

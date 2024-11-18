@@ -35,7 +35,7 @@ public class AddFood extends JPanel {
     private Timer hoverTimer;
     private final int HOVER_DELAY = 500; // Delay in milliseconds
 
-    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, JPanel price)
+    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice)
     {
         // Retrieve food image and nutrition facts from database
         this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
@@ -48,6 +48,8 @@ public class AddFood extends JPanel {
         // Food background label
         JLabel foodBg = new JLabel();
         foodBg.setIcon(foodImage);
+
+        // TODO
     
         // Nutrition fact label (displayed on hover)
         JLabel nutritionLabel = createNutritionLabel();
@@ -78,7 +80,7 @@ public class AddFood extends JPanel {
         // Order button
         ImageIcon order = new ImageIcon("pics/order button.png");
         JButton orderButton = createOrderButton(order);
-        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, price, mealID));
+        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, mealID));
         
         // Add components to the panel
         this.add(foodBg); // Add foodBg with nutritionLabel inside
@@ -219,7 +221,7 @@ public class AddFood extends JPanel {
         return orderButton;
     }
     
-    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, JPanel pricePanel, int mealID) {
+    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID) {
     return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) 
@@ -254,21 +256,7 @@ public class AddFood extends JPanel {
                     amountTextField.setText("" + x + " ");
                     showImageFrame("pics/pop up frame order.png");
 
-                    JLabel realPrice = new JLabel();
-                    for (Component component : loggerPrice.getComponents()) 
-                    {
-                        if (component instanceof JLabel) 
-                        {
-                            JLabel priceLabel = (JLabel) component;
-                            String text = priceLabel.getText().trim();
-                            //text = text.replaceAll("[^\\d.]", ""); // Optional: remove currency symbol
-                            realPrice.setText(text);
-                        }
-                    }
-                    pricePanel.add(realPrice);
 
-                    pricePanel.revalidate();
-                    pricePanel.repaint();
                     logger.revalidate();
                     logger.repaint();
                     loggerPrice.revalidate();
