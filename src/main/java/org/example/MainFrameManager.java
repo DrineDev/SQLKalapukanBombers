@@ -27,14 +27,30 @@ import javax.swing.JScrollPane;
 import javax.swing.JWindow;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicComboBoxUI;
 
 import org.example.SQLQueries.SQLMeal;
+
 public class MainFrameManager extends JFrame {
     private JFrame mainFrame;
     private JButton exitButton;
     private JPanel loggingTextArea;
     private JPanel loggingPriceArea;
+    private JPanel rightSideWhole;
+    private JPanel exitPanel;
+    private JPanel rightSideBottom;
+    private JPanel foodItemsPanel;
+    private JScrollPane scrollPane;
+    private JLabel leftSide;
+    private JLabel leftSideCategory;
+    private JScrollPane loggingScroll;
+    private JCheckBox vegetarianButton;
+    private JCheckBox nonVegetarianButton;
+    private JCheckBox spicyButton;
+    private JCheckBox breakfastButton;
+    private JCheckBox lunchButton;
+    private JCheckBox dinnerButton;
+    private List<Integer> activeIDs;
+
     public MainFrameManager() {
         // Exit button
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
@@ -54,29 +70,29 @@ public class MainFrameManager extends JFrame {
         mainFrame.setLocationRelativeTo(null);
 
         // Right side tibuok
-        JPanel rightSideWhole = new JPanel();
+        rightSideWhole = new JPanel();
         rightSideWhole.setLayout(new BorderLayout());
         rightSideWhole.setPreferredSize(new Dimension(680, 2000));
         rightSideWhole.setBackground(Color.white);
         rightSideWhole.setBorder(new EmptyBorder(0, 20, 0, 0)); // Add left padding
 
         // Panel for exit button
-        JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         exitPanel.setBackground(Color.white);
         exitPanel.add(exitButton);
         rightSideWhole.add(exitPanel, BorderLayout.NORTH);
 
         // Bottom area of right side
-        JPanel rightSideBottom = new JPanel();
+        rightSideBottom = new JPanel();
         rightSideBottom.setBackground(Color.white);
         rightSideBottom.setLayout(new BoxLayout(rightSideBottom, BoxLayout.Y_AXIS)); // Use BoxLayout for stacking
 
         // Scrollable panel for food items
-        JPanel foodItemsPanel = new JPanel();
+        foodItemsPanel = new JPanel();
         foodItemsPanel.setBackground(Color.white);
         foodItemsPanel.setLayout(new GridLayout(0, 2, 10, 10)); // 2 columns with spacing
 
-        JScrollPane scrollPane = new JScrollPane(foodItemsPanel);
+        scrollPane = new JScrollPane(foodItemsPanel);
         scrollPane.setPreferredSize(new Dimension(680, 500));
         scrollPane.setBackground(Color.white);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -91,26 +107,26 @@ public class MainFrameManager extends JFrame {
 
         // Left side
         ImageIcon leftSideArea = new ImageIcon("pics/checkout area.png");
-        JLabel leftSide = new JLabel();
+        leftSide = new JLabel();
         leftSide.setIcon(leftSideArea);
         leftSide.setLayout(null);
 
         ImageIcon defaultCheckbox = new ImageIcon("pics/checkbox default.png");
         ImageIcon selectedCheckbox = new ImageIcon("pics/check_box.png");
         ImageIcon categoryArea = new ImageIcon("pics/category area.png");
-        JLabel leftSideCategory = new JLabel();
+        leftSideCategory = new JLabel();
 
-        //logging text for checkout
+        // logging text for checkout
         loggingTextArea = new JPanel();
-        loggingTextArea.setBounds(0,0, 170, 265);
+        loggingTextArea.setBounds(0, 0, 170, 265);
         loggingTextArea.setLayout(new BoxLayout(loggingTextArea, BoxLayout.Y_AXIS));
 
         loggingPriceArea = new JPanel();
         loggingPriceArea.setBounds(180, 0, 60, 265);
         loggingPriceArea.setLayout(new BoxLayout(loggingPriceArea, BoxLayout.Y_AXIS));
 
-        JScrollPane loggingScroll = new JScrollPane();
-        loggingScroll.setBounds(10,10,235, 265);
+        loggingScroll = new JScrollPane();
+        loggingScroll.setBounds(10, 10, 235, 265);
         loggingScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         loggingScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         loggingScroll.getVerticalScrollBar().setUI(new customScrollBarUI());
@@ -120,225 +136,139 @@ public class MainFrameManager extends JFrame {
         loggingScroll.add(loggingTextArea);
         loggingScroll.add(loggingPriceArea);
 
-
-        List<Integer> activeIDs = SQLMeal.getActiveMealIds();
-        for(Integer activeId : activeIDs)
-        {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea , loggingPriceArea));
+        activeIDs = SQLMeal.getActiveMealIds();
+        for (Integer activeId : activeIDs) {
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
         }
 
-
-        JCheckBox vegetarianButton = new JCheckBox("Vegetarian");
+        vegetarianButton = new JCheckBox("Vegetarian");
         vegetarianButton.setFocusPainted(false);
         vegetarianButton.setBorderPainted(false);
         vegetarianButton.setContentAreaFilled(false);
-        vegetarianButton.setBorder(new EmptyBorder(0, 15,0, 0));
+        vegetarianButton.setBorder(new EmptyBorder(0, 15, 0, 0));
         vegetarianButton.setIcon(defaultCheckbox);
         vegetarianButton.setSelectedIcon(selectedCheckbox);
 
-        JCheckBox nonVegetarianButton = new JCheckBox("Non-Vegetarian");
+        nonVegetarianButton = new JCheckBox("Non-Vegetarian");
         nonVegetarianButton.setFocusPainted(false);
         nonVegetarianButton.setBorderPainted(false);
         nonVegetarianButton.setContentAreaFilled(false);
-        nonVegetarianButton.setBorder(new EmptyBorder(0, 15,0, 0));
+        nonVegetarianButton.setBorder(new EmptyBorder(0, 15, 0, 0));
         nonVegetarianButton.setIcon(defaultCheckbox);
         nonVegetarianButton.setSelectedIcon(selectedCheckbox);
 
-        JCheckBox spicyButton = new JCheckBox("Spicy");
+        spicyButton = new JCheckBox("Spicy");
         spicyButton.setFocusPainted(false);
         spicyButton.setBorderPainted(false);
         spicyButton.setContentAreaFilled(false);
-        spicyButton.setBorder(new EmptyBorder(0, 15,0, 0));
+        spicyButton.setBorder(new EmptyBorder(0, 15, 0, 0));
         spicyButton.setIcon(defaultCheckbox);
         spicyButton.setSelectedIcon(selectedCheckbox);
 
-        JCheckBox breakfastButton = new JCheckBox("Breakfast");
+        breakfastButton = new JCheckBox("Breakfast");
         breakfastButton.setFocusPainted(false);
         breakfastButton.setBorderPainted(false);
         breakfastButton.setContentAreaFilled(false);
         breakfastButton.setIcon(defaultCheckbox);
         breakfastButton.setSelectedIcon(selectedCheckbox);
-        breakfastButton.setBorder(new EmptyBorder(0,20,0,0));
+        breakfastButton.setBorder(new EmptyBorder(0, 20, 0, 0));
 
-        JCheckBox lunchButton = new JCheckBox("Lunch");
+        lunchButton = new JCheckBox("Lunch");
         lunchButton.setFocusPainted(false);
         lunchButton.setBorderPainted(false);
         lunchButton.setContentAreaFilled(false);
         lunchButton.setIcon(defaultCheckbox);
         lunchButton.setSelectedIcon(selectedCheckbox);
-        lunchButton.setBorder(new EmptyBorder(0,20,0,0));
+        lunchButton.setBorder(new EmptyBorder(0, 20, 0, 0));
 
-        JCheckBox dinnerButton = new JCheckBox("Dinner");
+        dinnerButton = new JCheckBox("Dinner");
         dinnerButton.setFocusPainted(false);
         dinnerButton.setBorderPainted(false);
         dinnerButton.setContentAreaFilled(false);
         dinnerButton.setIcon(defaultCheckbox);
         dinnerButton.setSelectedIcon(selectedCheckbox);
-        dinnerButton.setBorder(new EmptyBorder(0,20,0,0));
+        dinnerButton.setBorder(new EmptyBorder(0, 20, 0, 0));
 
         vegetarianButton.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                Component[] componentList = foodItemsPanel.getComponents();
-                for (Component c : componentList) {
-                    if (c instanceof AddFood) {
-                        foodItemsPanel.remove(c);
-                    }
-                }
-                foodItemsPanel.revalidate();
-                foodItemsPanel.repaint();
-
                 if (vegetarianButton.isSelected()) {
                     nonVegetarianButton.setSelected(false);
-                    if (spicyButton.isSelected()) {
-                        for(Integer activeId : activeIDs) {
-                            if (SQLMeal.getCategory(activeId).equals("Vegetarian") && SQLMeal.getIsSpicy(activeId))
-                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
-                        }
-                    } else {
-                        for(Integer activeId : activeIDs) {
-                            if (SQLMeal.getCategory(activeId).equals("Vegetarian") && !SQLMeal.getIsSpicy(activeId)) {
-                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
-                            } else if (SQLMeal.getCategory(activeId).equals("Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
-                            }
-                        }
-                    }
-                } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()
-                        && !spicyButton.isSelected()) {
-                        for(Integer activeId : activeIDs)
-                        foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                } else if (!vegetarianButton.isSelected() && spicyButton.isSelected()) {
-                        for(Integer activeId : activeIDs)
-                        if (SQLMeal.getCategory(activeId).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(activeId) && !nonVegetarianButton.isSelected())
-                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                        else if (SQLMeal.getIsSpicy(activeId) && !nonVegetarianButton.isSelected())
-                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
                 }
+                updateFoodItemsPanel();
             }
         });
 
         nonVegetarianButton.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                Component[] componentList = foodItemsPanel.getComponents();
-                for (Component c : componentList) {
-                    if (c instanceof AddFood)
-                        foodItemsPanel.remove(c);
-                }
-                foodItemsPanel.revalidate();
-                foodItemsPanel.repaint();
-
                 if (nonVegetarianButton.isSelected()) {
                     vegetarianButton.setSelected(false);
-                    if (spicyButton.isSelected()) {
-                        for(Integer activeId : activeIDs)
-                            if (SQLMeal.getCategory(activeId).equals("Non-Vegetarian") && SQLMeal.getIsSpicy(activeId))
-                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                    } else {
-                        for(Integer activeId : activeIDs) {
-                            if (SQLMeal.getCategory(activeId).equals("Non-Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(activeId,loggingTextArea,loggingPriceArea));
-                            }
-                        }
-                    }
-                } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()
-                        && !spicyButton.isSelected()) {
-                    for(Integer activeId : activeIDs)
-                        foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                } else if (!vegetarianButton.isSelected() && spicyButton.isSelected()) {
-                    for(Integer activeId : activeIDs) {
-                        if (SQLMeal.getCategory(activeId).equals("Vegetarian") && SQLMeal.getIsSpicy(activeId)) {
-                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                        }
-                    }
                 }
+                updateFoodItemsPanel();
             }
         });
 
         spicyButton.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                Component[] componentList = foodItemsPanel.getComponents();
-                for (Component c : componentList) {
-                    if (c instanceof AddFood)
-                        foodItemsPanel.remove(c);
+                updateFoodItemsPanel();
+            }
+        });
+
+        breakfastButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (breakfastButton.isSelected()) {
+                    lunchButton.setSelected(false);
+                    dinnerButton.setSelected(false);
+                }
+                updateFoodItemsPanel();
+            }
+        });
+
+        lunchButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (lunchButton.isSelected()) {
+                    breakfastButton.setSelected(false);
+                    dinnerButton.setSelected(false);
                 }
 
-                foodItemsPanel.revalidate();
-                foodItemsPanel.repaint();
-                if (spicyButton.isSelected()) {
-                    for(Integer activeId : activeIDs) {
-                        if (SQLMeal.getIsSpicy(activeId)) {
-                            if (vegetarianButton.isSelected() && SQLMeal.getCategory(activeId).equals("Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                            } else if (nonVegetarianButton.isSelected() && SQLMeal.getCategory(activeId).equals("Non-Vegetarian")) {
-                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                            } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
-                                foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                            }
-                        }
-                    }
-                } else {
-                    for(Integer activeId : activeIDs) {
-                        if (vegetarianButton.isSelected() && SQLMeal.getCategory(activeId).equals("Vegetarian")) {
-                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea,loggingPriceArea));
-                        } else if (nonVegetarianButton.isSelected()
-                                && SQLMeal.getCategory(activeId).equals("Non-Vegetarian")) {
-                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
-                        } else if (!vegetarianButton.isSelected() && !nonVegetarianButton.isSelected()) {
-                            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
-                        }
-                    }
+                updateFoodItemsPanel();
+            }
+        });
+
+        dinnerButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (dinnerButton.isSelected()) {
+                    breakfastButton.setSelected(false);
+                    lunchButton.setSelected(false);
                 }
-            }
-        });
-        
-        breakfastButton.addItemListener(new ItemListener() 
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e)
-            {
-                // TODO : sort by breakfast categoroy
-
+                updateFoodItemsPanel();
             }
         });
 
-        lunchButton.addItemListener(new ItemListener() 
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e)
-            {
-                // TODO : mao gihapon
-            }
-        });
-
-        dinnerButton.addItemListener(new ItemListener() 
-        {
-            @Override
-            public void itemStateChanged(ItemEvent e)
-            {
-                // TODO : GIHAPON
-            }
-        });
         leftSideCategory.setIcon(categoryArea);
         leftSideCategory.setLayout(new GridLayout(3, 3));
-        leftSideCategory.setBounds(35,65, 250, 115);
+        leftSideCategory.setBounds(35, 65, 250, 115);
         leftSideCategory.add(vegetarianButton);
         leftSideCategory.add(breakfastButton);
         leftSideCategory.add(nonVegetarianButton);
         leftSideCategory.add(lunchButton);
         leftSideCategory.add(spicyButton);
         leftSideCategory.add(dinnerButton);
-        
+
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         JLabel leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
         leftSideCheckout.setLayout(null);
-        leftSideCheckout.setBounds(35, 195, 250,320);
+        leftSideCheckout.setBounds(35, 195, 250, 320);
         leftSideCheckout.add(loggingScroll);
 
-        //maybe add another jscrollpane because if order is too much, you ahve to scroll it
+        // maybe add another jscrollpane because if order is too much, you ahve to
+        // scroll it
 
         ImageIcon checkoutButtonImage = new ImageIcon("pics/checkout button.png");
         JButton checkoutButton = new JButton();
@@ -347,12 +277,10 @@ public class MainFrameManager extends JFrame {
         checkoutButton.setContentAreaFilled(false);
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(new ActionListener()
-        {
+        checkoutButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                
+            public void actionPerformed(ActionEvent e) {
+
                 showImageFrame("pics/pop up frame.png");
             }
         });
@@ -371,10 +299,55 @@ public class MainFrameManager extends JFrame {
         mainFrame.setVisible(true);
     }
 
-    //shit below is the same w/ login page popup after login (fadein adn fadeout)
+    private void updateFoodItemsPanel() {
+        // Remove existing components
+        Component[] componentList = foodItemsPanel.getComponents();
+        for (Component c : componentList) {
+            if (c instanceof AddFood)
+                foodItemsPanel.remove(c);
+        }
+        foodItemsPanel.revalidate();
+        foodItemsPanel.repaint();
+
+        // Loop through activeIDs to apply the filters
+        for (Integer activeId : activeIDs) {
+            boolean isVegetarian = vegetarianButton.isSelected();
+            boolean isNonVegetarian = nonVegetarianButton.isSelected();
+            boolean isSpicy = spicyButton.isSelected();
+            boolean isBreakfast = breakfastButton.isSelected();
+            boolean isLunch = lunchButton.isSelected();
+            boolean isDinner = dinnerButton.isSelected();
+
+            // Skip items that don't match the selected vegetarian/non-vegetarian filter
+            if (isVegetarian && !SQLMeal.getCategory(activeId).equals("Vegetarian"))
+                continue;
+            if (isNonVegetarian && !SQLMeal.getCategory(activeId).equals("Non-Vegetarian"))
+                continue;
+
+            // Skip items that don't match the selected spicy filter
+            if (isSpicy && !SQLMeal.getIsSpicy(activeId))
+                continue;
+
+            // Skip items that don't match the selected meal type filter
+            if (isBreakfast && !SQLMeal.getType(activeId).equals("Breakfast"))
+                continue;
+            if (isLunch && !SQLMeal.getType(activeId).equals("Lunch"))
+                continue;
+            if (isDinner && !SQLMeal.getType(activeId).equals("Dinner"))
+                continue;
+
+            // Add the filtered item to the panel
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+        }
+
+        // Refresh the panel
+        foodItemsPanel.revalidate();
+        foodItemsPanel.repaint();
+    }
+
+    // shit below is the same w/ login page popup after login (fadein adn fadeout)
     // TODO : REFACTOR... SAME FUNCTIONS IN ADDFOOD.JAVA
-    private void showImageFrame(String imagePath)
-    {
+    private void showImageFrame(String imagePath) {
         ImageIcon imageIcon = new ImageIcon(imagePath);
         Image image = imageIcon.getImage();
 
@@ -386,8 +359,7 @@ public class MainFrameManager extends JFrame {
 
         JPanel panel = new JPanel() {
             @Override
-            protected void paintComponent(Graphics g)
-            {
+            protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(image, 0, 0, this);
             }
@@ -403,22 +375,18 @@ public class MainFrameManager extends JFrame {
         imageWindow.setVisible(true);
 
         Timer fadeInTimer = new Timer(20, null);
-        fadeInTimer.addActionListener(new ActionListener()
-        {
+        fadeInTimer.addActionListener(new ActionListener() {
             float opacity = 0.0f;
 
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 opacity += 0.05f;
                 if (opacity >= 1.0f) {
                     opacity = 1.0f;
                     fadeInTimer.stop();
-                    new Timer(1000, new ActionListener()
-                    {
+                    new Timer(1000, new ActionListener() {
                         @Override
-                        public void actionPerformed(ActionEvent evt)
-                        {
+                        public void actionPerformed(ActionEvent evt) {
                             startFadeOut(imageWindow);
                         }
                     }).start();
@@ -429,16 +397,14 @@ public class MainFrameManager extends JFrame {
         });
         fadeInTimer.start();
     }
-    private void startFadeOut(JWindow imageWindow)
-    {
+
+    private void startFadeOut(JWindow imageWindow) {
         Timer fadeOutTimer = new Timer(20, null);
-        fadeOutTimer.addActionListener(new ActionListener()
-        {
+        fadeOutTimer.addActionListener(new ActionListener() {
             float opacity = 1.0f;
 
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 opacity -= 0.05f;
                 if (opacity <= 0.0f) {
                     opacity = 0.0f;
