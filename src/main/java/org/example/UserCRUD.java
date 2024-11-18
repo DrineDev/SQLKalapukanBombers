@@ -1,7 +1,16 @@
 package org.example;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class UserCRUD extends JFrame
 {
@@ -29,14 +38,28 @@ public class UserCRUD extends JFrame
 
         ImageIcon addUser = new ImageIcon("pics/add user.png");
         JCheckBox addUserButton = new JCheckBox(addUser);
+        addUserButton.setBorderPainted(false);
+        addUserButton.setContentAreaFilled(false);
         addUserButton.setBounds(50, 65,135, 35);
+        addUserButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                   
+            }
+        });
 
         ImageIcon updateUser = new ImageIcon("pics/update user.png");
         JCheckBox updateUserButton = new JCheckBox(updateUser);
+        updateUserButton.setBorderPainted(false);
+        updateUserButton.setContentAreaFilled(false);
         updateUserButton.setBounds(50,110, 135,35);
 
         ImageIcon deleteUser = new ImageIcon("pics/delete user.png");
         JCheckBox deleteUserButton = new JCheckBox(deleteUser);
+        deleteUserButton.setBorderPainted(false);
+        deleteUserButton.setContentAreaFilled(false);
         deleteUserButton.setBounds(50,155,135,34);
 
 
@@ -52,7 +75,7 @@ public class UserCRUD extends JFrame
 
         //navigation shits
         NavigatorButtonManager navButton = new NavigatorButtonManager();
-        navButton.setBounds(10,10,206,360);
+        navButton.setBounds(5,5,206,360);
 
         //exit
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button2.png");

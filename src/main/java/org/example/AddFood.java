@@ -15,11 +15,14 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
 
 public class AddFood extends JPanel {
@@ -29,7 +32,7 @@ public class AddFood extends JPanel {
     private Timer hoverTimer;
     private final int HOVER_DELAY = 500; // Delay in milliseconds
 
-    public AddFood(int mealID, JPanel loggerText)
+    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice)
     {
         // Retrieve food image and nutrition facts from database
         this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
@@ -72,7 +75,7 @@ public class AddFood extends JPanel {
         // Order button
         ImageIcon order = new ImageIcon("pics/order button.png");
         JButton orderButton = createOrderButton(order);
-        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, mealID));
+        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, mealID));
         
         // Add components to the panel
         this.add(foodBg); // Add foodBg with nutritionLabel inside
@@ -213,33 +216,53 @@ public class AddFood extends JPanel {
         return orderButton;
     }
     
-    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, int mealID) {
+    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID) {
     return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
                 // TODO : ADD FUNCTIONALITY SOON
-                // Retrieve the food name and quantity
+                
                 String foodName = SQLMeal.getName(mealID);
-                String quantity = amountTextField.getText();
+                String quantityStr = amountTextField.getText();
+            
+                // Convert the quantity string to an integer (default to 1 if not valid)
+                int quantity;  // Default to 1 if the quantity is invalid
+                quantity = Integer.parseInt(quantityStr);
+                if(quantity == 0)
+                {
+                    
+                }
+                // Retrieve the price of the meal
+                float priceValue = SQLInventory.getPrice(mealID);
 
-                // Create a log entry
-                String logEntry = foodName + " x" + quantity;
+                // Multiply the price by the quantity to get the total price
+                float totalPrice = priceValue * quantity;
+
+                // Format the total price as currency
+                String price = String.format("₱%.2f", totalPrice);
+
+                // Create the log entry with the quantity and food name
+                String logEntry = quantity + " x " + foodName;
+
                 JLabel logText = new JLabel(logEntry);
-
-                // Add the log entry to the checkout area
+                JLabel logPrice = new JLabel(price);
+                
                 logger.add(logText);
-
-                // Optionally, scroll to the bottom of the checkout log panel
-//                JScrollPane scrollPane = (JScrollPane) logger.getParent();
-//                scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
+                loggerPrice.add(logPrice);
 
                 // Display the popup frame (Order Confirmation)
                 showImageFrame("pics/pop up frame order.png");
 
                 // Reset the quantity field after order
                 x = 0;
-                amountTextField.setText("" + x);
+                amountTextField.setText("" + x + " ");
+
+                
+                logger.revalidate();
+                logger.repaint();
+                loggerPrice.revalidate();
+                loggerPrice.repaint();
             }
         };
     }
