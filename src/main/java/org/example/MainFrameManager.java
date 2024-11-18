@@ -50,6 +50,10 @@ public class MainFrameManager extends JFrame {
     private JCheckBox lunchButton;
     private JCheckBox dinnerButton;
     private List<Integer> activeIDs;
+    private JPanel priceLabel;
+    private JLabel totalLabel;
+    private JLabel leftSideCheckout;
+    private double totalPrice;
 
     public MainFrameManager() {
         // Exit button
@@ -137,8 +141,8 @@ public class MainFrameManager extends JFrame {
         loggingScroll.add(loggingPriceArea);
 
         activeIDs = SQLMeal.getActiveMealIds();
-        for (Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+        for(Integer activeId : activeIDs) {
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, priceLabel));
         }
 
         vegetarianButton = new JCheckBox("Vegetarian");
@@ -260,11 +264,20 @@ public class MainFrameManager extends JFrame {
         leftSideCategory.add(spicyButton);
         leftSideCategory.add(dinnerButton);
 
+        totalLabel = new JLabel("Total: ");
+        totalLabel.setBounds(10, 290, 90,22);
+        priceLabel = new JPanel();
+        priceLabel.setBounds(170,290, 75,22);
+        
+        
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
-        JLabel leftSideCheckout = new JLabel();
+        leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
         leftSideCheckout.setLayout(null);
         leftSideCheckout.setBounds(35, 195, 250, 320);
+        leftSideCheckout.setBounds(35, 195, 250,320);
+        leftSideCheckout.add(totalLabel);
+        leftSideCheckout.add(priceLabel);
         leftSideCheckout.add(loggingScroll);
 
         // maybe add another jscrollpane because if order is too much, you ahve to
@@ -279,8 +292,8 @@ public class MainFrameManager extends JFrame {
         checkoutButton.setBorder(null);
         checkoutButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-
+            public void actionPerformed(ActionEvent e)
+            {
                 showImageFrame("pics/pop up frame.png");
             }
         });

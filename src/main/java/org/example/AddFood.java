@@ -1,6 +1,7 @@
 package org.example;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -24,15 +25,17 @@ import javax.swing.Timer;
 
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
+import org.w3c.dom.Text;
 
 public class AddFood extends JPanel {
     private ImageIcon foodImage;
     private int x;
     private String nutritionFact;
+    private JButton orderButton;
     private Timer hoverTimer;
     private final int HOVER_DELAY = 500; // Delay in milliseconds
 
-    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice)
+    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, JPanel price)
     {
         // Retrieve food image and nutrition facts from database
         this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
@@ -75,7 +78,7 @@ public class AddFood extends JPanel {
         // Order button
         ImageIcon order = new ImageIcon("pics/order button.png");
         JButton orderButton = createOrderButton(order);
-        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, mealID));
+        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, price, mealID));
         
         // Add components to the panel
         this.add(foodBg); // Add foodBg with nutritionLabel inside
@@ -208,7 +211,7 @@ public class AddFood extends JPanel {
     }
     
     private JButton createOrderButton(ImageIcon order) {
-        JButton orderButton = new JButton(order);
+        orderButton = new JButton(order);
         orderButton.setBounds(210, 15, 80, 25);
         orderButton.setBorderPainted(false);
         orderButton.setFocusPainted(false);
@@ -216,53 +219,61 @@ public class AddFood extends JPanel {
         return orderButton;
     }
     
-    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID) {
+    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, JPanel pricePanel, int mealID) {
     return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
                 // TODO : ADD FUNCTIONALITY SOON
                 
+                
                 String foodName = SQLMeal.getName(mealID);
                 String quantityStr = amountTextField.getText();
-            
-                // Convert the quantity string to an integer (default to 1 if not valid)
-                int quantity;  // Default to 1 if the quantity is invalid
+                int quantity; 
                 quantity = Integer.parseInt(quantityStr);
-                if(quantity == 0)
+
+                if(quantity != 0)
                 {
+                    float priceValue = SQLInventory.getPrice(mealID);
+
+               
+                    float totalPrice = priceValue * quantity;
+    
+                   
+                    String price = String.format("₱%.2f", totalPrice);
+    
+                    String logEntry = quantity + " x " + foodName;
+    
+                    JLabel logText = new JLabel(logEntry);
+                    JLabel logPrice = new JLabel(price);
                     
+                    logger.add(logText);
+                    loggerPrice.add(logPrice);
+    
+                    x = 0;
+                    amountTextField.setText("" + x + " ");
+                    showImageFrame("pics/pop up frame order.png");
+
+                    JLabel realPrice = new JLabel();
+                    for (Component component : loggerPrice.getComponents()) 
+                    {
+                        if (component instanceof JLabel) 
+                        {
+                            JLabel priceLabel = (JLabel) component;
+                            String text = priceLabel.getText().trim();
+                            //text = text.replaceAll("[^\\d.]", ""); // Optional: remove currency symbol
+                            realPrice.setText(text);
+                        }
+                    }
+                    pricePanel.add(realPrice);
+
+                    pricePanel.revalidate();
+                    pricePanel.repaint();
+                    logger.revalidate();
+                    logger.repaint();
+                    loggerPrice.revalidate();
+                    loggerPrice.repaint();
                 }
-                // Retrieve the price of the meal
-                float priceValue = SQLInventory.getPrice(mealID);
-
-                // Multiply the price by the quantity to get the total price
-                float totalPrice = priceValue * quantity;
-
-                // Format the total price as currency
-                String price = String.format("₱%.2f", totalPrice);
-
-                // Create the log entry with the quantity and food name
-                String logEntry = quantity + " x " + foodName;
-
-                JLabel logText = new JLabel(logEntry);
-                JLabel logPrice = new JLabel(price);
-                
-                logger.add(logText);
-                loggerPrice.add(logPrice);
-
-                // Display the popup frame (Order Confirmation)
-                showImageFrame("pics/pop up frame order.png");
-
-                // Reset the quantity field after order
-                x = 0;
-                amountTextField.setText("" + x + " ");
-
-                
-                logger.revalidate();
-                logger.repaint();
-                loggerPrice.revalidate();
-                loggerPrice.repaint();
             }
         };
     }
