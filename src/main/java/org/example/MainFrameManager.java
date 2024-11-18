@@ -27,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JWindow;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 
 import org.example.SQLQueries.SQLMeal;
 public class MainFrameManager extends JFrame {
@@ -147,9 +148,33 @@ public class MainFrameManager extends JFrame {
         spicyButton.setFocusPainted(false);
         spicyButton.setBorderPainted(false);
         spicyButton.setContentAreaFilled(false);
-        spicyButton.setBorder(new EmptyBorder(0, 25,0, 0));
+        spicyButton.setBorder(new EmptyBorder(0, 15,0, 0));
         spicyButton.setIcon(defaultCheckbox);
         spicyButton.setSelectedIcon(selectedCheckbox);
+
+        JCheckBox breakfastButton = new JCheckBox("Breakfast");
+        breakfastButton.setFocusPainted(false);
+        breakfastButton.setBorderPainted(false);
+        breakfastButton.setContentAreaFilled(false);
+        breakfastButton.setIcon(defaultCheckbox);
+        breakfastButton.setSelectedIcon(selectedCheckbox);
+        breakfastButton.setBorder(new EmptyBorder(0,20,0,0));
+
+        JCheckBox lunchButton = new JCheckBox("Lunch");
+        lunchButton.setFocusPainted(false);
+        lunchButton.setBorderPainted(false);
+        lunchButton.setContentAreaFilled(false);
+        lunchButton.setIcon(defaultCheckbox);
+        lunchButton.setSelectedIcon(selectedCheckbox);
+        lunchButton.setBorder(new EmptyBorder(0,20,0,0));
+
+        JCheckBox dinnerButton = new JCheckBox("Dinner");
+        dinnerButton.setFocusPainted(false);
+        dinnerButton.setBorderPainted(false);
+        dinnerButton.setContentAreaFilled(false);
+        dinnerButton.setIcon(defaultCheckbox);
+        dinnerButton.setSelectedIcon(selectedCheckbox);
+        dinnerButton.setBorder(new EmptyBorder(0,20,0,0));
 
         vegetarianButton.addItemListener(new ItemListener() {
             @Override
@@ -268,17 +293,44 @@ public class MainFrameManager extends JFrame {
                 }
             }
         });
+        
+        breakfastButton.addItemListener(new ItemListener() 
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                // TODO : sort by breakfast categoroy
 
+            }
+        });
 
+        lunchButton.addItemListener(new ItemListener() 
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                // TODO : mao gihapon
+            }
+        });
 
+        dinnerButton.addItemListener(new ItemListener() 
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                // TODO : GIHAPON
+            }
+        });
         leftSideCategory.setIcon(categoryArea);
-        leftSideCategory.setLayout(new GridLayout(2, 2));
-        leftSideCategory.setBounds(35,65, 250, 100);
+        leftSideCategory.setLayout(new GridLayout(3, 3));
+        leftSideCategory.setBounds(35,65, 250, 115);
         leftSideCategory.add(vegetarianButton);
-        leftSideCategory.add(spicyButton);
+        leftSideCategory.add(breakfastButton);
         leftSideCategory.add(nonVegetarianButton);
-
-
+        leftSideCategory.add(lunchButton);
+        leftSideCategory.add(spicyButton);
+        leftSideCategory.add(dinnerButton);
+        
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         JLabel leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
@@ -300,6 +352,7 @@ public class MainFrameManager extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                
                 showImageFrame("pics/pop up frame.png");
             }
         });
