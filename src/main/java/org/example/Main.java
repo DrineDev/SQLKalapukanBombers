@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.Classes.Order;
+
 import javax.swing.SwingUtilities;
 
 /* FOR EDWELL
@@ -11,8 +13,9 @@ public class Main {
        //SwingUtilities.invokeLater(LoginPage::new);
     // SwingUtilities.invokeLater(InventoryCRUDEmployee::new);
         //SwingUtilities.invokeLater(MainFrameEmployee::new);
-       SwingUtilities.invokeLater(MainFrameManager::new);
+//       SwingUtilities.invokeLater(MainFrameManager::new);
         //SwingUtilities.invokeLater(InventoryCRUD::new);
-       //SwingUtilities.invokeLater(UserCRUD::new);
+//       SwingUtilities.invokeLater(UserCRUD::new);
+        SwingUtilities.invokeLater(OrderCrud::new);
     }
 }
