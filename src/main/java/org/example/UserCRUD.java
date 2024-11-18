@@ -5,12 +5,15 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 public class UserCRUD extends JFrame
 {
@@ -31,6 +34,40 @@ public class UserCRUD extends JFrame
         JLabel crudLabel = new JLabel(crudBG);
         crudLabel.setBounds(33,35,240,250);
         crudLabel.setLayout(null);
+
+        ImageIcon leftBottom = new ImageIcon("pics/crud bottom box.png");
+        JLabel crudBottom = new JLabel(leftBottom);
+        crudBottom.setBounds(33, 260, 240, 320);
+        crudBottom.setVisible(true);
+        crudBottom.setLayout(new BoxLayout(crudBottom, BoxLayout.Y_AXIS));
+        crudBottom.setBorder(new EmptyBorder(10, 10, 10, 0));
+
+        JTextField userID = new JTextField();
+        userID.setSize(195, 10);   
+        JLabel ID = new JLabel("User_ID");
+
+        JTextField username = new JTextField();
+        username.setPreferredSize(new Dimension(195,10));
+        JLabel user = new JLabel("Username");
+
+        JTextField password = new JTextField();
+        password.setPreferredSize(new Dimension(195,10));
+        JLabel pass = new JLabel("Password");
+
+        JTextField role = new JTextField();
+        role.setPreferredSize(new Dimension(195,25));
+        JLabel rolee = new JLabel("Role");
+
+        crudBottom.add(userID);
+        crudBottom.add(ID);
+        crudBottom.add(username);
+        crudBottom.add(user);
+        crudBottom.add(password);
+        crudBottom.add(pass);
+        crudBottom.add(role);
+        crudBottom.add(rolee);
+
+
 
         ImageIcon crudBig = new ImageIcon("pics/crud big box.png");
         JLabel crudBigArea = new JLabel(crudBig);
@@ -67,11 +104,7 @@ public class UserCRUD extends JFrame
         crudLabel.add(updateUserButton);
         crudLabel.add(deleteUserButton);
 
-        ImageIcon leftBottom = new ImageIcon("pics/crud bottom box.png");
-        JLabel crudBottom = new JLabel(leftBottom);
-        crudBottom.setBounds(33, 260, 240, 320);
-
-        
+    
 
         //navigation shits
         NavigatorButtonManager navButton = new NavigatorButtonManager();
