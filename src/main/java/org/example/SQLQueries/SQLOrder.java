@@ -49,6 +49,19 @@ public class SQLOrder {
         }
     }
 
+
+    public static void deleteOrder(int Order_Id) {
+        String deleteSQL = "DELETE FROM ORDERS WHERE Order_ID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+            preparedStatement.setInt(1, Order_Id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static void setMealId(int Order_Id, int Meal_Id) {
         String updateSQL = "UPDATE ORDERS SET Meal_Id = ? WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
