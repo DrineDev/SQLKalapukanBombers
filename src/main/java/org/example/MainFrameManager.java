@@ -53,6 +53,8 @@ public class MainFrameManager extends JFrame {
     private JPanel priceLabel;
     private JLabel totalLabel;
     private JLabel leftSideCheckout;
+    private JButton checkoutButton;
+    private NavigatorButtonManager navButton;
     private double totalPrice;
 
     public MainFrameManager() {
@@ -269,7 +271,6 @@ public class MainFrameManager extends JFrame {
         priceLabel = new JPanel();
         priceLabel.setBounds(170,290, 75,22);
         
-        
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
@@ -284,7 +285,7 @@ public class MainFrameManager extends JFrame {
         // scroll it
 
         ImageIcon checkoutButtonImage = new ImageIcon("pics/checkout button.png");
-        JButton checkoutButton = new JButton();
+        checkoutButton = new JButton();
         checkoutButton.setIcon(checkoutButtonImage);
         checkoutButton.setBounds(35, 535, 110, 30);
         checkoutButton.setContentAreaFilled(false);
@@ -298,7 +299,7 @@ public class MainFrameManager extends JFrame {
             }
         });
 
-        NavigatorButtonManager navButton = new NavigatorButtonManager();
+        navButton = new NavigatorButtonManager();
         navButton.setBounds(12, 7, 206, 360);
         navButton.setBackground(null);
 
@@ -350,7 +351,7 @@ public class MainFrameManager extends JFrame {
                 continue;
 
             // Add the filtered item to the panel
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, priceLabel));
         }
 
         // Refresh the panel

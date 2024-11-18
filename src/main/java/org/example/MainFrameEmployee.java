@@ -50,6 +50,12 @@ public class MainFrameEmployee extends JFrame {
     private JCheckBox lunchButton;
     private JCheckBox dinnerButton;
     private List<Integer> activeIDs;
+    private JPanel priceLabel;
+    private JLabel totalLabel;
+    private JLabel leftSideCheckout;
+    private JButton checkoutButton;
+    private NavigatorButtonEmployee navButton;
+    private double totalPrice;    
 
     public MainFrameEmployee() {
         // Exit button
@@ -138,7 +144,7 @@ public class MainFrameEmployee extends JFrame {
 
         activeIDs = SQLMeal.getActiveMealIds();
         for (Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, priceLabel));
         }
 
         vegetarianButton = new JCheckBox("Vegetarian");
@@ -260,15 +266,20 @@ public class MainFrameEmployee extends JFrame {
         leftSideCategory.add(spicyButton);
         leftSideCategory.add(dinnerButton);
 
+        totalLabel = new JLabel("Total: ");
+        totalLabel.setBounds(10, 290, 90,22);
+        priceLabel = new JPanel();
+        priceLabel.setBounds(170,290, 75,22);
+
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
-        JLabel leftSideCheckout = new JLabel();
+        leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
         leftSideCheckout.setBounds(35, 195, 250, 320);
         // maybe add another jscrollpane because if order is too much, you ahve to
         // scroll it
 
         ImageIcon checkoutButtonImage = new ImageIcon("pics/checkout button.png");
-        JButton checkoutButton = new JButton();
+        checkoutButton = new JButton();
         checkoutButton.setIcon(checkoutButtonImage);
         checkoutButton.setBounds(35, 535, 110, 30);
         checkoutButton.setContentAreaFilled(false);
@@ -281,7 +292,7 @@ public class MainFrameEmployee extends JFrame {
             }
         });
 
-        NavigatorButtonEmployee navButton = new NavigatorButtonEmployee();
+        navButton = new NavigatorButtonEmployee();
         navButton.setBounds(12, 7, 200, 183);
         navButton.setBackground(null);
 
@@ -333,7 +344,7 @@ public class MainFrameEmployee extends JFrame {
                 continue;
 
             // Add the filtered item to the panel
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, priceLabel));
         }
 
         // Refresh the panel
