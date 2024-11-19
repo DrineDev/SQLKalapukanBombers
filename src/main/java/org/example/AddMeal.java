@@ -17,16 +17,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import org.example.Classes.Meal;
@@ -35,11 +27,11 @@ import org.example.SQLQueries.SQLMeal;
 public class AddMeal extends JFrame {
     private static ImageIcon defaultCheckbox = new ImageIcon("pics/checkbox default.png");
     private static ImageIcon selectedCheckbox = new ImageIcon("pics/check_box.png");
-    private JTextField nameTextField;
-    private JTextField descriptionTextField;
-    private JTextField ingredientsTextField;
-    private JTextField nutritionalFactsTextField;
-    private JTextField servingSizeTextField;
+    private JTextArea nameTextArea;
+    private JTextArea descriptionTextField;
+    private JTextArea ingredientsTextField;
+    private JTextArea nutritionalFactsTextField;
+    private JTextArea servingSizeTextField;
     private JCheckBox vegetarianCheckBox;
     private JCheckBox nonVegetarianCheckBox;
     private JCheckBox breakfastCheckBox;
@@ -64,7 +56,7 @@ public class AddMeal extends JFrame {
     private void initializeGUI() {
         initializeJFrame();
 
-        nameTextField = createNameTextField();
+        nameTextArea = createNameTextArea();
         JLabel nameLabel = createLabel("Name");
 
         ingredientsTextField = createIngredientsTextField();
@@ -102,7 +94,7 @@ public class AddMeal extends JFrame {
         // NAME PANEL
         JPanel nameTextPanel = new JPanel(FlowLayoutLeft);
         JPanel nameLabelPanel = new JPanel(FlowLayoutLeft);
-        nameTextPanel.add(nameTextField);
+        nameTextPanel.add(nameTextArea);
         nameLabelPanel.add(nameLabel);
 
         // INGREDIENTS PANEL
@@ -205,7 +197,7 @@ public class AddMeal extends JFrame {
         this.setAlwaysOnTop(true);
 
         // Set background color - using a slightly visible white instead of fully transparent
-        this.setBackground(new Color(255, 255, 255, 1));
+        this.setBackground(new Color(255, 255, 255));
 
         // Pack the frame to ensure proper sizing
         this.pack();
@@ -226,38 +218,48 @@ public class AddMeal extends JFrame {
         });
     }
 
-    private JTextField createNameTextField() {
-        JTextField nameTextField = new JTextField();
-        nameTextField.setPreferredSize(new Dimension(430, 30));
-        nameTextField.setBackground(new Color(217, 217, 217));
-        return nameTextField;
+    private JTextArea createNameTextArea() {
+        JTextArea nameTextArea = new JTextArea();
+        nameTextArea.setPreferredSize(new Dimension(430, 30));
+        nameTextArea.setBackground(new Color(217, 217, 217));
+        nameTextArea.setLineWrap(true);
+        nameTextArea.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
+        return nameTextArea;
     }
 
-    private JTextField createIngredientsTextField() {
-        JTextField ingredientsTextField = new JTextField();
+    private JTextArea createIngredientsTextField() {
+        JTextArea ingredientsTextField = new JTextArea();
         ingredientsTextField.setPreferredSize(new Dimension(430, 104));
         ingredientsTextField.setBackground(new Color(217, 217, 217));
+        ingredientsTextField.setLineWrap(true);  // Added line wrap
+        ingredientsTextField.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
         return ingredientsTextField;
     }
 
-    private JTextField createDescriptionTextField() {
-        JTextField descriptionTextField = new JTextField();
+    private JTextArea createDescriptionTextField() {
+        JTextArea descriptionTextField = new JTextArea();
         descriptionTextField.setPreferredSize(new Dimension(430, 30));
         descriptionTextField.setBackground(new Color(217, 217, 217));
+        descriptionTextField.setLineWrap(true);  // Added line wrap
+        descriptionTextField.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
         return descriptionTextField;
     }
 
-    private JTextField createNutritionalFactsTextField() {
-        JTextField nutritionalFactsTextField = new JTextField();
+    private JTextArea createNutritionalFactsTextField() {
+        JTextArea nutritionalFactsTextField = new JTextArea();
         nutritionalFactsTextField.setPreferredSize(new Dimension(430, 50));
         nutritionalFactsTextField.setBackground(new Color(217, 217, 217));
+        nutritionalFactsTextField.setLineWrap(true);  // Added line wrap
+        nutritionalFactsTextField.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
         return nutritionalFactsTextField;
     }
 
-    private JTextField createServingSizeTextField() {
-        JTextField servingSizeTextField = new JTextField();
-        servingSizeTextField.setPreferredSize(new Dimension(250, 50));
+    private JTextArea createServingSizeTextField() {
+        JTextArea servingSizeTextField = new JTextArea();
+        servingSizeTextField.setPreferredSize(new Dimension(350, 50));
         servingSizeTextField.setBackground(new Color(217, 217, 217));
+        servingSizeTextField.setLineWrap(true);  // Added line wrap
+        servingSizeTextField.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
         return servingSizeTextField;
     }
 
@@ -417,7 +419,7 @@ public class AddMeal extends JFrame {
 
                     // Set other properties
                     tempMeal.setIsSpicy(spicyCheckBox.isSelected());
-                    tempMeal.setName(nameTextField.getText().trim());
+                    tempMeal.setName(nameTextArea.getText().trim());
                     tempMeal.setIngredients(ingredientsTextField.getText().trim());
                     tempMeal.setDescription(descriptionTextField.getText().trim());
                     tempMeal.setServingSize(servingSizeTextField.getText().trim());
@@ -451,7 +453,7 @@ public class AddMeal extends JFrame {
         lunchCheckBox.setSelected(false);
         dinnerCheckBox.setSelected(false);
         spicyCheckBox.setSelected(false);
-        nameTextField.setText("");
+        nameTextArea.setText("");
         ingredientsTextField.setText("");
         descriptionTextField.setText("");
         servingSizeTextField.setText("");
@@ -472,7 +474,7 @@ public class AddMeal extends JFrame {
                     JOptionPane.WARNING_MESSAGE);
             return false;
         }
-        if (nameTextField.getText().trim().isEmpty()) {
+        if (nameTextArea.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please enter a meal name.", "Validation Error",
                     JOptionPane.WARNING_MESSAGE);
             return false;
