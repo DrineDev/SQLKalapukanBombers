@@ -275,45 +275,37 @@ public class AddFood extends JPanel {
         orderButton.setContentAreaFilled(false);
         return orderButton;
     }
-    
+
     private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID, MainFrameManager mainFrame) {
-    return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                // FOR SETTING TOTAL PRICE AND PRICE
-                String foodName = SQLMeal.getName(mealID);
-                String quantityStr = amountTextField.getText();
-                int quantity = Integer.parseInt(quantityStr);
+        return e -> {
+            String foodName = SQLMeal.getName(mealID);
+            String quantityStr = amountTextField.getText();
+            int quantity = Integer.parseInt(quantityStr);
 
-                if(quantity != 0)
-                {
-                    float priceValue = SQLInventory.getPrice(mealID);
-                    float totalPrice = priceValue * quantity;
+            if (quantity != 0) {
+                float priceValue = SQLInventory.getPrice(mealID);
+                float totalPrice = priceValue * quantity;
 
-                    String price = String.format("₱%.2f", totalPrice);
-                    String logEntry = quantity + " x " + foodName;
+                String price = String.format("₱%.2f", totalPrice);
+                String logEntry = quantity + " x " + foodName;
 
-                    JLabel logText = new JLabel(logEntry);
-                    JLabel logPrice = new JLabel(price);
+                JLabel logText = new JLabel(logEntry);
+                JLabel logPrice = new JLabel(price);
 
-                    mainFrame.updateTotalPrice(totalPrice);
-                    logger.add(logText);
-                    loggerPrice.add(logPrice);
-                    x = 0;
-                    amountTextField.setText("" + x + " ");
-                    showImageFrame("pics/pop up frame order.png");
+                mainFrame.updateTotalPrice(totalPrice);
+                logger.add(logText);
+                loggerPrice.add(logPrice);
+                x = 0;
+                amountTextField.setText("" + x);
 
-                    logger.revalidate();
-                    logger.repaint();
-                    loggerPrice.revalidate();
-                    loggerPrice.repaint();
-                }
+                logger.revalidate();
+                logger.repaint();
+                loggerPrice.revalidate();
+                loggerPrice.repaint();
 
-                // FOR ADDING TO ORDER
-                OrderItem orderItem = new OrderItem(0, mealID, x, SQLInventory.getPrice(mealID));
+                // Add to SharedData order (without database interaction)
+                OrderItem orderItem = new OrderItem(SharedData.order.getOrderId(), mealID, quantity, priceValue);
                 SharedData.order.addOrderItem(orderItem);
-                SQLOrderItems.addOrderItem(SharedData.order.getOrderId(), mealID, x, SQLInventory.getPrice(mealID));
             }
         };
     }
