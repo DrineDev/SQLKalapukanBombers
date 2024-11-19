@@ -13,7 +13,8 @@ public class SQLCreate {
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "username TEXT NOT NULL UNIQUE, "
                 + "password TEXT NOT NULL, "
-                + "role TEXT NOT NULL)";
+                + "role TEXT NOT NULL, "
+                + "Manager_Key TEXT UNIQUE)";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
              Statement statement = connection.createStatement()) {

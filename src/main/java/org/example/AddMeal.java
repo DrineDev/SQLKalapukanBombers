@@ -55,10 +55,10 @@ public class AddMeal extends JFrame {
     private JCheckBox spicyCheckBox;
 
     public AddMeal() throws IOException {
+        initializeGUI();
         selectedImage = null;
         storedImage = null;
         tempMeal = new Meal();
-        initializeGUI();
     }
 
     private void initializeGUI() {
@@ -192,18 +192,38 @@ public class AddMeal extends JFrame {
         mainPanel.add(confirmButtonPanel, c);
 
         // Add the main panel to the frame content pane
-        this.getContentPane().add(mainPanel);
+        this.add(mainPanel);
     }
 
     private void initializeJFrame() {
+        // Set basic properties first
         this.setUndecorated(true);
         this.setSize(new Dimension(480, 570));
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setBackground(new Color(255, 255, 255, 0));
         this.setLocationRelativeTo(null);
-        this.setLayout(new BorderLayout()); // For better centering of main panel
+        this.setLayout(new BorderLayout());
+        this.setAlwaysOnTop(true);
+
+        // Set background color - using a slightly visible white instead of fully transparent
+        this.setBackground(new Color(255, 255, 255, 1));
+
+        // Pack the frame to ensure proper sizing
+        this.pack();
+
+        // Ensure the frame size after packing
+        this.setSize(new Dimension(480, 570));
+
+        // Request focus before making visible
+        this.requestFocus();
+
+        // Make visible as the last step
         this.setVisible(true);
-        this.toFront();
+
+        // Additional focus requests after visible
+        SwingUtilities.invokeLater(() -> {
+            this.toFront();
+            this.repaint();
+        });
     }
 
     private JTextField createNameTextField() {
@@ -358,6 +378,7 @@ public class AddMeal extends JFrame {
         exitButton.setContentAreaFilled(false);
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
+        exitButton.addActionListener(e -> this.dispose());
         return exitButton;
     }
 

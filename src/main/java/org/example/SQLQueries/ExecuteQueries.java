@@ -8,8 +8,6 @@ public class ExecuteQueries {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
     public static void main(String[] args) 
     {
-        SQLDelete.dropOrdersTable();
-        SQLCreate.createOrdersTable();
-        SQLCreate.createOrderItemsTable();
+        SQLUser.addManagerKeyColumn();
     }
 }
