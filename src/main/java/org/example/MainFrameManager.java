@@ -14,6 +14,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.RoundRectangle2D.Float;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -28,6 +29,7 @@ import javax.swing.JWindow;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
+import org.example.Classes.Order;
 import org.example.SQLQueries.SQLMeal;
 
 public class MainFrameManager extends JFrame {
@@ -299,19 +301,8 @@ public class MainFrameManager extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                JLabel realPrice = new JLabel();
-                for (Component component : pricePanel.getComponents())
-                {
-                    if (component instanceof JLabel)
-                    {
-                        String text =((JLabel) component).getText();
-                        System.out.println(text);
-//                        String text = priceLabel.getText().trim();
-                        text = text.replaceAll("[^\\d.]", ""); // Optional: remove currency symbol
-                        realPrice.setText(text);
-                    }
-                }
-
+                LocalDateTime time = LocalDateTime.now();
+                Order order = new Order(time, "Pending");
                 showImageFrame("pics/pop up frame.png");
             }
         });

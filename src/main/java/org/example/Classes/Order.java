@@ -1,36 +1,71 @@
 package org.example.Classes;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
-
     private int _orderId;
-    private int _mealId;
-    private int _mealQuantity;
-    private LocalDate _date;
+    private LocalDateTime _orderDate;
+    private String _status;
+    private double _totalAmount;
+    private List<OrderItem> _orderItems;
 
-    Order() {
+    // Default constructor
+    public Order() {
         _orderId = 0;
-        _mealId = 0;
-        _mealQuantity = 0;
-        _date = LocalDate.of(1, 1, 1);
+        _orderDate = LocalDateTime.now();
+        _status = "Pending";
+        _totalAmount = 0.0;
+        _orderItems = new ArrayList<>();
     }
 
-    Order (int mealID, int mealQuan)
-    {
-        _mealId = mealID; _mealQuantity = mealQuan;
-    }
-    Order(int orderId, int mealId, int mealQuantity, LocalDate date) {
-        _orderId = orderId; _mealId = mealId; _mealQuantity = mealQuantity; _date = date;
+    // Constructor with basic info
+    public Order(LocalDateTime orderDate, String status) {
+        _orderId = 0;
+        _orderDate = orderDate;
+        _status = status;
+        _totalAmount = 0.0;
+        _orderItems = new ArrayList<>();
     }
 
+    // Full constructor
+    public Order(int orderId, LocalDateTime orderDate, String status, double totalAmount) {
+        _orderId = orderId;
+        _orderDate = orderDate;
+        _status = status;
+        _totalAmount = totalAmount;
+        _orderItems = new ArrayList<>();
+    }
+
+    // Getters
     public int getOrderId() { return _orderId; }
-    public int getMealId() { return _mealId; }
-    public int getMealQuantity() { return _mealQuantity; }
-    public LocalDate getDate() { return _date; }
+    public LocalDateTime getOrderDate() { return _orderDate; }
+    public String getStatus() { return _status; }
+    public double getTotalAmount() { return _totalAmount; }
+    public List<OrderItem> getOrderItems() { return _orderItems; }
 
+    // Setters
     public void setOrderId(int orderId) { _orderId = orderId; }
-    public void setMealId(int mealId) { _mealId = mealId; }
-    public void setMealQuantity(int mealQuantity) { _mealQuantity = mealQuantity; }
-    public void setDate(LocalDate date) { _date = date; }
+    public void setOrderDate(LocalDateTime orderDate) { _orderDate = orderDate; }
+    public void setStatus(String status) { _status = status; }
+    public void setTotalAmount(double totalAmount) { _totalAmount = totalAmount; }
+
+    // Order Items management
+    public void addOrderItem(OrderItem item) {
+        _orderItems.add(item);
+        updateTotalAmount();
+    }
+
+    public void removeOrderItem(OrderItem item) {
+        _orderItems.remove(item);
+        updateTotalAmount();
+    }
+
+    // Helper method to update total amount
+    private void updateTotalAmount() {
+        _totalAmount = _orderItems.stream()
+                .mapToDouble(OrderItem::getSubtotal)
+                .sum();
+    }
 }

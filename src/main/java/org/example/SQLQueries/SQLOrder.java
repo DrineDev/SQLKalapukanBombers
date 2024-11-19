@@ -5,137 +5,92 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SQLOrder {
-
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
-    public static void addOrder(int Order_Id, int Meal_Id, int Meal_Quantity, String Date) {
-        String insertSQL = "INSERT INTO ORDERS (Order_Id, Meal_Id, Meal_Quantity, Date) VALUES (?, ?, ?, ?)";
+    // Add a new order
+    public static int addOrder(String orderDate, String status, double totalAmount) {
+        String insertSQL = "INSERT INTO ORDERS (Order_Date, Status, Total_Amount) VALUES (?, ?, ?)";
+        int generatedOrderId = -1;
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setInt(1, Order_Id);
-            preparedStatement.setInt(2, Meal_Id);
-            preparedStatement.setInt(3, Meal_Quantity);
-            preparedStatement.setString(4, Date);
-        
-            int rowsAffected = preparedStatement.executeUpdate();  // This returns the number of rows inserted
+            preparedStatement.setString(1, orderDate);
+            preparedStatement.setString(2, status);
+            preparedStatement.setDouble(3, totalAmount);
 
+            int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Order added successfully!");
-            } else {
-                System.out.println("Failed to add the order.");
+                ResultSet rs = preparedStatement.getGeneratedKeys();
+                if (rs.next()) {
+                    generatedOrderId = rs.getInt(1);
+                }
+                System.out.println("Order added successfully with ID: " + generatedOrderId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return generatedOrderId;
+    }
+
+    // Edit an existing order
+    public static void editOrder(int orderId, String orderDate, String status, double totalAmount) {
+        String updateSQL = "UPDATE ORDERS SET Order_Date = ?, Status = ?, Total_Amount = ? WHERE Order_Id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+
+            preparedStatement.setString(1, orderDate);
+            preparedStatement.setString(2, status);
+            preparedStatement.setDouble(3, totalAmount);
+            preparedStatement.setInt(4, orderId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Order updated successfully!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static void editOrder(int Order_Id, int Meal_Id, int Meal_Quantity, String Date) {
-        String updateSQL = "UPDATE ORDERS SET Meal_Id = ?, Meal_Quantity = ?, Date = ? WHERE Order_Id = ?";
+    // Delete an order
+    public static void deleteOrder(int orderId) {
+        String deleteSQL = "DELETE FROM ORDERS WHERE Order_Id = ?";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-            PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
 
-            preparedStatement.setInt(1, Meal_Id);
-            preparedStatement.setInt(2, Meal_Quantity);
-            preparedStatement.setString(3, Date);
+            preparedStatement.setInt(1, orderId);
 
-            System.out.println("Order edit successful.");
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void setMealId(int Order_Id, int Meal_Id) {
-        String updateSQL = "UPDATE ORDERS SET Meal_Id = ? WHERE Order_Id = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
-
-            preparedStatement.setInt(1, Meal_Id);
-            preparedStatement.setInt(2, Order_Id);
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void setMealQuantity(int Order_Id, int Meal_Quantity) {
-        String updateSQL = "UPDATE ORDERS SET Meal_Quantity = ? WHERE Order_Id = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
-
-            preparedStatement.setInt(1, Meal_Quantity);
-            preparedStatement.setInt(2, Order_Id);
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void setOrderDate(int Order_Id, String Date) {
-        String updateSQL = "UPDATE ORDERS SET Date = ? WHERE Order_Id = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
-
-            preparedStatement.setString(1, Date);
-            preparedStatement.setInt(2, Order_Id);
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static int getMealId(int Order_Id) {
-        String query = "SELECT Meal_Id FROM ORDERS WHERE Order_Id = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            preparedStatement.setInt(1, Order_Id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getInt("Meal_Id");
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Order deleted successfully!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0;
     }
 
-    public static int getMealQuantity(int Order_Id) {
-        String query = "SELECT Meal_Quantity FROM ORDERS WHERE Order_Id = ?";
+    // Get order details
+    public static Order getOrder(int orderId) {
+        String query = "SELECT * FROM ORDERS WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            preparedStatement.setInt(1, Order_Id);
+            preparedStatement.setInt(1, orderId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getInt("Meal_Quantity");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public static String getOrderDate(int Order_Id) {
-        String query = "SELECT Date FROM ORDERS WHERE Order_Id = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            preparedStatement.setInt(1, Order_Id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getString("Date");
+                return new Order(
+                    resultSet.getInt("Order_Id"),
+                    resultSet.getString("Order_Date"),
+                    resultSet.getString("Status"),
+                    resultSet.getDouble("Total_Amount")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,4 +98,31 @@ public class SQLOrder {
         return null;
     }
 
+    // Update order status
+    public static void updateOrderStatus(int orderId, String status) {
+        String updateSQL = "UPDATE ORDERS SET Status = ? WHERE Order_Id = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, orderId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Update order total amount
+    public static void updateOrderTotal(int orderId, double totalAmount) {
+        String updateSQL = "UPDATE ORDERS SET Total_Amount = ? WHERE Order_Id = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+
+            preparedStatement.setDouble(1, totalAmount);
+            preparedStatement.setInt(2, orderId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

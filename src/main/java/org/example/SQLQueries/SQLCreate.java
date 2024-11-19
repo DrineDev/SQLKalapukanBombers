@@ -68,19 +68,40 @@ public class SQLCreate {
         }
     }
 
-    public static void createOrderTable() {
+    public static void createOrdersTable() {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS ORDERS ("
-                + "Order_Id INTEGER PRIMARY KEY, "
-                + "Meal_Id INTEGER NOT NULL, "
-                + "Meal_Quantity INTEGER NOT NULL, "
-                + "Date TEXT NOT NULL, "
-                + "FOREIGN KEY (Meal_ID) REFERENCES MEALS(Meal_ID))";
+                + "Order_Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "Order_Date TEXT NOT NULL, "
+                + "Status TEXT NOT NULL, "
+                + "Total_Amount REAL DEFAULT 0)";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
              Statement statement = connection.createStatement()) {
 
             statement.execute(createTableSQL);
-            System.out.println("Table 'ORDER' created successfully!");
+            System.out.println("Table 'ORDERS' created successfully!");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createOrderItemsTable() {
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS ORDER_ITEMS ("
+                + "Order_Item_Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "Order_Id INTEGER NOT NULL, "
+                + "Meal_Id INTEGER NOT NULL, "
+                + "Quantity INTEGER NOT NULL, "
+                + "Unit_Price REAL NOT NULL, "
+                + "Subtotal REAL NOT NULL, "
+                + "FOREIGN KEY (Order_Id) REFERENCES ORDERS(Order_Id) ON DELETE CASCADE, "
+                + "FOREIGN KEY (Meal_Id) REFERENCES MEALS(Meal_Id))";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             Statement statement = connection.createStatement()) {
+
+            statement.execute(createTableSQL);
+            System.out.println("Table 'ORDER_ITEMS' created successfully!");
 
         } catch (SQLException e) {
             e.printStackTrace();
