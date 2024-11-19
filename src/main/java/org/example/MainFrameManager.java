@@ -50,11 +50,12 @@ public class MainFrameManager extends JFrame {
     private JCheckBox lunchButton;
     private JCheckBox dinnerButton;
     private List<Integer> activeIDs;
-    private JPanel priceLabel;
+    private JPanel pricePanel;
     private JLabel totalLabel;
     private JLabel leftSideCheckout;
     private JButton checkoutButton;
     private NavigatorButtonManager navButton;
+    private JLabel totalPriceLabel;
     private double totalPrice;
 
     public MainFrameManager() {
@@ -144,7 +145,7 @@ public class MainFrameManager extends JFrame {
 
         activeIDs = SQLMeal.getActiveMealIds();
         for(Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
         }
 
         vegetarianButton = new JCheckBox("Vegetarian");
@@ -268,8 +269,10 @@ public class MainFrameManager extends JFrame {
 
         totalLabel = new JLabel("Total: ");
         totalLabel.setBounds(10, 290, 90,22);
-        priceLabel = new JPanel();
-        priceLabel.setBounds(170,290, 75,22);
+        pricePanel = new JPanel();
+        pricePanel.setBounds(170,290, 75,22);
+        totalPriceLabel = new JLabel("₱0.00");
+        pricePanel.add(totalPriceLabel);
         
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         leftSideCheckout = new JLabel();
@@ -278,7 +281,7 @@ public class MainFrameManager extends JFrame {
         leftSideCheckout.setBounds(35, 195, 250, 320);
         leftSideCheckout.setBounds(35, 195, 250,320);
         leftSideCheckout.add(totalLabel);
-        leftSideCheckout.add(priceLabel);
+        leftSideCheckout.add(pricePanel);
         leftSideCheckout.add(loggingScroll);
 
         // maybe add another jscrollpane because if order is too much, you ahve to
@@ -297,15 +300,15 @@ public class MainFrameManager extends JFrame {
             public void actionPerformed(ActionEvent e)
             {
                 JLabel realPrice = new JLabel();
-                for (Component component : priceLabel.getComponents())
+                for (Component component : pricePanel.getComponents())
                 {
                     if (component instanceof JLabel)
                     {
                         String text =((JLabel) component).getText();
                         System.out.println(text);
 //                        String text = priceLabel.getText().trim();
-//                        //text = text.replaceAll("[^\\d.]", ""); // Optional: remove currency symbol
-//                        realPrice.setText(text);
+                        text = text.replaceAll("[^\\d.]", ""); // Optional: remove currency symbol
+                        realPrice.setText(text);
                     }
                 }
 
@@ -365,12 +368,19 @@ public class MainFrameManager extends JFrame {
                 continue;
 
             // Add the filtered item to the panel
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
         }
 
         // Refresh the panel
         foodItemsPanel.revalidate();
         foodItemsPanel.repaint();
+    }
+
+    public void updateTotalPrice(double price) {
+        totalPrice += price;
+        totalPriceLabel.setText(String.format("₱%.2f", totalPrice));
+        pricePanel.revalidate();
+        pricePanel.repaint();
     }
 
     // shit below is the same w/ login page popup after login (fadein adn fadeout)

@@ -35,7 +35,7 @@ public class AddFood extends JPanel {
     private Timer hoverTimer;
     private final int HOVER_DELAY = 500; // Delay in milliseconds
 
-    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice)
+    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameManager mainFrame)
     {
         // Retrieve food image and nutrition facts from database
         this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
@@ -80,8 +80,65 @@ public class AddFood extends JPanel {
         // Order button
         ImageIcon order = new ImageIcon("pics/order button.png");
         JButton orderButton = createOrderButton(order);
-        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, mealID));
+        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, mealID, mainFrame));
         
+        // Add components to the panel
+        this.add(foodBg); // Add foodBg with nutritionLabel inside
+        bottomLabel.add(increment);
+        bottomLabel.add(amountTextField);
+        bottomLabel.add(decrement);
+        bottomLabel.add(orderButton);
+        bottomArea.add(bottomLabel);
+        this.add(bottomArea);
+    }
+
+    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameEmployee mainFrame)
+    {
+        // Retrieve food image and nutrition facts from database
+        this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
+        this.nutritionFact = SQLMeal.getNutritionFact(mealID);
+
+        this.setPreferredSize(new Dimension(300, 300));
+        this.setBackground(Color.white);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        // Food background label
+        JLabel foodBg = new JLabel();
+        foodBg.setIcon(foodImage);
+
+        // TODO
+
+        // Nutrition fact label (displayed on hover)
+        JLabel nutritionLabel = createNutritionLabel();
+
+        // Add nutrition label as a child of foodBg for better overlay management
+        foodBg.add(nutritionLabel);
+        foodBg.addMouseListener(createHoverListener(nutritionLabel)); // FOR HOVERING ACTIONS
+
+        // Bottom area for buttons and other elements
+        ImageIcon bottom = new ImageIcon("pics/addfood bottom.png");
+        JLabel bottomLabel = createBottomLabel(bottom);
+        JPanel bottomArea = createBottomArea();
+
+        // Quantity label
+        ImageIcon amountField = new ImageIcon("pics/amount field.png");
+        JLabel amountTextField = createAmountTextField(amountField);
+
+        // Increment button
+        ImageIcon incre = new ImageIcon("pics/more.png");
+        JButton increment = createIncrementButton(incre);
+        increment.addActionListener(createIncrementListener(amountTextField)); // FOR ADDING ORDER
+
+        // Decrement button
+        ImageIcon decre = new ImageIcon("pics/less.png");
+        JButton decrement = createDecrementButton(decre);
+        decrement.addActionListener(createDecrementListener(amountTextField));
+
+        // Order button
+        ImageIcon order = new ImageIcon("pics/order button.png");
+        JButton orderButton = createOrderButton(order);
+        orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, mealID, mainFrame));
+
         // Add components to the panel
         this.add(foodBg); // Add foodBg with nutritionLabel inside
         bottomLabel.add(increment);
@@ -221,41 +278,70 @@ public class AddFood extends JPanel {
         return orderButton;
     }
     
-    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID) {
+    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID, MainFrameManager mainFrame) {
     return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
                 // TODO : ADD FUNCTIONALITY SOON
-                
-                
                 String foodName = SQLMeal.getName(mealID);
                 String quantityStr = amountTextField.getText();
-                int quantity; 
-                quantity = Integer.parseInt(quantityStr);
+                int quantity = Integer.parseInt(quantityStr);
 
                 if(quantity != 0)
                 {
                     float priceValue = SQLInventory.getPrice(mealID);
-
-               
                     float totalPrice = priceValue * quantity;
-    
-                   
+
                     String price = String.format("₱%.2f", totalPrice);
-    
                     String logEntry = quantity + " x " + foodName;
     
                     JLabel logText = new JLabel(logEntry);
                     JLabel logPrice = new JLabel(price);
-                    
+
+                    mainFrame.updateTotalPrice(totalPrice);
                     logger.add(logText);
                     loggerPrice.add(logPrice);
-    
                     x = 0;
                     amountTextField.setText("" + x + " ");
                     showImageFrame("pics/pop up frame order.png");
 
+                    logger.revalidate();
+                    logger.repaint();
+                    loggerPrice.revalidate();
+                    loggerPrice.repaint();
+                }
+            }
+        };
+    }
+
+    private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID, MainFrameEmployee mainFrame) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                // TODO : ADD FUNCTIONALITY SOON
+                String foodName = SQLMeal.getName(mealID);
+                String quantityStr = amountTextField.getText();
+                int quantity = Integer.parseInt(quantityStr);
+
+                if(quantity != 0)
+                {
+                    float priceValue = SQLInventory.getPrice(mealID);
+                    float totalPrice = priceValue * quantity;
+
+                    String price = String.format("₱%.2f", totalPrice);
+                    String logEntry = quantity + " x " + foodName;
+
+                    JLabel logText = new JLabel(logEntry);
+                    JLabel logPrice = new JLabel(price);
+
+                    mainFrame.updateTotalPrice(totalPrice);
+                    logger.add(logText);
+                    loggerPrice.add(logPrice);
+                    x = 0;
+                    amountTextField.setText("" + x + " ");
+                    showImageFrame("pics/pop up frame order.png");
 
                     logger.revalidate();
                     logger.repaint();

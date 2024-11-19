@@ -50,12 +50,13 @@ public class MainFrameEmployee extends JFrame {
     private JCheckBox lunchButton;
     private JCheckBox dinnerButton;
     private List<Integer> activeIDs;
-    private JPanel priceLabel;
+    private JPanel pricePanel;
     private JLabel totalLabel;
     private JLabel leftSideCheckout;
     private JButton checkoutButton;
     private NavigatorButtonEmployee navButton;
-    private double totalPrice;    
+    private JLabel totalPriceLabel;
+    private double totalPrice;
 
     public MainFrameEmployee() {
         // Exit button
@@ -144,7 +145,7 @@ public class MainFrameEmployee extends JFrame {
 
         activeIDs = SQLMeal.getActiveMealIds();
         for (Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
         }
 
         vegetarianButton = new JCheckBox("Vegetarian");
@@ -268,8 +269,10 @@ public class MainFrameEmployee extends JFrame {
 
         totalLabel = new JLabel("Total: ");
         totalLabel.setBounds(10, 290, 90,22);
-        priceLabel = new JPanel();
-        priceLabel.setBounds(170,290, 75,22);
+        pricePanel = new JPanel();
+        pricePanel.setBounds(170,290, 75,22);
+        totalPriceLabel = new JLabel("₱0.00");
+        pricePanel.add(totalPriceLabel);
 
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         leftSideCheckout = new JLabel();
@@ -344,12 +347,19 @@ public class MainFrameEmployee extends JFrame {
                 continue;
 
             // Add the filtered item to the panel
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
         }
 
         // Refresh the panel
         foodItemsPanel.revalidate();
         foodItemsPanel.repaint();
+    }
+
+    public void updateTotalPrice(double price) {
+        totalPrice += price;
+        totalPriceLabel.setText(String.format("₱%.2f", totalPrice));
+        pricePanel.revalidate();
+        pricePanel.repaint();
     }
 
     // shit below is the same w/ login page popup after login (fadein adn fadeout)
