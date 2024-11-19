@@ -4,12 +4,8 @@ Final Project for Software Engineering Elective 1 - Java
 
 # TO DO
 MainFrameEmployee.java && MainFrameManager.java
-  1. Order functionality
-  2. Add Item to order functionality
-  3. Complete Order functionality
-  4. Notification for low stocks
-  5. Fix hover text
-  6. Checkout
+  1. Notification for low stocks
+  2. Fix hover text
      
 InventoryCrud.java
   1. Search bar for finding food
