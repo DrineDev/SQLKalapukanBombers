@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Classes.Order;
 import org.example.SQLQueries.SQLOrder;
 
 import javax.swing.*;
@@ -97,93 +98,67 @@ public class OrderCrud extends JFrame {
 
 
 
-        //Initialize Bottom Left panel buttons
+        //Initialize Add Order panel buttons
         JTextField Order_ID_Textfield = new JTextField();
         JTextField Meal_ID_Textfield = new JTextField();
         JTextField Meal_Quantity_Textfield = new JTextField();
         JTextField Date_Textfield = new JTextField();
-        Order_ID_Textfield.setPreferredSize(new Dimension(195,30));
-        Order_ID_Textfield.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2, true));
-        Meal_ID_Textfield.setPreferredSize(new Dimension(195,30));
-        Meal_ID_Textfield.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2, true));
-        Meal_Quantity_Textfield.setPreferredSize(new Dimension(195,30));
-        Meal_Quantity_Textfield.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2, true));
-        Date_Textfield.setPreferredSize(new Dimension(195,30));
-        Date_Textfield.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2, true));
+        Order_ID_Textfield.setPreferredSize(new Dimension(195,25));
+        Order_ID_Textfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Order_ID_Textfield.setBackground(Color.GRAY);
+        Meal_ID_Textfield.setPreferredSize(new Dimension(195,25));
+        Meal_ID_Textfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Meal_Quantity_Textfield.setPreferredSize(new Dimension(195,25));
+        Meal_Quantity_Textfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Date_Textfield.setPreferredSize(new Dimension(195,25));
+        Date_Textfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 
+
+        JLabel spacer = new JLabel();
+        spacer.setPreferredSize(new Dimension(84,10));
+        JLabel spacer2 = new JLabel();
+        spacer2.setPreferredSize(new Dimension(84,10));
         Order_ID_Textfield.setBackground(Color.WHITE);
         Meal_ID_Textfield.setBackground(Color.WHITE);
         Meal_Quantity_Textfield.setBackground(Color.WHITE);
         Date_Textfield.setBackground(Color.WHITE);
 
-        //Add Order button for bottomleftpanel
-        ImageIcon BottomLeftAddButtonImage = new ImageIcon("pics/rectangle 11.png");
+        //Add Order button for addorderpanel
+        ImageIcon BottomLeftAddButtonImage = new ImageIcon("pics/BottomLeftAddButton.png");
         JButton BottomLeftAddButton = new JButton(BottomLeftAddButtonImage);
-        BottomLeftAddButton.setContentAreaFilled(false);
-        BottomLeftAddButton.setBorderPainted(false);
-        ImageIcon AddOrderText = new ImageIcon("Add.png");
-        JLabel AddOrderButtonLabel = new JLabel(AddOrderText);
-        AddOrderButtonLabel.setVisible(true);
-        BottomLeftAddButton.setContentAreaFilled(false);
-        BottomLeftAddButton.setBorderPainted(false);
+        BottomLeftAddButton.setPreferredSize(new Dimension(100,40));
 
 
-        JLayeredPane BottomLeftAddButtonLayer = new JLayeredPane();
-        BottomLeftAddButtonLayer.setPreferredSize(new Dimension(100,40));
-        BottomLeftAddButtonLayer.setLayout(null);
-        BottomLeftAddButtonLayer.add(BottomLeftAddButton, Integer.valueOf(0));
-        BottomLeftAddButtonLayer.add(AddOrderButtonLabel, Integer.valueOf(1));
-
-
-
-        ImageIcon Order_ID_Text = new ImageIcon("pics/Date (2).png");
+//        ImageIcon TextFieldBackgroundImage = new ImageIcon ("pics/TextfieldBackground.png");
+        ImageIcon Order_ID_Text = new ImageIcon("pics/Order_ID (2).png");
         ImageIcon Meal_ID_Text = new ImageIcon("pics/Meal_ID (2).png");
         ImageIcon Meal_Quantity_Text = new ImageIcon("pics/Meal Quantity (2).png");
         ImageIcon Date_Text = new ImageIcon("pics/Date (2).png");
 
+//        JLabel TextFieldBackground = new JLabel (TextFieldBackgroundImage);
         JLabel Order_ID_Label = new JLabel(Order_ID_Text);
         JLabel Meal_ID_Label = new JLabel(Meal_ID_Text);
         JLabel Meal_Quantity_Label = new JLabel(Meal_Quantity_Text);
         JLabel Date_Label = new JLabel(Date_Text);
 
 
-        //BottomLeftPanel Options
-        JPanel AddOrderPanel = new JPanel(new GridBagLayout());
+        //AddOrderPanel Options
+        JPanel AddOrderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         AddOrderPanel.setBackground(Color.WHITE);
         AddOrderPanel.setBounds(33, 267, 240, 290);
         AddOrderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 5, 2, 5); // Adds padding between components
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        AddOrderPanel.add(Order_ID_Textfield, gbc);
-
-        gbc.gridy = 1;
-        AddOrderPanel.add(Order_ID_Label,gbc);
-
-        gbc.gridy = 2;
-        AddOrderPanel.add(Meal_ID_Textfield, gbc);
-
-        gbc.gridy = 3;
-        AddOrderPanel.add(Meal_ID_Label,gbc);
-
-        gbc.gridy = 4;
-        AddOrderPanel.add(Meal_Quantity_Textfield, gbc);
-
-        gbc.gridy = 5;
-        AddOrderPanel.add(Meal_Quantity_Label,gbc);
-
-        gbc.gridy = 6;
-        AddOrderPanel.add(Date_Textfield, gbc);
-
-        gbc.gridy = 7;
-        AddOrderPanel.add(Date_Label,gbc);
-
-        gbc.gridy = 9;
-        AddOrderPanel.add(BottomLeftAddButtonLayer, gbc);
-
+        AddOrderPanel.add(Order_ID_Textfield);
+        AddOrderPanel.add(Order_ID_Label);
+        AddOrderPanel.add(Meal_ID_Textfield);
+        AddOrderPanel.add(Meal_ID_Label);
+        AddOrderPanel.add(Meal_Quantity_Textfield);
+        AddOrderPanel.add(Meal_Quantity_Label);
+        AddOrderPanel.add(Date_Textfield);
+        AddOrderPanel.add(spacer);
+        AddOrderPanel.add(Date_Label);
+        AddOrderPanel.add(spacer2);
+        AddOrderPanel.add(BottomLeftAddButton);
 
         Frame.add(AddOrderPanel);
         AddOrderPanel.setVisible(false);
@@ -214,77 +189,77 @@ public class OrderCrud extends JFrame {
         JButton UpdateButton = new JButton(UpdateButtonImage);
         UpdateButton.setPreferredSize(new Dimension(130,40));
 
+        ImageIcon BottomLeftUpdateButtonImage = new ImageIcon("pics/BottomLeftUpdateButton.png");
+        JButton BottomLeftUpdateButton = new JButton(BottomLeftUpdateButtonImage);
+        BottomLeftUpdateButton.setPreferredSize(new Dimension(100,40));
 
 
-        //Update Button Panel when you click it
-        JPanel UpdateOrderPanel = new JPanel();
+        JTextField Order_ID_Textfield2 = new JTextField();
+        JTextField Meal_ID_Textfield2 = new JTextField();
+        JTextField Meal_Quantity_Textfield2 = new JTextField();
+        JTextField Date_Textfield2 = new JTextField();
+        Order_ID_Textfield2.setPreferredSize(new Dimension(195,25));
+        Order_ID_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Meal_ID_Textfield2.setPreferredSize(new Dimension(195,25));
+        Meal_ID_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Meal_Quantity_Textfield2.setPreferredSize(new Dimension(195,25));
+        Meal_Quantity_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Date_Textfield2.setPreferredSize(new Dimension(195,25));
+        Date_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+
+        ImageIcon Order_ID_Text2 = new ImageIcon("pics/Order_ID (2).png");
+        ImageIcon Meal_ID_Text2 = new ImageIcon("pics/Meal_ID (2).png");
+        ImageIcon Meal_Quantity_Text2 = new ImageIcon("pics/Meal Quantity (2).png");
+        ImageIcon Date_Text2 = new ImageIcon("pics/Date (2).png");
+
+        JLabel Order_ID_Label2 = new JLabel(Order_ID_Text2);
+        JLabel Meal_ID_Label2 = new JLabel(Meal_ID_Text2);
+        JLabel Meal_Quantity_Label2= new JLabel(Meal_Quantity_Text2);
+        JLabel Date_Label2 = new JLabel(Date_Text2);
+
+        JPanel UpdateOrderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,10,10));
         UpdateOrderPanel.setBackground(Color.WHITE);
-        UpdateOrderPanel.setBounds(33, 267, 240, 290);
-        UpdateOrderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        UpdateOrderPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.insets = new Insets(2, 5, 2, 5); // Adds padding between components
+        UpdateOrderPanel.setBounds(33,267,240,290);
+        UpdateOrderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY,2,true));
 
-        gbc2.gridx = 0;
-        gbc2.gridy = 0;
-        UpdateOrderPanel.add(Order_ID_Textfield, gbc2);
-
-        gbc2.gridy = 1;
-        UpdateOrderPanel.add(Order_ID_Label, gbc2);
-
-        gbc2.gridy = 2;
-        UpdateOrderPanel.add(Meal_ID_Textfield, gbc2);
-
-        gbc2.gridy = 3;
-        UpdateOrderPanel.add(Meal_ID_Label, gbc2);
-
-        gbc2.gridy = 4;
-        UpdateOrderPanel.add(Meal_Quantity_Textfield, gbc2);
-
-        gbc2.gridy = 5;
-        UpdateOrderPanel.add(Meal_Quantity_Label, gbc2);
-
-        gbc2.gridy = 6;
-        UpdateOrderPanel.add(Date_Textfield, gbc2);
-
-        gbc2.gridy = 7;
-        UpdateOrderPanel.add(Date_Label, gbc2);
-
-        gbc2.gridy = 9;
-        UpdateOrderPanel.add(BottomLeftAddButtonLayer, gbc2);
-
+        UpdateOrderPanel.add(Order_ID_Textfield2);
+        UpdateOrderPanel.add(Order_ID_Label2);
+        UpdateOrderPanel.add(Meal_ID_Textfield2);
+        UpdateOrderPanel.add(Meal_ID_Label2);
+        UpdateOrderPanel.add(Meal_Quantity_Textfield2);
+        UpdateOrderPanel.add(Meal_Quantity_Label2);
+        UpdateOrderPanel.add(Date_Textfield2);
+        UpdateOrderPanel.add(spacer);
+        UpdateOrderPanel.add(Date_Label2);
+        UpdateOrderPanel.add(spacer2);
+        UpdateOrderPanel.add(BottomLeftUpdateButton);
 
 
         Frame.add(UpdateOrderPanel);
         UpdateOrderPanel.setVisible(false);
-
-        JButton BottomLeftUpdateButton = new JButton();
-        BottomLeftUpdateButton.setContentAreaFilled(false);
-        BottomLeftUpdateButton.setBorderPainted(false);
-
-        UpdateOrderPanel.add(BottomLeftUpdateButton);
-
-        UpdateButton.addActionListener(ActionListener -> UpdateOrderPanel.setVisible(true));
-
-        //shuts off bottomleftpanel after adding an order
-        JButton BottomLeftUpdateOrderButton = new JButton();
-        BottomLeftUpdateOrderButton.setContentAreaFilled(false);
-        BottomLeftUpdateOrderButton.setBorderPainted(false);
-        BottomLeftUpdateOrderButton.setVisible(true);
-        BottomLeftUpdateOrderButton.setContentAreaFilled(false);
-        BottomLeftUpdateOrderButton.setBorderPainted(false);
-        BottomLeftUpdateOrderButton.addActionListener(new ActionListener() {
+        UpdateButton.setBackground(Color.GRAY);
+        UpdateButton.addActionListener(new ActionListener() {
             @Override
-                public void actionPerformed(ActionEvent e) {
-                    int OrderId = Integer.parseInt(Order_ID_Textfield.getText());
-                    int mealId = Integer.parseInt(Meal_ID_Textfield.getText());
-                    int mealQuantity = Integer.parseInt(Meal_ID_Textfield.getText());
-                    String Date = Date_Textfield.getText();
+        public void actionPerformed(ActionEvent e) {
+            AddOrderPanel.setVisible(false);
+            UpdateOrderPanel.setVisible(true);
+                }
+            });
 
-                    SQLOrder.editOrder(OrderId, mealId, mealQuantity, Date);
-                    UpdateOrderPanel.setVisible(false);
-            }
-        });
+
+                //shuts off bottomleftpanel after updating an order
+                BottomLeftUpdateButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        int orderId = Integer.parseInt(Order_ID_Textfield.getText());
+                        int mealId = Integer.parseInt(Meal_ID_Textfield.getText());
+                        int mealQuantity = Integer.parseInt(Meal_Quantity_Textfield.getText());
+                        String Date = Date_Textfield.getText();
+
+                        SQLOrder.editOrder(orderId, mealId, mealQuantity, Date);
+                        UpdateOrderPanel.setVisible(false);
+                    }
+                });
 
 
 
@@ -293,8 +268,8 @@ public class OrderCrud extends JFrame {
         DeleteButton.setPreferredSize(new Dimension(130,40));
 
 
-                //Warning Panel after pressing Delete Button
-                JPanel WarningPanel = new JPanel();
+        //Warning Panel after pressing Delete Button
+        JPanel WarningPanel = new JPanel();
         ImageIcon WarningTextImage = new ImageIcon("pics/warningtext.png");
         JLabel WarningText = new JLabel(WarningTextImage);
         WarningText.setBounds(55,32,190,32);
@@ -325,15 +300,15 @@ public class OrderCrud extends JFrame {
         YesButton.setBounds(170,129,90,30);
         YesButton.addActionListener(ActionListener -> DeletePopUpFrame.setVisible(false));
 
-                //Delete Button Function to warn user of deleting meal order
-                DeleteButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        DeletePopUpFrame.setVisible(true);
-                        WarningPanel.add(NoButton);
-                        WarningPanel.add(YesButton);
-                    }
-                });
+        //Delete Button Function to warn user of deleting meal order
+        DeleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DeletePopUpFrame.setVisible(true);
+                WarningPanel.add(NoButton);
+                WarningPanel.add(YesButton);
+            }
+        });
 
         YesButton.addActionListener(new ActionListener() {
             @Override
