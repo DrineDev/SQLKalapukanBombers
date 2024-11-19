@@ -68,16 +68,25 @@ public class MainFrameManager extends JFrame {
     public MainFrameManager() {
 
         // Exit button
+        ExitAndLogoutButtonFrame exit = new ExitAndLogoutButtonFrame(this);
+        exit.setVisible(false);
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
         exitButton.setIcon(exitImageIcon);
         exitButton.setContentAreaFilled(false);
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
-        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.addActionListener(new ActionListener()
+                                     {
+                                         @Override
+                                         public void actionPerformed(ActionEvent e)
+                                         {
+                                               exit.setVisible(true);
+                                         }
+                                     });
 
-        // Frame initialization
-        mainFrame = new JFrame();
+                // Frame initialization
+                mainFrame = new JFrame();
         mainFrame.setSize(1000, 600);
         mainFrame.setUndecorated(true);
         mainFrame.setLayout(new BorderLayout());
