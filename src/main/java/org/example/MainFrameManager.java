@@ -136,10 +136,12 @@ public class MainFrameManager extends JFrame {
         loggingTextArea = new JPanel();
         loggingTextArea.setBounds(0, 0, 170, 265);
         loggingTextArea.setLayout(new BoxLayout(loggingTextArea, BoxLayout.Y_AXIS));
+        loggingTextArea.setBackground(Color.white);
 
         loggingPriceArea = new JPanel();
         loggingPriceArea.setBounds(180, 0, 60, 265);
         loggingPriceArea.setLayout(new BoxLayout(loggingPriceArea, BoxLayout.Y_AXIS));
+        loggingPriceArea.setBackground(Color.white);
 
         loggingScroll = new JScrollPane();
         loggingScroll.setBounds(10, 10, 235, 265);
@@ -149,6 +151,7 @@ public class MainFrameManager extends JFrame {
         loggingScroll.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
         loggingScroll.getVerticalScrollBar().setUnitIncrement(20);
         loggingScroll.setBorder(null);
+        loggingScroll.setBackground(Color.WHITE);
         loggingScroll.add(loggingTextArea);
         loggingScroll.add(loggingPriceArea);
 
@@ -278,11 +281,14 @@ public class MainFrameManager extends JFrame {
 
         totalLabel = new JLabel("Total: ");
         totalLabel.setBounds(10, 290, 90,22);
+        totalLabel.setBackground(Color.white);
         pricePanel = new JPanel();
         pricePanel.setBounds(170,290, 75,22);
+        pricePanel.setBackground(Color.white);
         totalPriceLabel = new JLabel("₱0.00");
         pricePanel.add(totalPriceLabel);
-        
+        pricePanel.setBackground(Color.white);
+
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);

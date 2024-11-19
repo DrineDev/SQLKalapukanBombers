@@ -290,7 +290,9 @@ public class AddFood extends JPanel {
                 String logEntry = quantity + " x " + foodName;
 
                 JLabel logText = new JLabel(logEntry);
+                logText.setBackground(Color.white);
                 JLabel logPrice = new JLabel(price);
+                logPrice.setBackground(Color.white);
 
                 mainFrame.updateTotalPrice(totalPrice);
                 logger.add(logText);
