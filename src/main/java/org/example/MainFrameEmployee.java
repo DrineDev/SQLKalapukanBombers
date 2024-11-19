@@ -14,6 +14,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.RoundRectangle2D.Float;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -28,7 +29,13 @@ import javax.swing.JWindow;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
+import org.example.Classes.Order;
+import org.example.Classes.OrderItem;
+import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLMeal;
+import org.example.SQLQueries.SQLOrder;
+import org.example.SQLQueries.SQLOrderItems;
+
 
 public class MainFrameEmployee extends JFrame {
     private JFrame mainFrame;
@@ -59,6 +66,7 @@ public class MainFrameEmployee extends JFrame {
     private double totalPrice;
 
     public MainFrameEmployee() {
+
         // Exit button
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
@@ -144,7 +152,7 @@ public class MainFrameEmployee extends JFrame {
         loggingScroll.add(loggingPriceArea);
 
         activeIDs = SQLMeal.getActiveMealIds();
-        for (Integer activeId : activeIDs) {
+        for(Integer activeId : activeIDs) {
             foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
         }
 
@@ -277,7 +285,13 @@ public class MainFrameEmployee extends JFrame {
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         leftSideCheckout = new JLabel();
         leftSideCheckout.setIcon(checkoutArea);
+        leftSideCheckout.setLayout(null);
         leftSideCheckout.setBounds(35, 195, 250, 320);
+        leftSideCheckout.setBounds(35, 195, 250,320);
+        leftSideCheckout.add(totalLabel);
+        leftSideCheckout.add(pricePanel);
+        leftSideCheckout.add(loggingScroll);
+
         // maybe add another jscrollpane because if order is too much, you ahve to
         // scroll it
 
@@ -288,15 +302,45 @@ public class MainFrameEmployee extends JFrame {
         checkoutButton.setContentAreaFilled(false);
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showImageFrame("pics/pop up frame.png");
+        checkoutButton.addActionListener(e -> {
+            // Add the order to the database
+            int orderId = SQLOrder.addOrder(
+                    SharedData.order.getOrderDate().toString(),
+                    SharedData.order.getStatus(),
+                    SharedData.order.getTotalAmount()
+            );
+
+            // Add all order items to the database
+            if (orderId != -1) {
+                SharedData.order.setOrderId(orderId); // Set the generated order ID
+                for (OrderItem orderItem : SharedData.order.getOrderItems()) {
+                    SQLOrderItems.addOrderItem(
+                            orderId,
+                            orderItem.getMealId(),
+                            orderItem.getQuantity(),
+                            orderItem.getSubtotal()
+                    );
+                }
             }
+
+            // Show confirmation pop-up
+            showImageFrame("pics/pop up frame.png");
+
+            // Clear the shared order and reset the UI
+            SharedData.clearOrder();
+            loggingTextArea.removeAll();
+            loggingPriceArea.removeAll();
+            totalPrice = 0.0;
+            totalPriceLabel.setText("₱0.00");
+
+            loggingTextArea.revalidate();
+            loggingTextArea.repaint();
+            loggingPriceArea.revalidate();
+            loggingPriceArea.repaint();
         });
 
         navButton = new NavigatorButtonEmployee();
-        navButton.setBounds(12, 7, 200, 183);
+        navButton.setBounds(12, 7, 206, 360);
         navButton.setBackground(null);
 
         leftSide.add(navButton);
@@ -305,6 +349,9 @@ public class MainFrameEmployee extends JFrame {
         leftSide.add(checkoutButton);
         mainFrame.add(leftSide, BorderLayout.WEST);
         mainFrame.add(rightSideWhole, BorderLayout.EAST);
+
+        LocalDateTime time = LocalDateTime.now();
+        SharedData.order = new Order(time, "Pending");
 
         mainFrame.setVisible(true);
     }
