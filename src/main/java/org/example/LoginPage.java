@@ -10,15 +10,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
+import javax.swing.*;
 
 import org.example.SQLQueries.SQLUser;
 //import org.example.SQLQueries;
@@ -55,8 +47,13 @@ public class LoginPage extends JFrame{
         });
 
         //left side of panel
+        JPanel leftSide = new JPanel();
+        leftSide.setPreferredSize(new Dimension(400,600));
+        leftSide.setBackground(Color.white);
+        leftSide.setLayout(null);
+
         JPanel leftSidePanel = new JPanel();
-        leftSidePanel.setPreferredSize(new Dimension(400,600));
+        leftSidePanel.setBounds(0,0,400,600);
         leftSidePanel.setBackground(Color.white);
         leftSidePanel.setLayout(null);
 
@@ -72,6 +69,31 @@ public class LoginPage extends JFrame{
         userTextField.setBounds(90, 210, 220, 30);
         passTextField.setBounds(90, 290, 220, 30);
 
+        //left side panel for sign up
+        JPanel leftSideSignUp = new JPanel();
+        leftSideSignUp.setBounds(0,0,400,600);
+        leftSideSignUp.setBackground(Color.white);
+        leftSideSignUp.setVisible(false);
+        leftSideSignUp.setLayout(null);
+
+        JLabel user = new JLabel("Username");
+        user.setBounds(90,180,58,15);
+        JLabel pass = new JLabel("Password");
+        pass.setBounds(90,240,56,15);
+        JLabel confirmPass = new JLabel("Confirm Password");
+        confirmPass.setBounds(90,300,105,15);
+        JLabel manager = new JLabel("Manager code (if available)");
+        manager.setBounds(90,360,150,15);
+
+        JTextField userText = new JTextField();
+        userText.setBounds(90,150,220,30);
+        JTextField passText = new JTextField();
+        passText.setBounds(90,210,220,30);
+        JTextField confirmPassText = new JTextField();
+        confirmPassText.setBounds(90,270,220,30);
+        JTextField managerText = new JTextField();
+        managerText.setBounds(90,330,220,30);
+
         //right side of panel
         ImageIcon rightImage = new ImageIcon("pics/right.png");
         JLabel rightBackground = new JLabel();
@@ -81,25 +103,31 @@ public class LoginPage extends JFrame{
         rightSidePanel.setPreferredSize(new Dimension(600,600));
         rightSidePanel.setLayout(null);
 
-        //error text
+        //error texts
         ImageIcon errorPic = new ImageIcon("pics/Incorrect error.png");
         JLabel errorText = new JLabel();
         errorText.setBounds(90, 175, 220, 15);
         errorText.setIcon(errorPic);
-        errorText.setForeground(Color.red);
         errorText.setVisible(false);
+
+        ImageIcon fillUp = new ImageIcon();
+        JLabel fillUpError = new JLabel(fillUp);
+        fillUpError.setBounds(92,110,215,15);
+
+        ImageIcon confirm = new ImageIcon();
 
 
         //login button
         ImageIcon loginButtonImage = new ImageIcon("pics/login button.png");
         loginButton = new JButton();
-        loginButton.setBounds(90, 390, 120, 30);
+        loginButton.setBounds(140, 370, 120, 30);
         loginButton.setIcon(loginButtonImage);
         loginButton.setContentAreaFilled(false);
-        loginButton.addActionListener(new ActionListener() 
+        loginButton.setBorderPainted(false);
+        loginButton.addActionListener(new ActionListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e) 
+            public void actionPerformed(ActionEvent e)
             {
 
                 String userInput = userTextField.getText();
@@ -117,7 +145,7 @@ public class LoginPage extends JFrame{
                     {
                         fadeInNewFrameEmployee();
                     }
-                    
+
                 }
                 else
                 {
@@ -127,17 +155,47 @@ public class LoginPage extends JFrame{
             }
         });
 
+        //i dont have an account
+        ImageIcon noAccount = new ImageIcon("pics/I don’t have an account.png");
+        JButton iDontHaveAccount = new JButton(noAccount);
+        iDontHaveAccount.setBounds(134,410,132,20);
+        iDontHaveAccount.setContentAreaFilled(false);
+        iDontHaveAccount.setBorderPainted(false);
+        iDontHaveAccount.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                leftSidePanel.setVisible(false);
+                leftSideSignUp.setVisible(true);
+                leftSideSignUp.revalidate();
+                leftSideSignUp.repaint();
+            }
+        });
+
 
         //add shits
-        loginFrame.add(leftSidePanel, BorderLayout.WEST);
-        loginFrame.add(rightSidePanel, BorderLayout.EAST);
-
         leftSidePanel.add(errorText);
         leftSidePanel.add(userTextField);
         leftSidePanel.add(usernameText);
         leftSidePanel.add(passTextField);
         leftSidePanel.add(passwordText);
         leftSidePanel.add(loginButton);
+        leftSidePanel.add(iDontHaveAccount);
+
+        leftSideSignUp.add(userText);
+        leftSideSignUp.add(user);
+        leftSideSignUp.add(passText);
+        leftSideSignUp.add(pass);
+        leftSideSignUp.add(confirmPassText);
+        leftSideSignUp.add(confirmPass);
+        leftSideSignUp.add(managerText);
+        leftSideSignUp.add(manager);
+
+        leftSide.add(leftSidePanel);
+        leftSide.add(leftSideSignUp);
+        loginFrame.add(leftSide, BorderLayout.WEST);
+        loginFrame.add(rightSidePanel, BorderLayout.EAST);
 
         rightSidePanel.add(rightBackground);
         rightSidePanel.add(exitButton);
@@ -155,12 +213,12 @@ public class LoginPage extends JFrame{
 
         ImageIcon imageIcon = new ImageIcon("pics/welcome splashscreen.png");
         Image image = imageIcon.getImage();
-    
+
         FadePanel fadePanel = new FadePanel(image);
         newFrame.add(fadePanel);
         newFrame.setVisible(true);
 
-        Timer fadeInTimer = new Timer(45, new ActionListener() 
+        Timer fadeInTimer = new Timer(45, new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -168,7 +226,7 @@ public class LoginPage extends JFrame{
                 fadePanel.incrementAlpha();
                 if (fadePanel.getAlpha() >= 255) {
                     ((Timer) evt.getSource()).stop();
-                    newFrame.dispose(); 
+                    newFrame.dispose();
                     SwingUtilities.invokeLater(MainFrameEmployee::new);
                 }
             }
@@ -185,12 +243,12 @@ public class LoginPage extends JFrame{
 
         ImageIcon imageIcon = new ImageIcon("pics/welcome splashscreen.png");
         Image image = imageIcon.getImage();
-    
+
         FadePanel fadePanel = new FadePanel(image);
         newFrame.add(fadePanel);
         newFrame.setVisible(true);
 
-        Timer fadeInTimer = new Timer(45, new ActionListener() 
+        Timer fadeInTimer = new Timer(45, new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -198,7 +256,7 @@ public class LoginPage extends JFrame{
                 fadePanel.incrementAlpha();
                 if (fadePanel.getAlpha() >= 255) {
                     ((Timer) evt.getSource()).stop();
-                    newFrame.dispose(); 
+                    newFrame.dispose();
                     SwingUtilities.invokeLater(MainFrameManager::new);
                 }
             }
@@ -208,18 +266,18 @@ public class LoginPage extends JFrame{
     }
 
     //custom panel for fading in things
-    private class FadePanel extends JPanel 
+    private class FadePanel extends JPanel
     {
         private int alpha = 0;
         private final Image image;
 
-        public FadePanel(Image image) 
+        public FadePanel(Image image)
         {
             this.image = image;
         }
 
         @Override
-        protected void paintComponent(Graphics g) 
+        protected void paintComponent(Graphics g)
         {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
@@ -227,15 +285,15 @@ public class LoginPage extends JFrame{
             g2d.drawImage(image, 0, 0, getWidth(), getHeight(), this);
         }
 
-        public void incrementAlpha() 
+        public void incrementAlpha()
         {
-            if (alpha < 255) 
+            if (alpha < 255)
             {
                 alpha += 5;
                 repaint();
             }
         }
-        public int getAlpha() 
+        public int getAlpha()
         {
             return alpha;
         }
