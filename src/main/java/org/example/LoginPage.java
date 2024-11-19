@@ -76,20 +76,27 @@ public class LoginPage extends JFrame{
         leftSideSignUp.setVisible(false);
         leftSideSignUp.setLayout(null);
 
-        JLabel user = new JLabel("Username");
-        user.setBounds(90,180,58,15);
-        JLabel pass = new JLabel("Password");
-        pass.setBounds(90,240,56,15);
-        JLabel confirmPass = new JLabel("Confirm Password");
-        confirmPass.setBounds(90,300,105,15);
-        JLabel manager = new JLabel("Manager code (if available)");
+        ImageIcon U = new ImageIcon("pics/username.png");
+        JLabel user = new JLabel(U);
+        user.setBounds(90,180,68,15);
+
+        ImageIcon P = new ImageIcon("pics/passsword.png");
+        JLabel pass = new JLabel(P);
+        pass.setBounds(90,240,67,15);
+
+        ImageIcon CP = new ImageIcon("pics/confirm pass.png");
+        JLabel confirmPass = new JLabel(CP);
+        confirmPass.setBounds(90,300,112,15);
+
+        ImageIcon M = new ImageIcon("pics/Manager code (if available).png");
+        JLabel manager = new JLabel(M);
         manager.setBounds(90,360,150,15);
 
         JTextField userText = new JTextField();
         userText.setBounds(90,150,220,30);
-        JTextField passText = new JTextField();
+        JPasswordField passText = new JPasswordField();
         passText.setBounds(90,210,220,30);
-        JTextField confirmPassText = new JTextField();
+        JPasswordField confirmPassText = new JPasswordField();
         confirmPassText.setBounds(90,270,220,30);
         JTextField managerText = new JTextField();
         managerText.setBounds(90,330,220,30);
@@ -110,12 +117,21 @@ public class LoginPage extends JFrame{
         errorText.setIcon(errorPic);
         errorText.setVisible(false);
 
-        ImageIcon fillUp = new ImageIcon();
+        ImageIcon fillUp = new ImageIcon("pics/fill up error.png");
         JLabel fillUpError = new JLabel(fillUp);
         fillUpError.setBounds(92,110,215,15);
+        fillUpError.setVisible(false);
 
-        ImageIcon confirm = new ImageIcon();
+        ImageIcon confirm = new ImageIcon("pics/confirm pass error.png");
+        JLabel confirmPassError = new JLabel(confirm);
+        confirmPassError.setBounds(102,110,196,15);
+        confirmPassError.setVisible(false);
 
+        //signup success
+        ImageIcon succes = new ImageIcon("pics/sign up success.png");
+        JLabel successMessage = new JLabel(succes);
+        successMessage.setBounds(50,138,300,17);
+        successMessage.setVisible(false);
 
         //login button
         ImageIcon loginButtonImage = new ImageIcon("pics/login button.png");
@@ -155,6 +171,53 @@ public class LoginPage extends JFrame{
             }
         });
 
+        //sign up shits
+        ImageIcon signup = new ImageIcon("pics/signup button.png");
+        JButton signupButton = new JButton(signup);
+        signupButton.setBounds(140,420,120,30);
+        signupButton.setContentAreaFilled(false);
+        signupButton.setBorderPainted(false);
+        signupButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String userInput = userText.getText();
+                String passInput = passText.getText();
+                String confirmInput = confirmPassText.getText();
+                String managerInput = managerText.getText();
+
+                if(userInput.isBlank() || passInput.isEmpty() || confirmInput.isEmpty())
+                {
+                    confirmPassError.setVisible(false);
+                    fillUpError.setVisible(true);
+                }
+                else if (passInput.equals(confirmInput) == false)
+                {
+                    confirmPassError.setVisible(true);
+                    fillUpError.setVisible(false);
+                }
+                else
+                {
+                    // TODO : add user to the sql
+
+                    confirmPassError.setVisible(false);
+                    fillUpError.setVisible(false);
+                    System.out.println("nice one!");
+                    leftSideSignUp.setVisible(false);
+                    leftSidePanel.setVisible(true);
+                    successMessage.setVisible(true);
+                    userText.setText(null);
+                    passText.setText(null);
+                    confirmPassText.setText(null);
+                    managerText.setText(null);
+                    fillUpError.setVisible(false);
+                    confirmPassError.setVisible(false);
+                }
+
+            }
+        });
+
         //i dont have an account
         ImageIcon noAccount = new ImageIcon("pics/I don’t have an account.png");
         JButton iDontHaveAccount = new JButton(noAccount);
@@ -168,13 +231,38 @@ public class LoginPage extends JFrame{
             {
                 leftSidePanel.setVisible(false);
                 leftSideSignUp.setVisible(true);
-                leftSideSignUp.revalidate();
-                leftSideSignUp.repaint();
+                errorText.setVisible(false);
+                successMessage.setVisible(false);
+                userTextField.setText(null);
+                passTextField.setText(null);
+
             }
         });
 
+        //i change my mind
+        ImageIcon change = new ImageIcon("pics/I changed my mind, log me in.png");
+        JButton iChangedMyMind = new JButton(change);
+        iChangedMyMind.setBounds(117,462,170,15);
+        iChangedMyMind.setContentAreaFilled(false);
+        iChangedMyMind.setBorderPainted(false);
+        iChangedMyMind.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                leftSideSignUp.setVisible(false);
+                leftSidePanel.setVisible(true);
+                userText.setText(null);
+                passText.setText(null);
+                confirmPassText.setText(null);
+                managerText.setText(null);
+                fillUpError.setVisible(false);
+                confirmPassError.setVisible(false);
+            }
+        });
 
         //add shits
+        leftSidePanel.add(successMessage);
         leftSidePanel.add(errorText);
         leftSidePanel.add(userTextField);
         leftSidePanel.add(usernameText);
@@ -183,6 +271,8 @@ public class LoginPage extends JFrame{
         leftSidePanel.add(loginButton);
         leftSidePanel.add(iDontHaveAccount);
 
+        leftSideSignUp.add(fillUpError);
+        leftSideSignUp.add(confirmPassError);
         leftSideSignUp.add(userText);
         leftSideSignUp.add(user);
         leftSideSignUp.add(passText);
@@ -191,6 +281,8 @@ public class LoginPage extends JFrame{
         leftSideSignUp.add(confirmPass);
         leftSideSignUp.add(managerText);
         leftSideSignUp.add(manager);
+        leftSideSignUp.add(signupButton);
+        leftSideSignUp.add(iChangedMyMind);
 
         leftSide.add(leftSidePanel);
         leftSide.add(leftSideSignUp);
@@ -302,4 +394,4 @@ public class LoginPage extends JFrame{
 
 }
 
-}
+
