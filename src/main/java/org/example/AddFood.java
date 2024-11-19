@@ -1,7 +1,6 @@
 package org.example;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -16,16 +15,16 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JWindow;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import org.example.Classes.OrderItem;
+import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
-import org.w3c.dom.Text;
+import org.example.SQLQueries.SQLOrderItems;
 
 public class AddFood extends JPanel {
     private ImageIcon foodImage;
@@ -49,8 +48,6 @@ public class AddFood extends JPanel {
         JLabel foodBg = new JLabel();
         foodBg.setIcon(foodImage);
 
-        // TODO
-    
         // Nutrition fact label (displayed on hover)
         JLabel nutritionLabel = createNutritionLabel();
     
@@ -283,7 +280,7 @@ public class AddFood extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                // TODO : ADD FUNCTIONALITY SOON
+                // FOR SETTING TOTAL PRICE AND PRICE
                 String foodName = SQLMeal.getName(mealID);
                 String quantityStr = amountTextField.getText();
                 int quantity = Integer.parseInt(quantityStr);
@@ -311,6 +308,11 @@ public class AddFood extends JPanel {
                     loggerPrice.revalidate();
                     loggerPrice.repaint();
                 }
+
+                // FOR ADDING TO ORDER
+                OrderItem orderItem = new OrderItem(0, mealID, x, SQLInventory.getPrice(mealID));
+                SharedData.order.addOrderItem(orderItem);
+                SQLOrderItems.addOrderItem(SharedData.order.getOrderId(), mealID, x, SQLInventory.getPrice(mealID));
             }
         };
     }
