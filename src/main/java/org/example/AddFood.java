@@ -24,11 +24,12 @@ import org.example.Classes.OrderItem;
 import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
+import org.example.SQLQueries.SQLOrder;
 import org.example.SQLQueries.SQLOrderItems;
 
 public class AddFood extends JPanel {
     private ImageIcon foodImage;
-    private int x;
+    private int x = 0;
     private String nutritionFact;
     private JButton orderButton;
     private Timer hoverTimer;
@@ -278,7 +279,7 @@ public class AddFood extends JPanel {
     private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID, MainFrameManager mainFrame) {
     return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) 
+            public void actionPerformed(ActionEvent e)
             {
                 // FOR SETTING TOTAL PRICE AND PRICE
                 String foodName = SQLMeal.getName(mealID);
@@ -292,7 +293,7 @@ public class AddFood extends JPanel {
 
                     String price = String.format("₱%.2f", totalPrice);
                     String logEntry = quantity + " x " + foodName;
-    
+
                     JLabel logText = new JLabel(logEntry);
                     JLabel logPrice = new JLabel(price);
 
@@ -349,6 +350,11 @@ public class AddFood extends JPanel {
                     logger.repaint();
                     loggerPrice.revalidate();
                     loggerPrice.repaint();
+
+                    // FOR ADDING TO ORDER
+                    OrderItem orderItem = new OrderItem(SharedData.order.getOrderId(), mealID, quantity, SQLInventory.getPrice(mealID));
+                    SharedData.order.addOrderItem(orderItem);
+                    SQLOrderItems.addOrderItem(SharedData.order.getOrderId(), mealID, quantity, SQLInventory.getPrice(mealID));
                 }
             }
         };

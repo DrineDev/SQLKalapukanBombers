@@ -30,9 +30,11 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import org.example.Classes.Order;
+import org.example.Classes.OrderItem;
 import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLMeal;
 import org.example.SQLQueries.SQLOrder;
+import org.example.SQLQueries.SQLOrderItems;
 
 
 public class MainFrameManager extends JFrame {
@@ -300,15 +302,41 @@ public class MainFrameManager extends JFrame {
         checkoutButton.setContentAreaFilled(false);
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                SQLOrder.addOrder(SharedData.order.getOrderDate().toString(), SharedData.order.getStatus(), SharedData.order.getTotalAmount());
-                showImageFrame("pics/pop up frame.png");
-                SharedData.clearOrder();
+        checkoutButton.addActionListener(e -> {
+            // Add the order to the database
+            int orderId = SQLOrder.addOrder(
+                    SharedData.order.getOrderDate().toString(),
+                    SharedData.order.getStatus(),
+                    SharedData.order.getTotalAmount()
+            );
+
+            // Add all order items to the database
+            if (orderId != -1) {
+                SharedData.order.setOrderId(orderId); // Set the generated order ID
+                for (OrderItem orderItem : SharedData.order.getOrderItems()) {
+                    SQLOrderItems.addOrderItem(
+                            orderId,
+                            orderItem.getMealId(),
+                            orderItem.getQuantity(),
+                            orderItem.getSubtotal()
+                    );
+                }
             }
+
+            // Show confirmation pop-up
+            showImageFrame("pics/pop up frame.png");
+
+            // Clear the shared order and reset the UI
+            SharedData.clearOrder();
+            loggingTextArea.removeAll();
+            loggingPriceArea.removeAll();
+            totalPrice = 0.0;
+            totalPriceLabel.setText("₱0.00");
+
+            loggingTextArea.revalidate();
+            loggingTextArea.repaint();
+            loggingPriceArea.revalidate();
+            loggingPriceArea.repaint();
         });
 
         navButton = new NavigatorButtonManager();

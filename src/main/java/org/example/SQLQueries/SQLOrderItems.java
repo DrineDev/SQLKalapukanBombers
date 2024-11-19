@@ -174,24 +174,3 @@ public class SQLOrderItems {
         }
     }
 }
-
-// Data classes for Order and OrderItem
-class Order {
-    private int orderId;
-    private String orderDate;
-    private String status;
-    private double totalAmount;
-
-    public Order(int orderId, String orderDate, String status, double totalAmount) {
-        this.orderId = orderId;
-        this.orderDate = orderDate;
-        this.status = status;
-        this.totalAmount = totalAmount;
-    }
-
-    // Getters and setters
-    public int getOrderId() { return orderId; }
-    public String getOrderDate() { return orderDate; }
-    public String getStatus() { return status; }
-    public double getTotalAmount() { return totalAmount; }
-}

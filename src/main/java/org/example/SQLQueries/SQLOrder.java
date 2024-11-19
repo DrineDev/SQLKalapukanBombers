@@ -1,11 +1,15 @@
 package org.example.SQLQueries;
 
+import org.example.Classes.Order;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class SQLOrder {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
@@ -80,15 +84,24 @@ public class SQLOrder {
     public static Order getOrder(int orderId) {
         String query = "SELECT * FROM ORDERS WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, orderId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
+                // Assuming the order date is stored in the format "yyyy-MM-dd HH:mm:ss"
+                String orderDateString = resultSet.getString("Order_Date");
+                LocalDateTime orderDate = null;
+
+                if (orderDateString != null) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    orderDate = LocalDateTime.parse(orderDateString, formatter);
+                }
+
                 return new Order(
                         resultSet.getInt("Order_Id"),
-                        resultSet.getString("Order_Date"),
+                        orderDate,  // passing LocalDateTime to the constructor
                         resultSet.getString("Status"),
                         resultSet.getDouble("Total_Amount"));
             }
@@ -127,12 +140,12 @@ public class SQLOrder {
     }
 
     public static int getNextOrderId() {
-        String getSQL = "SELECT seq + 1 AS NextOrderId FROM sqlite_sequence WHERE name = 'ORDERS'";
-        int nextOrderId = 1; // Default to 1 in case the table is empty or does not exist
+        String getSQL = "SELECT COALESCE(MAX(Order_Id), 0) + 1 AS NextOrderId FROM ORDERS";
+        int nextOrderId = 1; // Default to 1 in case the table is empty
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-                PreparedStatement preparedStatement = connection.prepareStatement(getSQL);
-                ResultSet resultSet = preparedStatement.executeQuery()) {
+             PreparedStatement preparedStatement = connection.prepareStatement(getSQL);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             if (resultSet.next()) {
                 nextOrderId = resultSet.getInt("NextOrderId");
