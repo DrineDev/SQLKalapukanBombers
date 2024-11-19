@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.SQLQueries.SQLOrder;
+
 public class Order {
     private int _orderId;
     private LocalDateTime _orderDate;
@@ -13,7 +15,7 @@ public class Order {
 
     // Default constructor
     public Order() {
-        _orderId = 0;
+        _orderId = SQLOrder.getNextOrderId();
         _orderDate = LocalDateTime.now();
         _status = "Pending";
         _totalAmount = 0.0;

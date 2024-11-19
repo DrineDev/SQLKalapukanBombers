@@ -30,7 +30,10 @@ import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import org.example.Classes.Order;
+import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLMeal;
+import org.example.SQLQueries.SQLOrder;
+
 
 public class MainFrameManager extends JFrame {
     private JFrame mainFrame;
@@ -61,6 +64,7 @@ public class MainFrameManager extends JFrame {
     private double totalPrice;
 
     public MainFrameManager() {
+
         // Exit button
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
@@ -301,9 +305,9 @@ public class MainFrameManager extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                LocalDateTime time = LocalDateTime.now();
-                Order order = new Order(time, "Pending");
+                SQLOrder.addOrder(SharedData.order.getOrderDate().toString(), SharedData.order.getStatus(), SharedData.order.getTotalAmount());
                 showImageFrame("pics/pop up frame.png");
+                SharedData.clearOrder();
             }
         });
 
@@ -317,6 +321,9 @@ public class MainFrameManager extends JFrame {
         leftSide.add(checkoutButton);
         mainFrame.add(leftSide, BorderLayout.WEST);
         mainFrame.add(rightSideWhole, BorderLayout.EAST);
+
+        LocalDateTime time = LocalDateTime.now();
+        SharedData.order = new Order(time, "Pending");
 
         mainFrame.setVisible(true);
     }

@@ -18,17 +18,7 @@ public class SharedData {
         updatedMeals.clear();
     }
 
-    private static List<OrderItem> orderItems = new ArrayList<>();
-
-    public static List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public static void addOrderItem(OrderItem orderItem) {
-        orderItems.add(orderItem);
-    }
-
-    public static void clearOrderItems() {
-        orderItems.clear();
-    }
+    public static Order order = new Order();
+    public static void clearOrder() { order = new Order(); }
+    
 }

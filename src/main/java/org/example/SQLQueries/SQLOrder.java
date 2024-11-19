@@ -16,7 +16,8 @@ public class SQLOrder {
         int generatedOrderId = -1;
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(insertSQL,
+                        Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, orderDate);
             preparedStatement.setString(2, status);
@@ -41,7 +42,7 @@ public class SQLOrder {
         String updateSQL = "UPDATE ORDERS SET Order_Date = ?, Status = ?, Total_Amount = ? WHERE Order_Id = ?";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
 
             preparedStatement.setString(1, orderDate);
             preparedStatement.setString(2, status);
@@ -62,7 +63,7 @@ public class SQLOrder {
         String deleteSQL = "DELETE FROM ORDERS WHERE Order_Id = ?";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
 
             preparedStatement.setInt(1, orderId);
 
@@ -79,18 +80,17 @@ public class SQLOrder {
     public static Order getOrder(int orderId) {
         String query = "SELECT * FROM ORDERS WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, orderId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 return new Order(
-                    resultSet.getInt("Order_Id"),
-                    resultSet.getString("Order_Date"),
-                    resultSet.getString("Status"),
-                    resultSet.getDouble("Total_Amount")
-                );
+                        resultSet.getInt("Order_Id"),
+                        resultSet.getString("Order_Date"),
+                        resultSet.getString("Status"),
+                        resultSet.getDouble("Total_Amount"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class SQLOrder {
     public static void updateOrderStatus(int orderId, String status) {
         String updateSQL = "UPDATE ORDERS SET Status = ? WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
 
             preparedStatement.setString(1, status);
             preparedStatement.setInt(2, orderId);
@@ -116,7 +116,7 @@ public class SQLOrder {
     public static void updateOrderTotal(int orderId, double totalAmount) {
         String updateSQL = "UPDATE ORDERS SET Total_Amount = ? WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
 
             preparedStatement.setDouble(1, totalAmount);
             preparedStatement.setInt(2, orderId);
@@ -124,5 +124,23 @@ public class SQLOrder {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int getNextOrderId() {
+        String getSQL = "SELECT seq + 1 AS NextOrderId FROM sqlite_sequence WHERE name = 'ORDERS'";
+        int nextOrderId = 1; // Default to 1 in case the table is empty or does not exist
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+                PreparedStatement preparedStatement = connection.prepareStatement(getSQL);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            if (resultSet.next()) {
+                nextOrderId = resultSet.getInt("NextOrderId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return nextOrderId;
     }
 }

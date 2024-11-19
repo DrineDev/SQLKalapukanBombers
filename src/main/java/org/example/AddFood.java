@@ -24,6 +24,7 @@ import org.example.Classes.OrderItem;
 import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
+import org.example.SQLQueries.SQLOrderItems;
 
 public class AddFood extends JPanel {
     private ImageIcon foodImage;
@@ -310,7 +311,8 @@ public class AddFood extends JPanel {
 
                 // FOR ADDING TO ORDER
                 OrderItem orderItem = new OrderItem(0, mealID, x, SQLInventory.getPrice(mealID));
-                SharedData.addOrderItem(orderItem);
+                SharedData.order.addOrderItem(orderItem);
+                SQLOrderItems.addOrderItem(SharedData.order.getOrderId(), mealID, x, SQLInventory.getPrice(mealID));
             }
         };
     }
