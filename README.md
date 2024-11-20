@@ -3,16 +3,20 @@
 Final Project for Software Engineering Elective 1 - Java
 
 # TO DO
-MainFrameEmployee.java
-  1. Order functionality
-  2. Increment functionality
-  3. Decrement functionality
-  4. Add Item to order functionality
-  5. Complete Order functionality
-  6. REFACTOR
+MainFrameEmployee.java && MainFrameManager.java
+  1. Notification for low stocks
+  2. Fix hover text
      
 InventoryCrud.java
+  1. Search bar for finding food
+  2. Notification for low stocks
+  3. GUI Fix
+    AddMeal GUI Fix
+    EditMeal GUI Fix
+      -EDIT PRICE
 
+InventoryCrudEmployee.java
+  1. GUI fix
+  
 OrderCRUD.java
-
-MainFrameManager.java (SOON)
+  1. Pop up orders

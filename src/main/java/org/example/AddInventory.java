@@ -1,20 +1,38 @@
     package org.example;
 
-    import javax.swing.*;
-    import javax.swing.border.TitledBorder;
-    import javax.swing.filechooser.FileNameExtensionFilter;
-    import java.awt.*;
-    import java.awt.image.BufferedImage;
-    import java.io.IOException;
-    import javax.imageio.ImageIO;
-    import org.example.Classes.Meal;
-    import org.example.Classes.SharedData;
-    import org.example.SQLQueries.SQLInventory;
-    import org.example.SQLQueries.SQLMeal;
-    import java.util.*;
-    import java.util.List;
+    import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-    import static org.example.SQLQueries.SQLMeal.deleteMeal;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.example.Classes.Meal;
+import org.example.Classes.SharedData;
+import org.example.SQLQueries.SQLInventory;
+import org.example.SQLQueries.SQLMeal;
 
     public class AddInventory extends JPanel {
         private ImageIcon foodImage;
@@ -295,7 +313,7 @@
             List<Meal> updatedMeals = new ArrayList<>();
             // Confirm Button
             JButton confirmEdit = new JButton("Save Changes");
-            confirmEdit.setIcon(new ImageIcon("pics/update meal.png"));
+            confirmEdit.setIcon(new ImageIcon("pics/Update Meal.png"));
             confirmEdit.setBounds(300, 520, 180, 31);
             confirmEdit.setMargin(new Insets(0, 0, 0, 0));
             confirmEdit.setFocusPainted(false);

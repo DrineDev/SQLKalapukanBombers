@@ -1,10 +1,6 @@
 package org.example.SQLQueries;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class SQLUser {
 
@@ -190,5 +186,18 @@ public class SQLUser {
         }
     }
 
+    public static void addManagerKeyColumn() {
+        String addSQL = "ALTER TABLE USERS ADD COLUMN Manager_Key TEXT";
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement()) {
+
+            // Execute the statement
+            stmt.executeUpdate(addSQL);
+            System.out.println("Column 'Manager_Key' added to USERS table successfully.");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }

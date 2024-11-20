@@ -1,10 +1,7 @@
 package org.example.Classes;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class Meal implements Cloneable {
     private int mealId;
@@ -27,7 +24,7 @@ public class Meal implements Cloneable {
         description = "";
         ingredients = "";
         servingSize = "";
-        image = ImageIO.read(new File("none.png"));
+        image = null;
         nutritionFact = "";
         isSpicy = false;
         idNumber = instanceNumber;

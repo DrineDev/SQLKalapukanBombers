@@ -2,7 +2,6 @@ package org.example;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -11,10 +10,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -23,10 +21,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
@@ -47,6 +45,7 @@ public class InventoryCRUD {
     private JFrame mainFrame;
     private JButton exitButton;
     private JButton confirmButton;
+    private JButton addButton;
     public JPanel leftContentPanel;
     private Map<Integer, AddInventory> foodItemComponents;
     private NavigatorButtonInventory navButton;
@@ -92,7 +91,7 @@ public class InventoryCRUD {
         // Create the navigation panel at the top
         JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         navPanel.setBackground(PRIMARY_COLOR);
-        navPanel.add(navButton);  // Add the class field navButton
+        navPanel.add(navButton); // Add the class field navButton
 
         // Create the main content panel
         JPanel contentPanel = new JPanel();
@@ -115,6 +114,7 @@ public class InventoryCRUD {
         JScrollPane leftScrollPane = createScrollPane(leftContentPanel, LEFT_SCROLL_PANE_SIZE);
 
         // Create button panel
+        addButton = createAddButton();
         confirmButton = createConfirmButton();
         JPanel buttonPanel = createButtonPanel();
 
@@ -130,6 +130,26 @@ public class InventoryCRUD {
         return leftContainer;
     }
 
+    private JButton createAddButton() {
+        JButton button = new JButton("Add");
+        button.setPreferredSize(new Dimension(100, 30));
+        button.setMaximumSize(new Dimension(280, 30));
+        button.setBackground(PRIMARY_COLOR);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        button.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    new AddMeal();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            });
+        });
+        return button;
+    }
 
     private JButton createConfirmButton() {
         JButton button = new JButton("Confirm");
@@ -198,8 +218,8 @@ public class InventoryCRUD {
         panel.setBackground(Color.WHITE);
 
         try (java.sql.Connection conn = java.sql.DriverManager.getConnection(DB_URL);
-             java.sql.Statement stmt = conn.createStatement();
-             java.sql.ResultSet rs = stmt.executeQuery("SELECT Meal_ID FROM INVENTORY")) {
+                java.sql.Statement stmt = conn.createStatement();
+                java.sql.ResultSet rs = stmt.executeQuery("SELECT Meal_ID FROM MEALS ORDER BY Meal_ID")) {
 
             while (rs.next()) {
                 int mealID = rs.getInt("Meal_ID");
@@ -227,16 +247,16 @@ public class InventoryCRUD {
 
         if (confirmDelete == JOptionPane.YES_OPTION) {
             // Step 1: Delete from the database (both the INVENTORY and MEAL tables)
-            SQLMeal.deleteMeal(mealID);  // Deletes the meal from the MEAL table
-            SQLInventory.deleteInventory(mealID);  // Deletes the meal from the INVENTORY table
+            SQLMeal.deleteMeal(mealID); // Deletes the meal from the MEAL table
+            SQLInventory.deleteInventory(mealID); // Deletes the meal from the INVENTORY table
 
             // Step 2: Remove the meal from the UI (leftContentPanel)
             AddInventory componentToRemove = foodItemComponents.get(mealID);
             if (componentToRemove != null) {
-                leftContentPanel.remove(componentToRemove);  // Remove the meal component from the panel
-                foodItemComponents.remove(mealID);  // Remove it from the map
-                leftContentPanel.revalidate();  // Revalidate the layout
-                leftContentPanel.repaint();  // Repaint the panel to reflect the changes
+                leftContentPanel.remove(componentToRemove); // Remove the meal component from the panel
+                foodItemComponents.remove(mealID); // Remove it from the map
+                leftContentPanel.revalidate(); // Revalidate the layout
+                leftContentPanel.repaint(); // Repaint the panel to reflect the changes
             }
 
             // Step 3: Log the action (Optional)
@@ -251,12 +271,11 @@ public class InventoryCRUD {
         }
     }
 
-
     private void updateInventory() {
         java.sql.Connection conn = null;
         try {
             conn = java.sql.DriverManager.getConnection(DB_URL);
-            conn.setAutoCommit(false);  // Start transaction
+            conn.setAutoCommit(false); // Start transaction
 
             for (Meal updatedMeal : SharedData.getUpdatedMeals()) {
                 // Update meal information
@@ -269,8 +288,7 @@ public class InventoryCRUD {
                         updatedMeal.getDescription(),
                         updatedMeal.getServingSize(),
                         updatedMeal.getImage(),
-                        updatedMeal.getIsSpicy()
-                );
+                        updatedMeal.getIsSpicy());
 
                 // Update inventory quantity
                 AddInventory inventoryComponent = foodItemComponents.get(updatedMeal.getMealId());
@@ -285,9 +303,9 @@ public class InventoryCRUD {
                 }
             }
 
-            conn.commit();  // Commit transaction
+            conn.commit(); // Commit transaction
             clearLeftContentPanel();
-            SharedData.clearUpdatedMeals();  // Clear the updated meals list after successful update
+            SharedData.clearUpdatedMeals(); // Clear the updated meals list after successful update
 
             JOptionPane.showMessageDialog(mainFrame,
                     "Inventory updated successfully",
@@ -297,7 +315,7 @@ public class InventoryCRUD {
         } catch (Exception ex) {
             if (conn != null) {
                 try {
-                    conn.rollback();  // Rollback transaction on error
+                    conn.rollback(); // Rollback transaction on error
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -327,14 +345,13 @@ public class InventoryCRUD {
         scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         scrollPane.getHorizontalScrollBar().setUI(new customScrollBarUI());
-        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(8,4));
+        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(8, 4));
         scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
 
         if (view instanceof JPanel && !(view.getLayout() instanceof GridLayout)) {
             scrollPane.setBorder(BorderFactory.createCompoundBorder(
                     new LineBorder(Color.GRAY, 1),
-                    BorderFactory.createEmptyBorder(5, 5, 5, 5)
-            ));
+                    BorderFactory.createEmptyBorder(5, 5, 5, 5)));
             scrollPane.getViewport().setBackground(Color.WHITE);
             scrollPane.setMaximumSize(size);
         }
@@ -369,6 +386,7 @@ public class InventoryCRUD {
         buttonPanel.setBackground(PRIMARY_COLOR);
         buttonPanel.setBorder(new EmptyBorder(15, 0, 0, 0));
         buttonPanel.add(confirmButton);
+        buttonPanel.add(addButton);
         return buttonPanel;
     }
 
@@ -381,6 +399,7 @@ public class InventoryCRUD {
     private void initializeNavButton() {
         navButton = new NavigatorButtonInventory();
     }
+
     public void dispose() {
         if (mainFrame != null) {
             mainFrame.dispose();
