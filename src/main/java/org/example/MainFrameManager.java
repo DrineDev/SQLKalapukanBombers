@@ -66,8 +66,17 @@ public class MainFrameManager extends JFrame {
     private double totalPrice;
 
     public MainFrameManager() {
-        ExitAndLogoutButtonFrame exit = new ExitAndLogoutButtonFrame(this);
+        // Frame initialization
+        mainFrame = new JFrame();
+        mainFrame.setSize(1000, 600);
+        mainFrame.setUndecorated(true);
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLocationRelativeTo(null);
+
+        ExitAndLogoutButtonFrame exit = new ExitAndLogoutButtonFrame(mainFrame);
         exit.setVisible(false);
+
         // Exit button
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
@@ -76,14 +85,6 @@ public class MainFrameManager extends JFrame {
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
         exitButton.addActionListener(e -> exit.setVisible(true));
-
-        // Frame initialization
-        mainFrame = new JFrame();
-        mainFrame.setSize(1000, 600);
-        mainFrame.setUndecorated(true);
-        mainFrame.setLayout(new BorderLayout());
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setLocationRelativeTo(null);
 
         // Right side tibuok
         rightSideWhole = new JPanel();
