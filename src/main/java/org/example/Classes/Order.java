@@ -8,7 +8,7 @@ import org.example.SQLQueries.SQLOrder;
 
 public class Order {
     private int _orderId;
-    private LocalDateTime _orderDate;
+    private String _orderDate;
     private String _status;
     private double _totalAmount;
     private List<OrderItem> _orderItems;
@@ -16,7 +16,7 @@ public class Order {
     // Default constructor
     public Order() {
         _orderId = SQLOrder.getNextOrderId();
-        _orderDate = LocalDateTime.now();
+        _orderDate = LocalDateTime.now().toString();
         _status = "Pending";
         _totalAmount = 0.0;
         _orderItems = new ArrayList<>();
@@ -25,14 +25,14 @@ public class Order {
     // Constructor with basic info
     public Order(LocalDateTime orderDate, String status) {
         _orderId = 0;
-        _orderDate = orderDate;
+        _orderDate = orderDate.toString();
         _status = status;
         _totalAmount = 0.0;
         _orderItems = new ArrayList<>();
     }
 
     // Full constructor
-    public Order(int orderId, LocalDateTime orderDate, String status, double totalAmount) {
+    public Order(int orderId, String orderDate, String status, double totalAmount) {
         _orderId = orderId;
         _orderDate = orderDate;
         _status = status;
@@ -42,14 +42,14 @@ public class Order {
 
     // Getters
     public int getOrderId() { return _orderId; }
-    public LocalDateTime getOrderDate() { return _orderDate; }
+    public String getOrderDate() { return _orderDate; }
     public String getStatus() { return _status; }
     public double getTotalAmount() { return _totalAmount; }
     public List<OrderItem> getOrderItems() { return _orderItems; }
 
     // Setters
     public void setOrderId(int orderId) { _orderId = orderId; }
-    public void setOrderDate(LocalDateTime orderDate) { _orderDate = orderDate; }
+    public void setOrderDate(LocalDateTime orderDate) { _orderDate = orderDate.toString(); }
     public void setStatus(String status) { _status = status; }
     public void setTotalAmount(double totalAmount) { _totalAmount = totalAmount; }
 
@@ -73,13 +73,13 @@ public class Order {
 
     public static class Builder {
         private int orderId;
-        private LocalDateTime orderDate;
+        private String orderDate;
         private String status;
         private double totalAmount;
         private List<OrderItem> orderItems;
 
         public Builder() {
-            this.orderDate = LocalDateTime.now();
+            this.orderDate = LocalDateTime.now().toString();
             this.status = "Pending";
             this.totalAmount = 0.0;
             this.orderItems = new ArrayList<>();
@@ -91,7 +91,7 @@ public class Order {
         }
 
         public Builder orderDate(LocalDateTime orderDate) {
-            this.orderDate = orderDate;
+            this.orderDate = orderDate.toString();
             return this;
         }
 

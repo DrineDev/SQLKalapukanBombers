@@ -79,7 +79,7 @@ public class OrderCrud extends JFrame {
         RightScrollPane.setBounds(302, 45,660,520);
         RightScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         RightScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        Frame.add(RightScrollPane);
+
 
         JPanel OrderPanel = new JPanel();
         OrderPanel.setLayout(new BoxLayout(OrderPanel,BoxLayout.Y_AXIS));
@@ -487,6 +487,7 @@ public class OrderCrud extends JFrame {
         Frame.add(RightSidePanel);
         Frame.add(AddOrderPanel);
         Frame.add(UpdateOrderPanel);
+        Frame.add(RightScrollPane);
         Frame.setVisible(true);
     }
 

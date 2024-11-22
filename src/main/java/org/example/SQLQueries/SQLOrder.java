@@ -22,8 +22,8 @@ public class SQLOrder {
         int generatedOrderId = -1;
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-                PreparedStatement preparedStatement = connection.prepareStatement(insertSQL,
-                        Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, orderDate);
             preparedStatement.setString(2, status);
@@ -48,7 +48,7 @@ public class SQLOrder {
         String updateSQL = "UPDATE ORDERS SET Order_Date = ?, Status = ?, Total_Amount = ? WHERE Order_Id = ?";
 
         try (Connection connection = DriverManager.getConnection(DB_URL);
-                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
 
             preparedStatement.setString(1, orderDate);
             preparedStatement.setString(2, status);
@@ -68,7 +68,7 @@ public class SQLOrder {
     public static void deleteOrder(int orderId) {
         String deleteSQL = "DELETE FROM ORDERS WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-                PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
 
             preparedStatement.setInt(1, orderId);
 
@@ -91,18 +91,9 @@ public class SQLOrder {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                // Assuming the order date is stored in the format "yyyy-MM-dd HH:mm:ss"
-                String orderDateString = resultSet.getString("Order_Date");
-                LocalDateTime orderDate = null;
-
-                if (orderDateString != null) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    orderDate = LocalDateTime.parse(orderDateString, formatter);
-                }
-
                 return new Order(
                         resultSet.getInt("Order_Id"),
-                        orderDate,  // passing LocalDateTime to the constructor
+                        resultSet.getString("Order_Date"),  // passing LocalDateTime to the constructor
                         resultSet.getString("Status"),
                         resultSet.getDouble("Total_Amount"));
             }
@@ -116,7 +107,7 @@ public class SQLOrder {
     public static void updateOrderStatus(int orderId, String status) {
         String updateSQL = "UPDATE ORDERS SET Status = ? WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
 
             preparedStatement.setString(1, status);
             preparedStatement.setInt(2, orderId);
@@ -130,7 +121,7 @@ public class SQLOrder {
     public static void updateOrderTotal(int orderId, double totalAmount) {
         String updateSQL = "UPDATE ORDERS SET Total_Amount = ? WHERE Order_Id = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
-                PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
 
             preparedStatement.setDouble(1, totalAmount);
             preparedStatement.setInt(2, orderId);
@@ -170,10 +161,10 @@ public class SQLOrder {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
                 Order order = new Order(
-                        rs.getInt("order_id"),
-                        LocalDateTime.parse(rs.getString("order date"),format),
-                        rs.getString("status"),
-                        rs.getDouble("total_amount")
+                        rs.getInt("Order_Id"),
+                        rs.getString("Order_Date"),
+                        rs.getString("Status"),
+                        rs.getDouble("Total_Amount")
                 );
                 orders.add(order);
             }
