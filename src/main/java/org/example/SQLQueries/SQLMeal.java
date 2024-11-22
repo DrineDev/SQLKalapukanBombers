@@ -325,7 +325,7 @@ public class SQLMeal {
         List<Integer> mealIds = new ArrayList<>();
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            String query = "SELECT Meal_ID FROM MEAL ORDER BY Meal_ID";
+            String query = "SELECT Meal_ID FROM MEALS ORDER BY Meal_ID";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
