@@ -1,11 +1,6 @@
 package org.example;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.MediaTracker;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -15,18 +10,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.example.Classes.Meal;
 import org.example.Classes.SharedData;
@@ -41,11 +29,14 @@ public class InventoryCRUD {
     private static final Dimension RIGHT_PANEL_SIZE = new Dimension(680, 2000);
     private static final Dimension SCROLL_PANE_SIZE = new Dimension(680, 500);
     private static final Dimension LEFT_SCROLL_PANE_SIZE = new Dimension(280, 400);
+    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(200, 30);
 
     private JFrame mainFrame;
     private JButton exitButton;
     private JButton confirmButton;
     private JButton addButton;
+    private JTextField searchField;
+    private JPanel foodItemsPanel;
     public JPanel leftContentPanel;
     private Map<Integer, AddInventory> foodItemComponents;
     private NavigatorButtonInventory navButton;
@@ -194,13 +185,10 @@ public class InventoryCRUD {
         rightSideWhole.setBackground(Color.WHITE);
         rightSideWhole.setBorder(new EmptyBorder(0, 20, 0, 0));
 
-        exitButton = createExitButton();
-        JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        exitPanel.setBackground(Color.WHITE);
-        exitPanel.add(exitButton);
-        rightSideWhole.add(exitPanel, BorderLayout.NORTH);
+        JPanel topPanel = createTopPanel();
+        rightSideWhole.add(topPanel, BorderLayout.NORTH);
 
-        JPanel foodItemsPanel = createFoodItemsPanel();
+        foodItemsPanel = createFoodItemsPanel();
         JScrollPane scrollPane = createScrollPane(foodItemsPanel, SCROLL_PANE_SIZE);
 
         JPanel rightSideBottom = new JPanel();
@@ -210,6 +198,119 @@ public class InventoryCRUD {
         rightSideWhole.add(rightSideBottom, BorderLayout.CENTER);
 
         return rightSideWhole;
+    }
+
+    private JPanel createTopPanel() {
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(Color.WHITE);
+        topPanel.setBorder(new EmptyBorder(20, 0, 20, 0)); // Adjusted padding
+
+        // Create a container for search panel with FlowLayout
+        JPanel searchContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        searchContainer.setBackground(Color.WHITE);
+
+        // Create and add search panel to container
+        JPanel searchPanel = createSearchPanel();
+        searchContainer.add(searchPanel);
+
+        // Create exit button container with FlowLayout
+        JPanel exitButtonContainer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        exitButtonContainer.setBackground(Color.WHITE);
+        exitButton = createExitButton();
+        exitButtonContainer.add(exitButton);
+
+        // Add components to top panel
+        topPanel.add(searchContainer, BorderLayout.WEST);
+        topPanel.add(exitButtonContainer, BorderLayout.EAST);
+
+        return topPanel;
+    }
+
+    private JPanel createSearchPanel() {
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        searchPanel.setBackground(Color.WHITE);
+
+        // Create search field with specified size
+        searchField = new JTextField();
+        searchField.setPreferredSize(SEARCH_FIELD_SIZE);
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(PRIMARY_COLOR, 1),
+                BorderFactory.createEmptyBorder(2, 5, 2, 5)
+        ));
+
+
+
+        searchPanel.add(searchField);
+
+        // para mu actually gana ang search
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            //naa kay e add new letter
+            public void insertUpdate(DocumentEvent e) {
+                filterItems();
+            }
+
+            @Override
+            //naa kay e remove usa ka letter
+            public void removeUpdate(DocumentEvent e) {
+                filterItems();
+            }
+
+            @Override
+            //naa kay e change nga letter
+            public void changedUpdate(DocumentEvent e) {
+                filterItems();
+            }
+        });
+
+        return searchPanel;
+    }
+
+    //e update ang food items panel based sa search text
+    private void filterItems() {
+        String searchText = searchField.getText().toLowerCase().trim();
+
+        //loop sa tanan addinventory components sa fooditems panel
+        for (Component comp : foodItemsPanel.getComponents()) {
+            if (comp instanceof AddInventory) {
+                AddInventory item = (AddInventory) comp;
+                // kuhaa ang meal id ani sa component
+                int mealId = item.getMealId();
+
+                // kuhaa ang mealname gamit ang nakuha nga meal id
+                String mealName = getMealNameFromDatabase(mealId);
+
+                //check if di null
+                if (mealName != null) {
+                    comp.setVisible(mealName.toLowerCase().contains(searchText)); //e set visible ra siya if iya name kay contains searchtext
+                }
+            }
+        }
+
+        foodItemsPanel.revalidate();
+        foodItemsPanel.repaint();
+    }
+
+    //function mukuha sa mealname sa database gamit ang meal id
+    private String getMealNameFromDatabase(int mealId) {
+        String mealName = null;
+        try (java.sql.Connection conn = java.sql.DriverManager.getConnection(DB_URL);
+             java.sql.PreparedStatement stmt = conn.prepareStatement("SELECT Name FROM MEALS WHERE Meal_ID = ?")) {
+
+            stmt.setInt(1, mealId);
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    mealName = rs.getString("Name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(mainFrame,
+                    "Error retrieving meal name: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        return mealName;
     }
 
     private JPanel createFoodItemsPanel() {
