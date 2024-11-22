@@ -17,17 +17,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import org.example.Classes.Meal;
@@ -103,33 +93,53 @@ public class AddMeal extends JFrame {
         // NAME PANEL
         JPanel nameTextPanel = new JPanel(FlowLayoutLeft);
         JPanel nameLabelPanel = new JPanel(FlowLayoutLeft);
-        nameTextPanel.add(nameTextArea);
+        JScrollPane nameScrollPane = new JScrollPane(nameTextArea);
+        nameScrollPane.setPreferredSize(new Dimension(430, 30));
+        nameScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+        nameScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        nameTextPanel.add(nameScrollPane);
         nameLabelPanel.add(nameLabel);
 
         // INGREDIENTS PANEL
         JPanel ingredientsTextPanel = new JPanel(FlowLayoutLeft);
         JPanel ingredientsLabelPanel = new JPanel(FlowLayoutLeft);
-        ingredientsTextPanel.add(ingredientsTextField);
+        JScrollPane ingredientsScrollPane = new JScrollPane(ingredientsTextField);
+        ingredientsScrollPane.setPreferredSize(new Dimension(430, 104));
+        ingredientsScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+        ingredientsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        ingredientsTextPanel.add(ingredientsScrollPane);
         ingredientsLabelPanel.add(ingredientsLabel);
 
         // DESCRIPTION PANEL
         JPanel descriptionTextPanel = new JPanel(FlowLayoutLeft);
         JPanel descriptionLabelPanel = new JPanel(FlowLayoutLeft);
-        descriptionTextPanel.add(descriptionTextField);
+        JScrollPane descriptionScrollPane = new JScrollPane(descriptionTextField);
+        descriptionScrollPane.setPreferredSize(new Dimension(430, 30));
+        descriptionScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+        descriptionScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        descriptionTextPanel.add(descriptionScrollPane);
         descriptionLabelPanel.add(descriptionLabel);
 
         // NUTRITIONAL FACTS PANEL
         JPanel nutritionalFactsTextPanel = new JPanel(FlowLayoutLeft);
         JPanel nutritionalFactsLabelPanel = new JPanel(FlowLayoutLeft);
-        nutritionalFactsTextPanel.add(nutritionalFactsTextField);
+        JScrollPane nutritionalFactsScrollPane = new JScrollPane(nutritionalFactsTextField);
+        nutritionalFactsScrollPane.setPreferredSize(new Dimension(430, 50));
+        nutritionalFactsScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+        nutritionalFactsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        nutritionalFactsTextPanel.add(nutritionalFactsScrollPane);
         nutritionalFactsLabelPanel.add(nutritionalFactsLabel);
 
         // SERVING SIZE PANEL
         JPanel servingSizeTextPanel = new JPanel(FlowLayoutLeft);
         JPanel servingSizeLabelPanel = new JPanel(FlowLayoutLeft);
-        servingSizeTextPanel.add(servingSizeTextField);
-        servingSizeLabelPanel.add(servingSizeLabel);
+        JScrollPane servingSizeScrollPane = new JScrollPane(servingSizeTextField);
+        servingSizeScrollPane.setPreferredSize(new Dimension(350, 50));
+        servingSizeScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+        servingSizeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        servingSizeTextPanel.add(servingSizeScrollPane);
         servingSizeTextPanel.add(spicyCheckBox);
+        servingSizeLabelPanel.add(servingSizeLabel);
 
         // CATEGORY PANEL
         JPanel categoryPanel = new JPanel(FlowLayoutLeft);
@@ -144,21 +154,23 @@ public class AddMeal extends JFrame {
         typePanel.add(lunchCheckBox);
         typePanel.add(dinnerCheckBox);
 
-        // EXIT ICON PANEL (if you need it in the layout)
+        // EXIT ICON PANEL
         JPanel exitButtonPanel = new JPanel(FlowLayoutLeft);
         exitButtonPanel.add(exitButton);
 
+        // CONFIRM BUTTON PANEL
         JPanel confirmButtonPanel = new JPanel(FlowLayoutCenter);
         confirmButtonPanel.add(insertImageButton);
         confirmButtonPanel.add(addButton);
 
+        // Setting up GridBagConstraints
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHEAST; // Top-left position
         c.weightx = 1;
         c.weighty = 1;
         c.gridx = 0;
         c.gridy = 0;
-        mainPanel.add(exitButtonPanel, c); // Add exit icon to top-left
+        mainPanel.add(exitButtonPanel, c);
 
         // Center the main content
         c.anchor = GridBagConstraints.CENTER;
@@ -195,7 +207,6 @@ public class AddMeal extends JFrame {
         // Add the main panel to the frame content pane
         this.add(mainPanel);
     }
-
     private void initializeJFrame() {
         // Set basic properties first
         this.setName("Kalapukan Bombers Foods - Add Meal");
@@ -204,6 +215,7 @@ public class AddMeal extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
+        this.setBackground(Color.WHITE);
         this.setAlwaysOnTop(true);
 
         // Set background color - using a slightly visible white instead of fully transparent
@@ -230,46 +242,76 @@ public class AddMeal extends JFrame {
 
     private JTextArea createNameTextArea() {
         JTextArea nameTextArea = new JTextArea();
-        nameTextArea.setPreferredSize(new Dimension(430, 30));
         nameTextArea.setBackground(new Color(217, 217, 217));
         nameTextArea.setLineWrap(true);
-        nameTextArea.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
+        nameTextArea.setWrapStyleWord(true);
+        nameTextArea.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        JScrollPane scrollPane = new JScrollPane(nameTextArea);
+        scrollPane.setPreferredSize(new Dimension(430, 30));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         return nameTextArea;
     }
 
     private JTextArea createIngredientsTextField() {
         JTextArea ingredientsTextField = new JTextArea();
-        ingredientsTextField.setPreferredSize(new Dimension(430, 104));
         ingredientsTextField.setBackground(new Color(217, 217, 217));
-        ingredientsTextField.setLineWrap(true);  // Added line wrap
-        ingredientsTextField.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
+        ingredientsTextField.setLineWrap(true);
+        ingredientsTextField.setWrapStyleWord(true);
+        ingredientsTextField.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        JScrollPane scrollPane = new JScrollPane(ingredientsTextField);
+        scrollPane.setPreferredSize(new Dimension(430, 104));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         return ingredientsTextField;
     }
 
     private JTextArea createDescriptionTextField() {
         JTextArea descriptionTextField = new JTextArea();
-        descriptionTextField.setPreferredSize(new Dimension(430, 30));
         descriptionTextField.setBackground(new Color(217, 217, 217));
-        descriptionTextField.setLineWrap(true);  // Added line wrap
-        descriptionTextField.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
+        descriptionTextField.setLineWrap(true);
+        descriptionTextField.setWrapStyleWord(true);
+        descriptionTextField.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        JScrollPane scrollPane = new JScrollPane(descriptionTextField);
+        scrollPane.setPreferredSize(new Dimension(430, 30));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         return descriptionTextField;
     }
 
     private JTextArea createNutritionalFactsTextField() {
         JTextArea nutritionalFactsTextField = new JTextArea();
-        nutritionalFactsTextField.setPreferredSize(new Dimension(430, 50));
         nutritionalFactsTextField.setBackground(new Color(217, 217, 217));
-        nutritionalFactsTextField.setLineWrap(true);  // Added line wrap
-        nutritionalFactsTextField.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
+        nutritionalFactsTextField.setLineWrap(true);
+        nutritionalFactsTextField.setWrapStyleWord(true);
+        nutritionalFactsTextField.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        JScrollPane scrollPane = new JScrollPane(nutritionalFactsTextField);
+        scrollPane.setPreferredSize(new Dimension(430, 50));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         return nutritionalFactsTextField;
     }
 
     private JTextArea createServingSizeTextField() {
         JTextArea servingSizeTextField = new JTextArea();
-        servingSizeTextField.setPreferredSize(new Dimension(350, 50));
         servingSizeTextField.setBackground(new Color(217, 217, 217));
-        servingSizeTextField.setLineWrap(true);  // Added line wrap
-        servingSizeTextField.setBorder(BorderFactory.createLineBorder(Color.black));  // Updated border
+        servingSizeTextField.setLineWrap(true);
+        servingSizeTextField.setWrapStyleWord(true);
+        servingSizeTextField.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        JScrollPane scrollPane = new JScrollPane(servingSizeTextField);
+        scrollPane.setPreferredSize(new Dimension(350, 50));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         return servingSizeTextField;
     }
 
