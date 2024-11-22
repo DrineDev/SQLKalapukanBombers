@@ -1,9 +1,6 @@
 package org.example;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -11,14 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.RoundRectangle2D.Float;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JWindow;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
+import javax.swing.*;
 
 import org.example.Classes.OrderItem;
 import org.example.Classes.SharedData;
@@ -29,32 +19,45 @@ import org.example.SQLQueries.SQLOrderItems;
 public class AddFood extends JPanel {
     private ImageIcon foodImage;
     private int x = 0;
-    private String nutritionFact;
     private JButton orderButton;
     private Timer hoverTimer;
     private final int HOVER_DELAY = 500; // Delay in milliseconds
+    private JLayeredPane layeredPane;
 
-    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameManager mainFrame)
-    {
-        // Retrieve food image and nutrition facts from database
+    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameManager mainFrame) {
+        setLayout(null); // Change to null layout for absolute positioning
+
+        // Create layered pane to handle overlapping components
+        layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(300, 300));
+        layeredPane.setBounds(0, 0, 300, 300);
+
+        // Create the main panel that will hold the existing components
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBounds(0, 0, 300, 300);
+        mainPanel.setOpaque(false);
+
+        // Create the top-right button
+        JButton topRightButton = new JButton("i");
+        topRightButton.setFont(new Font("Arial", Font.BOLD, 16));
+        topRightButton.setForeground(Color.GRAY);
+        topRightButton.setBounds(270, 5, 25, 25);
+        topRightButton.setBorderPainted(false);
+        topRightButton.setContentAreaFilled(false);
+        topRightButton.setFocusPainted(false);
+        topRightButton.addActionListener(e -> {
+            // INFO OF MEALS PANEL
+            SwingUtilities.invokeLater(() -> new MealInfoMainFrame(mealID));
+        });
+
+        // Existing components
         this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
-        this.nutritionFact = SQLMeal.getNutritionFact(mealID);
-    
-        this.setPreferredSize(new Dimension(300, 300));
-        this.setBackground(Color.white);
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    
+
         // Food background label
         JLabel foodBg = new JLabel();
         foodBg.setIcon(foodImage);
 
-        // Nutrition fact label (displayed on hover)
-        JLabel nutritionLabel = createNutritionLabel();
-    
-        // Add nutrition label as a child of foodBg for better overlay management
-        foodBg.add(nutritionLabel);
-        foodBg.addMouseListener(createHoverListener(nutritionLabel)); // FOR HOVERING ACTIONS
-    
         // Bottom area for buttons and other elements
         ImageIcon bottom = new ImageIcon("pics/addfood bottom.png");
         JLabel bottomLabel = createBottomLabel(bottom);
@@ -63,12 +66,12 @@ public class AddFood extends JPanel {
         // Quantity label
         ImageIcon amountField = new ImageIcon("pics/amount field.png");
         JLabel amountTextField = createAmountTextField(amountField);
-    
+
         // Increment button
         ImageIcon incre = new ImageIcon("pics/more.png");
         JButton increment = createIncrementButton(incre);
-        increment.addActionListener(createIncrementListener(amountTextField)); // FOR ADDING ORDER
-    
+        increment.addActionListener(createIncrementListener(amountTextField));
+
         // Decrement button
         ImageIcon decre = new ImageIcon("pics/less.png");
         JButton decrement = createDecrementButton(decre);
@@ -78,39 +81,59 @@ public class AddFood extends JPanel {
         ImageIcon order = new ImageIcon("pics/order button.png");
         JButton orderButton = createOrderButton(order);
         orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, mealID, mainFrame));
-        
-        // Add components to the panel
-        this.add(foodBg); // Add foodBg with nutritionLabel inside
+
+        // Add components to the main panel
+        mainPanel.add(foodBg);
         bottomLabel.add(increment);
         bottomLabel.add(amountTextField);
         bottomLabel.add(decrement);
         bottomLabel.add(orderButton);
         bottomArea.add(bottomLabel);
-        this.add(bottomArea);
+        mainPanel.add(bottomArea);
+
+        // Add components to layered pane with different z-orders
+        layeredPane.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(topRightButton, JLayeredPane.POPUP_LAYER);
+
+        // Add layered pane to this panel
+        add(layeredPane);
+
+        setPreferredSize(new Dimension(300, 300));
+        setBackground(Color.white);
     }
 
-    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameEmployee mainFrame)
-    {
-        // Retrieve food image and nutrition facts from database
-        this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
-        this.nutritionFact = SQLMeal.getNutritionFact(mealID);
+    public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameEmployee mainFrame) {
+        setLayout(null); // Change to null layout for absolute positioning
 
-        this.setPreferredSize(new Dimension(300, 300));
-        this.setBackground(Color.white);
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        // Create layered pane to handle overlapping components
+        layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(300, 300));
+        layeredPane.setBounds(0, 0, 300, 300);
+
+        // Create the main panel that will hold the existing components
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBounds(0, 0, 300, 300);
+        mainPanel.setOpaque(false);
+
+        // Create the top-right button
+        JButton topRightButton = new JButton("i");
+        topRightButton.setFont(new Font("Arial", Font.BOLD, 16));
+        topRightButton.setForeground(Color.GRAY);
+        topRightButton.setBounds(270, 5, 25, 25);
+        topRightButton.setBorderPainted(false);
+        topRightButton.setContentAreaFilled(false);
+        topRightButton.setFocusPainted(false);
+        topRightButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> new MealInfoMainFrame(mealID));
+        });
+
+        // Existing components
+        this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
 
         // Food background label
         JLabel foodBg = new JLabel();
         foodBg.setIcon(foodImage);
-
-        // TODO
-
-        // Nutrition fact label (displayed on hover)
-        JLabel nutritionLabel = createNutritionLabel();
-
-        // Add nutrition label as a child of foodBg for better overlay management
-        foodBg.add(nutritionLabel);
-        foodBg.addMouseListener(createHoverListener(nutritionLabel)); // FOR HOVERING ACTIONS
 
         // Bottom area for buttons and other elements
         ImageIcon bottom = new ImageIcon("pics/addfood bottom.png");
@@ -124,7 +147,7 @@ public class AddFood extends JPanel {
         // Increment button
         ImageIcon incre = new ImageIcon("pics/more.png");
         JButton increment = createIncrementButton(incre);
-        increment.addActionListener(createIncrementListener(amountTextField)); // FOR ADDING ORDER
+        increment.addActionListener(createIncrementListener(amountTextField));
 
         // Decrement button
         ImageIcon decre = new ImageIcon("pics/less.png");
@@ -136,14 +159,24 @@ public class AddFood extends JPanel {
         JButton orderButton = createOrderButton(order);
         orderButton.addActionListener(createOrderListener(amountTextField, loggerText, loggerPrice, mealID, mainFrame));
 
-        // Add components to the panel
-        this.add(foodBg); // Add foodBg with nutritionLabel inside
+        // Add components to the main panel
+        mainPanel.add(foodBg);
         bottomLabel.add(increment);
         bottomLabel.add(amountTextField);
         bottomLabel.add(decrement);
         bottomLabel.add(orderButton);
         bottomArea.add(bottomLabel);
-        this.add(bottomArea);
+        mainPanel.add(bottomArea);
+
+        // Add components to layered pane with different z-orders
+        layeredPane.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(topRightButton, JLayeredPane.POPUP_LAYER);
+
+        // Add layered pane to this panel
+        add(layeredPane);
+
+        setPreferredSize(new Dimension(300, 300));
+        setBackground(Color.white);
     }
 
     private void showImageFrame(String imagePath) {
@@ -164,16 +197,6 @@ public class AddFood extends JPanel {
         Timer fadeOutTimer = new Timer(20, null);
         fadeOutTimer.addActionListener(createFadeOutListener(imageWindow, fadeOutTimer));
         fadeOutTimer.start();
-    }
-
-    private JLabel createNutritionLabel() {
-        JLabel nutritionLabel = new JLabel("<html>" + nutritionFact.replace("\n", "<br>") + "</html>");
-        nutritionLabel.setBounds(10, 10, 280, 230);  // Position within the bounds of food label
-        nutritionLabel.setForeground(Color.BLACK);    // Set text color
-        nutritionLabel.setBackground(new Color(255, 255, 255, 200)); // Semi-transparent background
-        nutritionLabel.setOpaque(true);
-        nutritionLabel.setVisible(false); // Initially hidden
-        return nutritionLabel;
     }
 
     private JLabel createBottomLabel(ImageIcon bottom) {
