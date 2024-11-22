@@ -24,7 +24,6 @@ import org.example.Classes.OrderItem;
 import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
-import org.example.SQLQueries.SQLOrder;
 import org.example.SQLQueries.SQLOrderItems;
 
 public class AddFood extends JPanel {

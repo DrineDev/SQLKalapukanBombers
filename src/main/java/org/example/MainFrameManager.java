@@ -86,6 +86,14 @@ public class MainFrameManager extends JFrame {
         exitButton.setBorderPainted(false);
         exitButton.addActionListener(e -> exit.setVisible(true));
 
+        // Frame initialization
+        mainFrame = new JFrame("Kalapukan Bombers Foods - Add Order");
+        mainFrame.setSize(1000, 600);
+        mainFrame.setUndecorated(true);
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLocationRelativeTo(null);
+
         // Right side tibuok
         rightSideWhole = new JPanel();
         rightSideWhole.setLayout(new BorderLayout());

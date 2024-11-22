@@ -54,7 +54,7 @@ public class InventoryCRUDEmployee extends JFrame {
     // mu initialize sa frame kung asa gibutang ang gui borderlayout siya so north
     // east west gang
     private void initializeFrame() {
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Kalapukan Bombers Foods - Inventory");
         mainFrame.setSize(FRAME_SIZE);
         mainFrame.setUndecorated(true);
         mainFrame.setLayout(new BorderLayout());
