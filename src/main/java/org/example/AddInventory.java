@@ -56,6 +56,7 @@ public class AddInventory extends JPanel {
         this.quantityAvailable = SQLInventory.getQuantityAvailable(mealID);
 
         this.setPreferredSize(new Dimension(300, 300));
+        this.setMaximumSize(new Dimension(300,300));
         this.setLayout(null);
 
         // Food background - adjust height to not overlap with name label
@@ -112,6 +113,7 @@ public class AddInventory extends JPanel {
         this.quantityAvailable = SQLInventory.getQuantityAvailable(mealID);
 
         this.setPreferredSize(new Dimension(300, 300));
+        this.setMaximumSize(new Dimension(300,300));
         this.setLayout(null);
 
         // Food background - adjust height to not overlap with name label
@@ -412,8 +414,6 @@ public class AddInventory extends JPanel {
                     leftContentPanel.add(logMessage);
                     leftContentPanel.revalidate();
                     leftContentPanel.repaint();
-
-
 
                     editWindow.dispose();
 

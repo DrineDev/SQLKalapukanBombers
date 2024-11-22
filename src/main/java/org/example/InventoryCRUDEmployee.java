@@ -148,18 +148,20 @@ public class InventoryCRUDEmployee extends JFrame {
     private void filterItems() {
         String searchText = searchField.getText().toLowerCase().trim();
 
-        for (Component comp : foodItemsPanel.getComponents()) {
-            if (comp instanceof AddInventory) {
-                AddInventory item = (AddInventory) comp;
-                int mealId = item.getMealId();
-                String mealName = getMealNameFromDatabase(mealId);
+        // Remove all current components
+        foodItemsPanel.removeAll();
 
-                if (mealName != null) {
-                    comp.setVisible(mealName.toLowerCase().contains(searchText));
-                }
+        // Re-add only matching items
+        List<Integer> mealIds = SQLMeal.getAllMealIds();
+        for (Integer mealId : mealIds) {
+            String mealName = getMealNameFromDatabase(mealId);
+
+            if (mealName != null && mealName.toLowerCase().contains(searchText)) {
+                foodItemsPanel.add(new AddInventory(mealId, "employee"));
             }
         }
 
+        // Refresh the panel
         foodItemsPanel.revalidate();
         foodItemsPanel.repaint();
     }
