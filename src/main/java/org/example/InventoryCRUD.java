@@ -67,7 +67,7 @@ public class InventoryCRUD {
     }
 
     private void initializeFrame() {
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Kalapukan Bombers Foods - Inventory");
         mainFrame.setSize(FRAME_SIZE);
         mainFrame.setUndecorated(true);
         mainFrame.setLayout(new BorderLayout());

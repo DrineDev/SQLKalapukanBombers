@@ -77,7 +77,7 @@ public class MainFrameEmployee extends JFrame {
         exitButton.addActionListener(e -> System.exit(0));
 
         // Frame initialization
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Kalapukan Bombers Foods - Add Order");
         mainFrame.setSize(1000, 600);
         mainFrame.setUndecorated(true);
         mainFrame.setLayout(new BorderLayout());

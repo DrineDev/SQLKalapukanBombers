@@ -17,8 +17,17 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import org.example.Classes.Meal;
@@ -189,6 +198,7 @@ public class AddMeal extends JFrame {
 
     private void initializeJFrame() {
         // Set basic properties first
+        this.setName("Kalapukan Bombers Foods - Add Meal");
         this.setUndecorated(true);
         this.setSize(new Dimension(480, 570));
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
