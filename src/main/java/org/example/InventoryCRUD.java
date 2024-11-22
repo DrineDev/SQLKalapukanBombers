@@ -7,10 +7,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -39,12 +43,15 @@ public class InventoryCRUD {
     private JTextField searchField;
     private JPanel foodItemsPanel;
     public JPanel leftContentPanel;
-    private ExitAndLogoutButtonFrame exit; // Add this field
+    private ExitAndLogoutButtonFrame exit;
+    private List<AddInventory> allFoodItems;
+
     private Map<Integer, AddInventory> foodItemComponents;
     private NavigatorButtonInventory navButton;
 
     public InventoryCRUD() {
         foodItemComponents = new HashMap<>();
+        allFoodItems = new ArrayList<>();
         initializeGUI();
     }
 
@@ -235,7 +242,6 @@ public class InventoryCRUD {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         searchPanel.setBackground(Color.WHITE);
 
-        // Create search field with specified size
         searchField = new JTextField();
         searchField.setPreferredSize(SEARCH_FIELD_SIZE);
         searchField.setBorder(BorderFactory.createCompoundBorder(
@@ -243,31 +249,24 @@ public class InventoryCRUD {
                 BorderFactory.createEmptyBorder(2, 5, 2, 5)
         ));
 
-
-
-        searchPanel.add(searchField);
-
-        // para mu actually gana ang search
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            //naa kay e add new letter
             public void insertUpdate(DocumentEvent e) {
                 filterItems();
             }
 
             @Override
-            //naa kay e remove usa ka letter
             public void removeUpdate(DocumentEvent e) {
                 filterItems();
             }
 
             @Override
-            //naa kay e change nga letter
             public void changedUpdate(DocumentEvent e) {
                 filterItems();
             }
         });
 
+        searchPanel.add(searchField);
         return searchPanel;
     }
 
@@ -275,23 +274,28 @@ public class InventoryCRUD {
     private void filterItems() {
         String searchText = searchField.getText().toLowerCase().trim();
 
-        //loop sa tanan addinventory components sa fooditems panel
-        for (Component comp : foodItemsPanel.getComponents()) {
-            if (comp instanceof AddInventory) {
-                AddInventory item = (AddInventory) comp;
-                // kuhaa ang meal id ani sa component
-                int mealId = item.getMealId();
+        // Clear the current panel
+        foodItemsPanel.removeAll();
 
-                // kuhaa ang mealname gamit ang nakuha nga meal id
-                String mealName = getMealNameFromDatabase(mealId);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-                //check if di null
-                if (mealName != null) {
-                    comp.setVisible(mealName.toLowerCase().contains(searchText)); //e set visible ra siya if iya name kay contains searchtext
-                }
+        // Add matching items
+        for (AddInventory item : allFoodItems) {
+            int mealId = item.getMealId();
+            String mealName = getMealNameFromDatabase(mealId);
+
+            if (mealName != null && mealName.toLowerCase().contains(searchText)) {
+                gbc.gridx = (gbc.gridx + 1) % 2;
+                foodItemsPanel.add(item, gbc);
             }
         }
 
+        // Refresh the panel
         foodItemsPanel.revalidate();
         foodItemsPanel.repaint();
     }
@@ -324,14 +328,15 @@ public class InventoryCRUD {
         panel.setBackground(Color.WHITE);
 
         try (java.sql.Connection conn = java.sql.DriverManager.getConnection(DB_URL);
-                java.sql.Statement stmt = conn.createStatement();
-                java.sql.ResultSet rs = stmt.executeQuery("SELECT Meal_ID FROM MEALS ORDER BY Meal_ID")) {
+             java.sql.Statement stmt = conn.createStatement();
+             java.sql.ResultSet rs = stmt.executeQuery("SELECT Meal_ID FROM MEALS ORDER BY Meal_ID")) {
 
             while (rs.next()) {
                 int mealID = rs.getInt("Meal_ID");
                 AddInventory addInventory = new AddInventory(mealID, leftContentPanel);
                 panel.add(addInventory);
                 foodItemComponents.put(mealID, addInventory);
+                allFoodItems.add(addInventory); // Store in our list
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -342,39 +347,6 @@ public class InventoryCRUD {
         }
 
         return panel;
-    }
-
-    public void deleteMeal(int mealID) {
-        int confirmDelete = JOptionPane.showConfirmDialog(mainFrame,
-                "Are you sure you want to delete this meal from inventory?",
-                "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
-
-        if (confirmDelete == JOptionPane.YES_OPTION) {
-            // Step 1: Delete from the database (both the INVENTORY and MEAL tables)
-            SQLMeal.deleteMeal(mealID); // Deletes the meal from the MEAL table
-            SQLInventory.deleteInventory(mealID); // Deletes the meal from the INVENTORY table
-
-            // Step 2: Remove the meal from the UI (leftContentPanel)
-            AddInventory componentToRemove = foodItemComponents.get(mealID);
-            if (componentToRemove != null) {
-                leftContentPanel.remove(componentToRemove); // Remove the meal component from the panel
-                foodItemComponents.remove(mealID); // Remove it from the map
-                leftContentPanel.revalidate(); // Revalidate the layout
-                leftContentPanel.repaint(); // Repaint the panel to reflect the changes
-            }
-
-            // Step 3: Log the action (Optional)
-            System.out.println("Meal with ID " + mealID + " has been deleted from inventory.");
-
-            // Step 4: Provide feedback to the user
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Meal deleted successfully.",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-        }
     }
 
     private void updateInventory() {
@@ -511,4 +483,5 @@ public class InventoryCRUD {
             mainFrame.dispose();
         }
     }
+
 }
