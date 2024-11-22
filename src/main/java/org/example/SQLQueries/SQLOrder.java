@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLOrder {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
@@ -155,4 +157,32 @@ public class SQLOrder {
 
         return nextOrderId;
     }
+
+    public static List<Order> getAllOrders() {
+        List<Order> orders = new ArrayList<>();
+        String query = "SELECT * FROM orders"; // Adjust table name as needed
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+                Order order = new Order(
+                        rs.getInt("order_id"),
+                        LocalDateTime.parse(rs.getString("order date"),format),
+                        rs.getString("status"),
+                        rs.getDouble("total_amount")
+                );
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Consider throwing or handling the exception appropriately
+        }
+
+        return orders;
+    }
+
 }

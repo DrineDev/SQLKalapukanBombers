@@ -70,4 +70,52 @@ public class Order {
                 .mapToDouble(OrderItem::getSubtotal)
                 .sum();
     }
+
+    public static class Builder {
+        private int orderId;
+        private LocalDateTime orderDate;
+        private String status;
+        private double totalAmount;
+        private List<OrderItem> orderItems;
+
+        public Builder() {
+            this.orderDate = LocalDateTime.now();
+            this.status = "Pending";
+            this.totalAmount = 0.0;
+            this.orderItems = new ArrayList<>();
+        }
+
+        public Builder orderId(int orderId) {
+            this.orderId = orderId;
+            return this;
+        }
+
+        public Builder orderDate(LocalDateTime orderDate) {
+            this.orderDate = orderDate;
+            return this;
+        }
+
+        public Builder status(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder totalAmount(double totalAmount) {
+            this.totalAmount = totalAmount;
+            return this;
+        }
+
+        public Builder orderItems(List<OrderItem> orderItems) {
+            this.orderItems = orderItems;
+            return this;
+        }
+
+        public Order build() {
+            Order order = new Order(orderId, orderDate, status, totalAmount);
+            if (orderItems != null) {
+                orderItems.forEach(order::addOrderItem);
+            }
+            return order;
+        }
+    }
 }
