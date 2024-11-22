@@ -29,6 +29,7 @@ public class InventoryCRUDEmployee extends JFrame {
     private NavigatorButtonInventoryEmployee navButton;
     private JTextField searchField;
     private JPanel foodItemsPanel;
+    private ExitAndLogoutButtonFrame exit;
 
     public InventoryCRUDEmployee() {
         initializeGUI();
@@ -36,6 +37,8 @@ public class InventoryCRUDEmployee extends JFrame {
 
     private void initializeGUI() {
         initializeFrame();
+        exit = new ExitAndLogoutButtonFrame(mainFrame); // Modify this line
+        exit.setVisible(false);
         initializeExitButton();
         initializeNavButton();
 
@@ -63,7 +66,7 @@ public class InventoryCRUDEmployee extends JFrame {
         exitButton.setContentAreaFilled(false);
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
-        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.addActionListener(e -> exit.setVisible(true));
     }
 
     private void initializeNavButton() {

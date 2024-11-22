@@ -21,6 +21,7 @@ import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
 
+
 public class InventoryCRUD {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
     private static final Color PRIMARY_COLOR = new Color(248, 146, 137);
@@ -38,6 +39,7 @@ public class InventoryCRUD {
     private JTextField searchField;
     private JPanel foodItemsPanel;
     public JPanel leftContentPanel;
+    private ExitAndLogoutButtonFrame exit; // Add this field
     private Map<Integer, AddInventory> foodItemComponents;
     private NavigatorButtonInventory navButton;
 
@@ -49,8 +51,11 @@ public class InventoryCRUD {
     private void initializeGUI() {
         initializeFrame();
         initializeNavButton();
+        exit = new ExitAndLogoutButtonFrame(mainFrame);
+        exit.setVisible(false);
         JPanel leftSide = createLeftPanel();
         JPanel rightSideWhole = createRightPanel();
+        exit.setVisible(false);
 
         mainFrame.add(leftSide, BorderLayout.WEST);
         mainFrame.add(rightSideWhole, BorderLayout.EAST);
@@ -477,7 +482,7 @@ public class InventoryCRUD {
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-        button.addActionListener(e -> dispose());
+        button.addActionListener(e -> exit.setVisible(true));
         return button;
     }
 
