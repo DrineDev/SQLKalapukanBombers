@@ -1,6 +1,6 @@
-    package org.example;
+package org.example;
 
-    import java.awt.Color;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -34,79 +34,113 @@ import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
 
-    public class AddInventory extends JPanel {
-        private ImageIcon foodImage;
-        private int quantityAvailable;
-        private JLabel quantityLabel;
-        private JPanel leftContentPanel;
-        private int mealID;
-        private Boolean markedForDeletion = false;
+public class AddInventory extends JPanel {
+    private ImageIcon foodImage;
+    private int quantityAvailable;
+    private float price;
+    private JLabel quantityLabel;
+    private JLabel nameLabel;
+    private JPanel leftContentPanel;
+    private int mealID;
+    private Boolean markedForDeletion = false;
 
-        public AddInventory(int mealID, JPanel leftContentPanel) {
-            this.mealID = mealID;
-            this.leftContentPanel = leftContentPanel;
-            BufferedImage imageData = SQLMeal.getImage(mealID);
-            if (imageData != null) {
-                this.foodImage = new ImageIcon(imageData);
-            } else {
-                // Set a default image or placeholder
-                this.foodImage = new ImageIcon("pics/default-meal.png");
-            }
-            this.quantityAvailable = SQLInventory.getQuantityAvailable(mealID);
-
-            this.setPreferredSize(new Dimension(300, 300));
-            this.setLayout(null);
-
-            // Food background
-            JLabel foodBg = new JLabel();
-            foodBg.setBounds(0, 0, 300, 250);
-            foodBg.setIcon(foodImage);
-
-            // Label to display quantity available
-            quantityLabel = new JLabel();
-            quantityLabel.setText("Stocks: " + this.quantityAvailable);
-            quantityLabel.setBounds(0, 250, 200, 50);
-            quantityLabel.setHorizontalAlignment(JLabel.LEFT);
-
-            // Edit button
-            ImageIcon edit = new ImageIcon("pics/edit.png");
-            JButton editButton = new JButton(edit);
-            editButton.setBounds(180, 255, 62, 34);
-            editButton.addActionListener(e -> openEditWindow(mealID));
-
-            // Delete button
-            ImageIcon delete = new ImageIcon("pics/delete.png");
-            JButton deleteButton = new JButton(delete);
-            deleteButton.setBounds(250, 255, 62, 34);
-            deleteButton.addActionListener(e -> confirmAndDelete(mealID));
-
-            // Add the components to the panel
-            this.add(foodBg);
-            this.add(quantityLabel);
-            this.add(editButton);
-            this.add(deleteButton);
+    public AddInventory(int mealID, JPanel leftContentPanel) {
+        this.mealID = mealID;
+        this.leftContentPanel = leftContentPanel;
+        BufferedImage imageData = SQLMeal.getImage(mealID);
+        if (imageData != null) {
+            this.foodImage = new ImageIcon(imageData);
+        } else {
+            this.foodImage = new ImageIcon("pics/search.png");
         }
+        this.quantityAvailable = SQLInventory.getQuantityAvailable(mealID);
 
-        public AddInventory(int mealID, String employee) {
-            this.mealID = mealID;
-            this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
-            this.quantityAvailable = SQLInventory.getQuantityAvailable(mealID);
+        this.setPreferredSize(new Dimension(300, 300));
+        this.setLayout(null);
 
-            this.setPreferredSize(new Dimension(300, 300));
-            this.setLayout(null);
+        // Food background - adjust height to not overlap with name label
+        JLabel foodBg = new JLabel();
+        foodBg.setBounds(0, 0, 300, 225);  // Reduced height to 225
+        // Scale the image to fit
+        Image scaledImage = foodImage.getImage().getScaledInstance(300, 225, Image.SCALE_SMOOTH);
+        foodBg.setIcon(new ImageIcon(scaledImage));
 
-            JLabel foodBg = new JLabel();
-            foodBg.setBounds(0, 0, 300, 250);
-            foodBg.setIcon(foodImage);
+        // Name label
+        String mealName = SQLMeal.getMealInfo(mealID).getName();
+        nameLabel = new JLabel(mealName);
+        nameLabel.setBounds(0, 225, 300, 25);
+        nameLabel.setHorizontalAlignment(JLabel.CENTER);
+        nameLabel.setForeground(Color.WHITE);
+        nameLabel.setBackground(new Color(0, 0, 0, 150));
+        nameLabel.setOpaque(true);
+        nameLabel.setFont(new Font("Inter", Font.BOLD, 14));
 
-            JLabel quantityLabel = new JLabel();
-            quantityLabel.setText("Stocks Available: " + this.quantityAvailable);
-            quantityLabel.setBounds(0, 250, 300, 50);
-            quantityLabel.setHorizontalAlignment(JLabel.LEFT);
+        // Quantity label
+        quantityLabel = new JLabel();
+        quantityLabel.setText("Stocks: " + this.quantityAvailable);
+        quantityLabel.setBounds(0, 250, 200, 50);
+        quantityLabel.setHorizontalAlignment(JLabel.LEFT);
 
-            this.add(foodBg);
-            this.add(quantityLabel);
+        // Edit button
+        ImageIcon edit = new ImageIcon("pics/edit.png");
+        JButton editButton = new JButton(edit);
+        editButton.setBounds(180, 255, 62, 34);
+        editButton.addActionListener(e -> openEditWindow(mealID));
+
+        // Delete button
+        ImageIcon delete = new ImageIcon("pics/delete.png");
+        JButton deleteButton = new JButton(delete);
+        deleteButton.setBounds(250, 255, 62, 34);
+        deleteButton.addActionListener(e -> confirmAndDelete(mealID));
+
+        // Add components in correct order
+        this.add(foodBg);
+        this.add(nameLabel);
+        this.add(quantityLabel);
+        this.add(editButton);
+        this.add(deleteButton);
+    }
+
+    public AddInventory(int mealID, String employee) {
+        this.mealID = mealID;
+        BufferedImage imageData = SQLMeal.getImage(mealID);
+        if (imageData != null) {
+            this.foodImage = new ImageIcon(imageData);
+        } else {
+            this.foodImage = new ImageIcon("pics/search.png");
         }
+        this.quantityAvailable = SQLInventory.getQuantityAvailable(mealID);
+
+        this.setPreferredSize(new Dimension(300, 300));
+        this.setLayout(null);
+
+        // Food background - adjust height to not overlap with name label
+        JLabel foodBg = new JLabel();
+        foodBg.setBounds(0, 0, 300, 225);  // Reduced height to 225
+        // Scale the image to fit
+        Image scaledImage = foodImage.getImage().getScaledInstance(300, 225, Image.SCALE_SMOOTH);
+        foodBg.setIcon(new ImageIcon(scaledImage));
+
+        // Name label
+        String mealName = SQLMeal.getMealInfo(mealID).getName();
+        nameLabel = new JLabel(mealName);
+        nameLabel.setBounds(0, 225, 300, 25);
+        nameLabel.setHorizontalAlignment(JLabel.CENTER);
+        nameLabel.setForeground(Color.WHITE);
+        nameLabel.setBackground(new Color(0, 0, 0, 150));
+        nameLabel.setOpaque(true);
+        nameLabel.setFont(new Font("Inter", Font.BOLD, 14));
+
+        // Quantity label
+        quantityLabel = new JLabel();
+        quantityLabel.setText("Stocks: " + this.quantityAvailable);
+        quantityLabel.setBounds(0, 250, 200, 50);
+        quantityLabel.setHorizontalAlignment(JLabel.LEFT);
+
+        this.add(foodBg);
+        this.add(nameLabel);
+        this.add(quantityLabel);
+    }
 
         // Pop-up frame for editing inventory
         private void openEditWindow(int mealID) {
@@ -181,6 +215,12 @@ import org.example.SQLQueries.SQLMeal;
             stocksLabel.setForeground(new Color(248, 146, 137));
             stocksLabel.setBackground(new Color(255, 255, 255));
 
+            JLabel priceLabel = new JLabel("Price:");
+            priceLabel.setBounds(50, 440, 100, 30);
+            priceLabel.setOpaque(true);
+            priceLabel.setForeground(new Color(248, 146, 137));
+            priceLabel.setBackground(new Color(255, 255, 255));
+
             // Text Fields and Areas
             JTextField nameField = new JTextField();
             nameField.setBounds(160, 60, 200, 30);
@@ -189,6 +229,7 @@ import org.example.SQLQueries.SQLMeal;
             JTextField typeField = new JTextField();
             typeField.setBounds(160, 100, 200, 30);
             typeField.setBackground(new Color(255,255,255));
+            typeField.setInputVerifier(new MealTypeVerifier());
 
             JTextArea descriptionArea = new JTextArea();
             descriptionArea.setLineWrap(true);
@@ -215,10 +256,12 @@ import org.example.SQLQueries.SQLMeal;
             JTextField servingSizeField = new JTextField();
             servingSizeField.setBounds(160, 260, 200, 30);
             servingSizeField.setBackground(new Color(255,255,255));
+            servingSizeField.setInputVerifier(new ServingSizeVerifier());
 
             JTextField categoryField = new JTextField();
             categoryField.setBounds(160, 300, 200, 30);
             categoryField.setBackground(new Color(255,255,255));
+            categoryField.setInputVerifier(new CategoryVerifier());
 
             JTextArea nutritionArea = new JTextArea();
             nutritionArea.setLineWrap(true);
@@ -235,10 +278,16 @@ import org.example.SQLQueries.SQLMeal;
             stocksField.setBounds(160, 400, 200, 30);
             stocksField.setBackground(new Color(255,255,255));
             stocksField.setText(String.valueOf(this.quantityAvailable));
+            stocksField.setInputVerifier(new StocksVerifier());
+
+            JTextField priceField = new JTextField();
+            priceField.setBounds(160, 440, 200, 30);
+            priceField.setBackground(new Color(255,255,255));
+            priceField.setInputVerifier(new PriceVerifier());
 
             // Spicy Checkbox
             JCheckBox spicyCheckBox = new JCheckBox("Spicy");
-            spicyCheckBox.setBounds(160, 440, 100, 30);
+            spicyCheckBox.setBounds(160, 480, 100, 30);
             spicyCheckBox.setBackground(Color.WHITE);
             spicyCheckBox.setForeground(new Color(248, 146, 137));
 
@@ -282,7 +331,7 @@ import org.example.SQLQueries.SQLMeal;
                     nutritionArea.setText(meal.getNutritionFact());
                     spicyCheckBox.setSelected(meal.getIsSpicy());
                     stocksField.setText(String.valueOf(quantityAvailable));
-
+                    priceField.setText(String.format("%.2f", SQLInventory.getPrice(mealID)));
                     currentImage = meal.getImage();
                     if (currentImage != null) {
                         Image scaledImage = currentImage.getScaledInstance(280, 280, Image.SCALE_SMOOTH);
@@ -327,6 +376,17 @@ import org.example.SQLQueries.SQLMeal;
                         errorLabel.setText("Meal name is required");
                         return;
                     }
+                    float price;
+                    try {
+                        price = Float.parseFloat(priceField.getText().trim());
+                        if (price < 0) {
+                            errorLabel.setText("Price cannot be negative");
+                            return;
+                        }
+                    } catch (NumberFormatException ex) {
+                        errorLabel.setText("Invalid price format");
+                        return;
+                    }
                     // Update meal using the SQLMeal class
                     Meal updatedMeal = new Meal(
                             mealID,
@@ -344,6 +404,8 @@ import org.example.SQLQueries.SQLMeal;
 
                     // Update stock quantity in the inventory table
                     this.quantityAvailable = Integer.parseInt(stocksField.getText().trim());
+
+                    SQLInventory.editInventory(mealID,(int)price, this.quantityAvailable,SQLInventory.getQuantitySold(mealID));
 
                     // Add log message
                     JLabel logMessage = new JLabel("Updated meal: " + nameField.getText());
@@ -378,6 +440,8 @@ import org.example.SQLQueries.SQLMeal;
             mainPanel.add(nutritionScrollPane);
             mainPanel.add(stocksLabel);
             mainPanel.add(stocksField);
+            mainPanel.add(priceLabel);
+            mainPanel.add(priceField);
             mainPanel.add(spicyCheckBox);
             mainPanel.add(imagePanel);
             mainPanel.add(chooseImageBtn);
@@ -439,30 +503,128 @@ import org.example.SQLQueries.SQLMeal;
             }
         }
 
+    // Custom input verifier for meal type
+    class MealTypeVerifier extends InputVerifier {
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField field = (JTextField) input;
+            String text = field.getText().trim().toLowerCase();
+            boolean isValid = text.equals("breakfast") || text.equals("lunch") || text.equals("dinner");
 
+            if (!isValid) {
+                JOptionPane.showMessageDialog(input,
+                        "Type must be either 'breakfast', 'lunch', or 'dinner'",
+                        "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                field.setText("");
+            }
+            return isValid;
+        }
+    }
 
-        // Custom input verifier to allow only integer values
-        private static class IntegerInputVerifier extends InputVerifier {
-            private boolean valid;
-
-            @Override
-            public boolean verify(JComponent input) {
-                JTextField textField = (JTextField) input;
-                String text = textField.getText();
-                try {
-                    Integer.parseInt(text);
-                    valid = true;
-                    return true;
-                } catch (NumberFormatException e) {
-                    valid = false;
-                    return false;
-                }
+    // Custom input verifier for serving size
+    class ServingSizeVerifier extends InputVerifier {
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField field = (JTextField) input;
+            String text = field.getText().trim();
+            if (!text.toLowerCase().endsWith("grams")) {
+                JOptionPane.showMessageDialog(input,
+                        "Serving size must end with 'grams'",
+                        "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
             }
 
-            public boolean isValid() {
-                return valid;
+            try {
+                String numberPart = text.substring(0, text.length() - 5).trim();
+                Integer.parseInt(numberPart);
+                return true;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(input,
+                        "Serving size must be a number followed by 'grams'",
+                        "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                field.setText("");
+                return false;
             }
         }
+    }
+
+    // Custom input verifier for category
+    class CategoryVerifier extends InputVerifier {
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField field = (JTextField) input;
+            String text = field.getText().trim().toLowerCase();
+            boolean isValid = text.equals("vegetarian") || text.equals("non-vegetarian");
+
+            if (!isValid) {
+                JOptionPane.showMessageDialog(input,
+                        "Category must be either 'vegetarian' or 'non-vegetarian'",
+                        "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                field.setText("");
+            }
+            return isValid;
+        }
+    }
+
+    // Custom input verifier for stocks
+    class StocksVerifier extends InputVerifier {
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField field = (JTextField) input;
+            try {
+                int value = Integer.parseInt(field.getText().trim());
+                if (value < 0) {
+                    JOptionPane.showMessageDialog(input,
+                            "Stocks cannot be negative",
+                            "Invalid Input",
+                            JOptionPane.ERROR_MESSAGE);
+                    field.setText("0");
+                    return false;
+                }
+                return true;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(input,
+                        "Stocks must be a whole number",
+                        "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                field.setText("0");
+                return false;
+            }
+        }
+    }
+
+    // Custom input verifier for price
+    class PriceVerifier extends InputVerifier {
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField field = (JTextField) input;
+            try {
+                float value = Float.parseFloat(field.getText().trim());
+                if (value < 0) {
+                    JOptionPane.showMessageDialog(input,
+                            "Price cannot be negative",
+                            "Invalid Input",
+                            JOptionPane.ERROR_MESSAGE);
+                    field.setText("0.00");
+                    return false;
+                }
+                // Format to 2 decimal places
+                field.setText(String.format("%.2f", value));
+                return true;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(input,
+                        "Price must be a valid number",
+                        "Invalid Input",
+                        JOptionPane.ERROR_MESSAGE);
+                field.setText("0.00");
+                return false;
+            }
+        }
+    }
 
         //helper method kuhag mealID
         public int getMealID() {return mealID;}
@@ -470,6 +632,10 @@ import org.example.SQLQueries.SQLMeal;
         public boolean isMarkedForDeletion() {return markedForDeletion;}
 
         public int getQuantityAvailable() {return this.quantityAvailable;}
+
+        public int getMealId(){
+            return mealID;
+        }
 
         public void updateQuantityLabel(int newQuantity) {
             if (newQuantity >= 0) {

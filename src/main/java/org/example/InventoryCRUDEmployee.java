@@ -1,28 +1,24 @@
 package org.example;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.example.SQLQueries.SQLMeal;
 
 public class InventoryCRUDEmployee extends JFrame {
+    private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
     private static final Color PRIMARY_COLOR = new Color(248, 146, 137);
     private static final Dimension FRAME_SIZE = new Dimension(1000, 600);
+    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(200, 30);
     private static final int GRID_GAP = 20;
     private static final int BORDER_THICKNESS = 20;
     private static final int SCROLL_UNIT_INCREMENT = 20;
@@ -30,14 +26,14 @@ public class InventoryCRUDEmployee extends JFrame {
 
     private JFrame mainFrame;
     private JButton exitButton;
-    private NavigatorButtonInventory navButton;
+    private NavigatorButtonInventoryEmployee navButton;
+    private JTextField searchField;
+    private JPanel foodItemsPanel;
 
-    // himo sa GUI
     public InventoryCRUDEmployee() {
         initializeGUI();
     }
 
-    // function muhimo sa GUI
     private void initializeGUI() {
         initializeFrame();
         initializeExitButton();
@@ -51,8 +47,6 @@ public class InventoryCRUDEmployee extends JFrame {
         mainFrame.setVisible(true);
     }
 
-    // mu initialize sa frame kung asa gibutang ang gui borderlayout siya so north
-    // east west gang
     private void initializeFrame() {
         mainFrame = new JFrame();
         mainFrame.setSize(FRAME_SIZE);
@@ -62,7 +56,6 @@ public class InventoryCRUDEmployee extends JFrame {
         mainFrame.setLocationRelativeTo(null);
     }
 
-    // initialize sa exit button ibutang siya sa right part sa top panel
     private void initializeExitButton() {
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
         exitButton = new JButton();
@@ -73,65 +66,137 @@ public class InventoryCRUDEmployee extends JFrame {
         exitButton.addActionListener(e -> System.exit(0));
     }
 
-    // initialize sa navbutton ibutang siya sa left part sa top panel
     private void initializeNavButton() {
-        navButton = new NavigatorButtonInventory();
-        // Add listeners for the navigation buttons
+        navButton = new NavigatorButtonInventoryEmployee();
+        navButton.setPreferredSize(new Dimension(150, 50));
         navButton.addOrderButtonListener(e -> {
             SwingUtilities.invokeLater(MainFrameEmployee::new);
-            mainFrame.dispose(); // Close current window
-            // Open order window if naa natay order window
+            mainFrame.dispose();
         });
 
         navButton.addInventoryButtonListener(e -> {
-            // already inventory so empty ra siya
+            // already in inventory
         });
     }
 
-    // top panel contains nav and exit button
     private JPanel createTopPanel() {
-        JPanel topPanel = new JPanel();
+        JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(PRIMARY_COLOR);
         topPanel.setBorder(BorderFactory.createMatteBorder(
                 BORDER_THICKNESS, 0, 0, 0, PRIMARY_COLOR));
 
-        // Use BorderLayout for the top panel
-        topPanel.setLayout(new BorderLayout());
-
-        // Create left panel for navigator button
+        // Left panel for navigator button
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         leftPanel.setOpaque(false);
         leftPanel.add(navButton);
 
-        // Create right panel for exit button
+        // Center panel for search
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        centerPanel.setOpaque(false);
+        centerPanel.add(createSearchPanel());
+
+        // Right panel for exit button
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setOpaque(false);
         rightPanel.add(exitButton);
 
-        // Add both panels to the top panel
         topPanel.add(leftPanel, BorderLayout.WEST);
+        topPanel.add(centerPanel, BorderLayout.CENTER);
         topPanel.add(rightPanel, BorderLayout.EAST);
 
         return topPanel;
     }
 
-    // rightside panel pero basically everything under sa top panel
+    private JPanel createSearchPanel() {
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        searchPanel.setOpaque(false);
+
+        // Create search field with specified size
+        searchField = new JTextField();
+        searchField.setPreferredSize(SEARCH_FIELD_SIZE);
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(Color.WHITE, 1),
+                BorderFactory.createEmptyBorder(2, 5, 2, 5)));
+
+
+        searchPanel.add(searchField);
+
+        // Add document listener for search functionality
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterItems();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterItems();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterItems();
+            }
+        });
+
+        return searchPanel;
+    }
+
+    private void filterItems() {
+        String searchText = searchField.getText().toLowerCase().trim();
+
+        for (Component comp : foodItemsPanel.getComponents()) {
+            if (comp instanceof AddInventory) {
+                AddInventory item = (AddInventory) comp;
+                int mealId = item.getMealId();
+                String mealName = getMealNameFromDatabase(mealId);
+
+                if (mealName != null) {
+                    comp.setVisible(mealName.toLowerCase().contains(searchText));
+                }
+            }
+        }
+
+        foodItemsPanel.revalidate();
+        foodItemsPanel.repaint();
+    }
+
+    private String getMealNameFromDatabase(int mealId) {
+        String mealName = null;
+        try (java.sql.Connection conn = java.sql.DriverManager.getConnection(DB_URL);
+             java.sql.PreparedStatement stmt = conn.prepareStatement("SELECT Name FROM MEALS WHERE Meal_ID = ?")) {
+
+            stmt.setInt(1, mealId);
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    mealName = rs.getString("Name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(mainFrame,
+                    "Error retrieving meal name: " + e.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        return mealName;
+    }
+
     private JPanel createRightSidePanel() {
         JPanel rightSidePanel = new JPanel();
         rightSidePanel.setLayout(new BorderLayout());
         rightSidePanel.setBackground(Color.WHITE);
         rightSidePanel.setBorder(new EmptyBorder(
                 BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS, BORDER_THICKNESS));
-        // isud ang scrollpane sa kani nga panel
+
         JScrollPane scrollPane = createScrollPane(createFoodItemsPanel());
         rightSidePanel.add(scrollPane, BorderLayout.CENTER);
 
         return rightSidePanel;
     }
 
-    // fooditems nga panel ra jud
     private JPanel createFoodItemsPanel() {
-        JPanel foodItemsPanel = new JPanel();
+        foodItemsPanel = new JPanel();
         foodItemsPanel.setLayout(new GridLayout(0, 3, GRID_GAP, GRID_GAP));
         foodItemsPanel.setBackground(Color.WHITE);
 
@@ -150,7 +215,6 @@ public class InventoryCRUDEmployee extends JFrame {
         return foodItemsPanel;
     }
 
-    // scrollpane para butanganan sa fooditemspanel
     private JScrollPane createScrollPane(JPanel contentPanel) {
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
