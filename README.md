@@ -10,12 +10,13 @@ MainFrameEmployee.java && MainFrameManager.java
 InventoryCrud.java
   1. Search bar for finding food
   2. Notification for low stocks
-  3. Fix design
-  4. Edit meal gui fix
-  5. Add meal gui fix
+  3. GUI Fix
+    AddMeal GUI Fix
+    EditMeal GUI Fix
+      -EDIT PRICE
+
+InventoryCrudEmployee.java
+  1. GUI fix
   
 OrderCRUD.java
-  1. everything
-
-LoginPage.java
-  1. Create account
+  1. Pop up orders

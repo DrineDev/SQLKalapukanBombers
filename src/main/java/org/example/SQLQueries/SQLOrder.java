@@ -65,7 +65,6 @@ public class SQLOrder {
     // Delete an order
     public static void deleteOrder(int orderId) {
         String deleteSQL = "DELETE FROM ORDERS WHERE Order_Id = ?";
-
         try (Connection connection = DriverManager.getConnection(DB_URL);
                 PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
 

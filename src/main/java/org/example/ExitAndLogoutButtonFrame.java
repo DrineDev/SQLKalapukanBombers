@@ -54,21 +54,17 @@ public class ExitAndLogoutButtonFrame extends JFrame
 //                window.dispose();
 //            }
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // Disable all components first
-                parent.setEnabled(false);
-                ExitAndLogoutButtonFrame.this.setEnabled(false);
-
-                // Remove all components from parent
-                parent.getContentPane().removeAll();
-                parent.setVisible(false);
+            public void actionPerformed(ActionEvent e)
+            {
                 parent.dispose();
 
                 ExitAndLogoutButtonFrame.this.dispose();
 
-                SwingUtilities.invokeLater(new Runnable() {
+                SwingUtilities.invokeLater(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         new LoginPage();
                     }
                 });
