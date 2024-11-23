@@ -47,24 +47,16 @@ public class AddInventory extends JPanel {
     public AddInventory(int mealID, JPanel leftContentPanel) {
         this.mealID = mealID;
         this.leftContentPanel = leftContentPanel;
-        BufferedImage imageData = SQLMeal.getImage(mealID);
-        if (imageData != null) {
-            this.foodImage = new ImageIcon(imageData);
-        } else {
-            this.foodImage = new ImageIcon("pics/search.png");
-        }
+        this.foodImage = new ImageIcon(SQLMeal.getImage(mealID));
         this.quantityAvailable = SQLInventory.getQuantityAvailable(mealID);
-
         this.setPreferredSize(new Dimension(300, 300));
         this.setMaximumSize(new Dimension(300,300));
+        this.setBackground(Color.WHITE);
         this.setLayout(null);
-
         // Food background - adjust height to not overlap with name label
         JLabel foodBg = new JLabel();
         foodBg.setBounds(0, 0, 300, 225);  // Reduced height to 225
-        // Scale the image to fit
-        Image scaledImage = foodImage.getImage().getScaledInstance(300, 225, Image.SCALE_SMOOTH);
-        foodBg.setIcon(new ImageIcon(scaledImage));
+        foodBg.setIcon(foodImage);
 
         // Name label
         String mealName = SQLMeal.getMealInfo(mealID).getName();
@@ -72,26 +64,29 @@ public class AddInventory extends JPanel {
         nameLabel.setBounds(0, 225, 300, 25);
         nameLabel.setHorizontalAlignment(JLabel.CENTER);
         nameLabel.setForeground(Color.WHITE);
-        nameLabel.setBackground(new Color(0, 0, 0, 150));
+        nameLabel.setBackground(new Color(248, 146, 137));
         nameLabel.setOpaque(true);
         nameLabel.setFont(new Font("Inter", Font.BOLD, 14));
 
         // Quantity label
         quantityLabel = new JLabel();
-        quantityLabel.setText("Stocks: " + this.quantityAvailable);
-        quantityLabel.setBounds(0, 250, 200, 50);
+        quantityLabel.setIcon(new ImageIcon("pics/stock.png"));
+        quantityLabel.setText(String.valueOf(this.quantityAvailable));
+        quantityLabel.setBounds(5, 250, 200, 50);
         quantityLabel.setHorizontalAlignment(JLabel.LEFT);
+        quantityLabel.setFont(new Font("Inter", Font.BOLD, 14));
+        quantityLabel.setForeground(new Color(248, 146, 137));
 
         // Edit button
         ImageIcon edit = new ImageIcon("pics/edit.png");
         JButton editButton = new JButton(edit);
-        editButton.setBounds(180, 255, 62, 34);
+        editButton.setBounds(185, 255, 55, 34);
         editButton.addActionListener(e -> openEditWindow(mealID));
 
         // Delete button
         ImageIcon delete = new ImageIcon("pics/delete.png");
         JButton deleteButton = new JButton(delete);
-        deleteButton.setBounds(250, 255, 62, 34);
+        deleteButton.setBounds(245, 255, 55, 34);
         deleteButton.addActionListener(e -> confirmAndDelete(mealID));
 
         // Add components in correct order
@@ -115,6 +110,7 @@ public class AddInventory extends JPanel {
         this.setPreferredSize(new Dimension(300, 300));
         this.setMaximumSize(new Dimension(300,300));
         this.setLayout(null);
+        this.setBackground(Color.WHITE);
 
         // Food background - adjust height to not overlap with name label
         JLabel foodBg = new JLabel();
@@ -129,15 +125,18 @@ public class AddInventory extends JPanel {
         nameLabel.setBounds(0, 225, 300, 25);
         nameLabel.setHorizontalAlignment(JLabel.CENTER);
         nameLabel.setForeground(Color.WHITE);
-        nameLabel.setBackground(new Color(0, 0, 0, 150));
+        nameLabel.setBackground(new Color(248, 146, 137));
         nameLabel.setOpaque(true);
         nameLabel.setFont(new Font("Inter", Font.BOLD, 14));
 
         // Quantity label
         quantityLabel = new JLabel();
-        quantityLabel.setText("Stocks: " + this.quantityAvailable);
-        quantityLabel.setBounds(0, 250, 200, 50);
+        quantityLabel.setIcon(new ImageIcon("pics/stock.png"));
+        quantityLabel.setText(String.valueOf(this.quantityAvailable));
+        quantityLabel.setBounds(5, 250, 200, 50);
         quantityLabel.setHorizontalAlignment(JLabel.LEFT);
+        quantityLabel.setFont(new Font("Inter", Font.BOLD, 14));
+        quantityLabel.setForeground(new Color(248, 146, 137));
 
         this.add(foodBg);
         this.add(nameLabel);
