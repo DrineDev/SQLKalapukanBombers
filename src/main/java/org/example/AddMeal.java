@@ -476,7 +476,15 @@ public class AddMeal extends JFrame {
                     tempMeal.setDescription(descriptionTextField.getText().trim());
                     tempMeal.setServingSize(servingSizeTextField.getText().trim());
                     tempMeal.setNutritionFact(nutritionalFactsTextField.getText().trim());
-                    tempMeal.setImage(selectedImage);
+
+                    // Process and set image with background replaced
+                    if (selectedImage != null) {
+                        tempMeal.setImage(ImageProcessor.swapBackground(selectedImage, "pics/backgroud for food.png"));
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Please select an image for the meal.", "Image Missing",
+                                JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
 
                     // Save meal to database
                     SQLMeal.addMeal(tempMeal);
@@ -489,6 +497,10 @@ public class AddMeal extends JFrame {
 
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Error saving meal: " + ex.getMessage(), "Database Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error processing image: " + ex.getMessage(), "Image Processing Error",
                             JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
