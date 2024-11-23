@@ -1,37 +1,30 @@
 package org.example;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.MediaTracker;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
+
+import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.example.Classes.Meal;
 import org.example.Classes.SharedData;
 import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
+
 
 public class InventoryCRUD {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
@@ -41,25 +34,35 @@ public class InventoryCRUD {
     private static final Dimension RIGHT_PANEL_SIZE = new Dimension(680, 2000);
     private static final Dimension SCROLL_PANE_SIZE = new Dimension(680, 500);
     private static final Dimension LEFT_SCROLL_PANE_SIZE = new Dimension(280, 400);
+    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(200, 30);
 
     private JFrame mainFrame;
     private JButton exitButton;
     private JButton confirmButton;
     private JButton addButton;
+    private JTextField searchField;
+    private JPanel foodItemsPanel;
     public JPanel leftContentPanel;
+    private ExitAndLogoutButtonFrame exit;
+    private List<AddInventory> allFoodItems;
+
     private Map<Integer, AddInventory> foodItemComponents;
     private NavigatorButtonInventory navButton;
 
     public InventoryCRUD() {
         foodItemComponents = new HashMap<>();
+        allFoodItems = new ArrayList<>();
         initializeGUI();
     }
 
     private void initializeGUI() {
         initializeFrame();
         initializeNavButton();
+        exit = new ExitAndLogoutButtonFrame(mainFrame);
+        exit.setVisible(false);
         JPanel leftSide = createLeftPanel();
         JPanel rightSideWhole = createRightPanel();
+        exit.setVisible(false);
 
         mainFrame.add(leftSide, BorderLayout.WEST);
         mainFrame.add(rightSideWhole, BorderLayout.EAST);
@@ -67,7 +70,7 @@ public class InventoryCRUD {
     }
 
     private void initializeFrame() {
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Kalapukan Bombers Foods - Inventory");
         mainFrame.setSize(FRAME_SIZE);
         mainFrame.setUndecorated(true);
         mainFrame.setLayout(new BorderLayout());
@@ -132,11 +135,12 @@ public class InventoryCRUD {
 
     private JButton createAddButton() {
         JButton button = new JButton("Add");
-        button.setPreferredSize(new Dimension(100, 30));
+        button.setPreferredSize(new Dimension(80, 30));
         button.setMaximumSize(new Dimension(280, 30));
         button.setBackground(PRIMARY_COLOR);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setIcon(new ImageIcon("pics/add panel.png"));
         button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
         button.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
@@ -153,11 +157,12 @@ public class InventoryCRUD {
 
     private JButton createConfirmButton() {
         JButton button = new JButton("Confirm");
-        button.setPreferredSize(new Dimension(100, 30));
+        button.setPreferredSize(new Dimension(80, 30));
         button.setMaximumSize(new Dimension(280, 30));
         button.setBackground(PRIMARY_COLOR);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setIcon(new ImageIcon("pics/confirm.png"));
         button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
         button.addActionListener(e -> {
             try {
@@ -191,17 +196,16 @@ public class InventoryCRUD {
     private JPanel createRightPanel() {
         JPanel rightSideWhole = new JPanel(new BorderLayout());
         rightSideWhole.setPreferredSize(RIGHT_PANEL_SIZE);
-        rightSideWhole.setBackground(Color.WHITE);
+        rightSideWhole.setBackground(PRIMARY_COLOR);
         rightSideWhole.setBorder(new EmptyBorder(0, 20, 0, 0));
 
-        exitButton = createExitButton();
-        JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        exitPanel.setBackground(Color.WHITE);
-        exitPanel.add(exitButton);
-        rightSideWhole.add(exitPanel, BorderLayout.NORTH);
+        JPanel topPanel = createTopPanel();
+        rightSideWhole.add(topPanel, BorderLayout.NORTH);
 
-        JPanel foodItemsPanel = createFoodItemsPanel();
+        foodItemsPanel = createFoodItemsPanel();
         JScrollPane scrollPane = createScrollPane(foodItemsPanel, SCROLL_PANE_SIZE);
+        scrollPane.setBorder(new EmptyBorder(10, 15, 0, 0));
+        scrollPane.setBackground(Color.WHITE);
 
         JPanel rightSideBottom = new JPanel();
         rightSideBottom.setLayout(new BoxLayout(rightSideBottom, BoxLayout.Y_AXIS));
@@ -212,21 +216,109 @@ public class InventoryCRUD {
         return rightSideWhole;
     }
 
+    private JPanel createTopPanel() {
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(PRIMARY_COLOR);
+        topPanel.setBorder(new EmptyBorder(20, 0, 20, 0)); // Adjusted padding
+
+        // Create a container for search panel with FlowLayout
+        JPanel searchContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        searchContainer.setBackground(PRIMARY_COLOR);
+
+        // Create and add search panel to container
+        JPanel searchPanel = createSearchPanel();
+        searchContainer.add(searchPanel);
+
+        // Create exit button container with FlowLayout
+        JPanel exitButtonContainer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        exitButtonContainer.setBackground(PRIMARY_COLOR);
+        exitButton = createExitButton();
+        exitButtonContainer.add(exitButton);
+
+        // Add components to top panel
+        topPanel.add(searchContainer, BorderLayout.WEST);
+        topPanel.add(exitButtonContainer, BorderLayout.EAST);
+
+        return topPanel;
+    }
+
+    private JPanel createSearchPanel() {
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        searchPanel.setBackground(PRIMARY_COLOR);
+
+        searchField = new JTextField();
+        searchField.setPreferredSize(SEARCH_FIELD_SIZE);
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(PRIMARY_COLOR, 1),
+                BorderFactory.createEmptyBorder(2, 5, 2, 5)
+        ));
+
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterItems();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterItems();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterItems();
+            }
+        });
+
+        searchPanel.add(searchField);
+        return searchPanel;
+    }
+
+    //e update ang food items panel based sa search text
+    private void filterItems() {
+        String searchText = searchField.getText().toLowerCase().trim();
+
+        // Clear the current panel
+        foodItemsPanel.removeAll();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        // Add matching items
+        for (AddInventory item : allFoodItems) {
+            int mealId = item.getMealId();
+            String mealName = SQLMeal.getName(mealId);
+
+            if (mealName != null && mealName.toLowerCase().contains(searchText)) {
+                gbc.gridx = (gbc.gridx + 1) % 2;
+                foodItemsPanel.add(item, gbc);
+            }
+        }
+
+        // Refresh the panel
+        foodItemsPanel.revalidate();
+        foodItemsPanel.repaint();
+    }
+
     private JPanel createFoodItemsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 2, 10, 10));
         panel.setBackground(Color.WHITE);
 
-        try (java.sql.Connection conn = java.sql.DriverManager.getConnection(DB_URL);
-                java.sql.Statement stmt = conn.createStatement();
-                java.sql.ResultSet rs = stmt.executeQuery("SELECT Meal_ID FROM MEALS ORDER BY Meal_ID")) {
+        try {
+            List<Integer> mealIds = SQLMeal.getAllMealIds();
 
-            while (rs.next()) {
-                int mealID = rs.getInt("Meal_ID");
-                AddInventory addInventory = new AddInventory(mealID, leftContentPanel);
+            for (int mealId : mealIds) {
+                AddInventory addInventory = new AddInventory(mealId, leftContentPanel);
                 panel.add(addInventory);
-                foodItemComponents.put(mealID, addInventory);
+                foodItemComponents.put(mealId, addInventory);
+                allFoodItems.add(addInventory); // Store in our list
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(mainFrame,
@@ -236,39 +328,6 @@ public class InventoryCRUD {
         }
 
         return panel;
-    }
-
-    public void deleteMeal(int mealID) {
-        int confirmDelete = JOptionPane.showConfirmDialog(mainFrame,
-                "Are you sure you want to delete this meal from inventory?",
-                "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
-
-        if (confirmDelete == JOptionPane.YES_OPTION) {
-            // Step 1: Delete from the database (both the INVENTORY and MEAL tables)
-            SQLMeal.deleteMeal(mealID); // Deletes the meal from the MEAL table
-            SQLInventory.deleteInventory(mealID); // Deletes the meal from the INVENTORY table
-
-            // Step 2: Remove the meal from the UI (leftContentPanel)
-            AddInventory componentToRemove = foodItemComponents.get(mealID);
-            if (componentToRemove != null) {
-                leftContentPanel.remove(componentToRemove); // Remove the meal component from the panel
-                foodItemComponents.remove(mealID); // Remove it from the map
-                leftContentPanel.revalidate(); // Revalidate the layout
-                leftContentPanel.repaint(); // Repaint the panel to reflect the changes
-            }
-
-            // Step 3: Log the action (Optional)
-            System.out.println("Meal with ID " + mealID + " has been deleted from inventory.");
-
-            // Step 4: Provide feedback to the user
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Meal deleted successfully.",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-        }
     }
 
     private void updateInventory() {
@@ -376,7 +435,7 @@ public class InventoryCRUD {
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-        button.addActionListener(e -> dispose());
+        button.addActionListener(e -> exit.setVisible(true));
         return button;
     }
 
@@ -405,4 +464,5 @@ public class InventoryCRUD {
             mainFrame.dispose();
         }
     }
+
 }

@@ -17,21 +17,13 @@ import java.awt.geom.RoundRectangle2D.Float;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JWindow;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import org.example.Classes.Order;
 import org.example.Classes.OrderItem;
 import org.example.Classes.SharedData;
+import org.example.SQLQueries.SQLInventory;
 import org.example.SQLQueries.SQLMeal;
 import org.example.SQLQueries.SQLOrder;
 import org.example.SQLQueries.SQLOrderItems;
@@ -85,6 +77,14 @@ public class MainFrameManager extends JFrame {
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
         exitButton.addActionListener(e -> exit.setVisible(true));
+
+        // Frame initialization
+        mainFrame = new JFrame("Kalapukan Bombers Foods - Add Order");
+        mainFrame.setSize(1000, 600);
+        mainFrame.setUndecorated(true);
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLocationRelativeTo(null);
 
         // Right side tibuok
         rightSideWhole = new JPanel();
@@ -311,40 +311,92 @@ public class MainFrameManager extends JFrame {
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
         checkoutButton.addActionListener(e -> {
-            // Add the order to the database
-            int orderId = SQLOrder.addOrder(
-                    SharedData.order.getOrderDate().toString(),
-                    SharedData.order.getStatus(),
-                    SharedData.order.getTotalAmount()
-            );
-
-            // Add all order items to the database
-            if (orderId != -1) {
-                SharedData.order.setOrderId(orderId); // Set the generated order ID
+            try {
+                // Start by checking if there's enough inventory for all items
+                boolean sufficientInventory = true;
                 for (OrderItem orderItem : SharedData.order.getOrderItems()) {
-                    SQLOrderItems.addOrderItem(
-                            orderId,
-                            orderItem.getMealId(),
-                            orderItem.getQuantity(),
-                            orderItem.getSubtotal()
-                    );
+                    int availableQuantity = SQLInventory.getQuantityAvailable(orderItem.getMealId());
+                    if (availableQuantity < orderItem.getQuantity()) {
+                        sufficientInventory = false;
+                        JOptionPane.showMessageDialog(null,
+                                "Not enough inventory for meal ID " + orderItem.getMealId() +
+                                        "\nAvailable: " + availableQuantity +
+                                        "\nRequested: " + orderItem.getQuantity(),
+                                "Insufficient Inventory",
+                                JOptionPane.ERROR_MESSAGE);
+                        break;
+                    }
                 }
+
+                if (sufficientInventory) {
+                    // Add the order to the database
+                    int orderId = SQLOrder.addOrder(
+                            SharedData.order.getOrderDate().toString(),
+                            SharedData.order.getStatus(),
+                            SharedData.order.getTotalAmount()
+                    );
+
+                    // Add all order items to the database and update inventory
+                    if (orderId != -1) {
+                        SharedData.order.setOrderId(orderId); // Set the generated order ID
+
+                        boolean allUpdatesSuccessful = true;
+
+                        for (OrderItem orderItem : SharedData.order.getOrderItems()) {
+                            // Add order item
+                            SQLOrderItems.addOrderItem(
+                                    orderId,
+                                    orderItem.getMealId(),
+                                    orderItem.getQuantity(),
+                                    orderItem.getSubtotal()
+                            );
+
+                            // Update inventory
+                            boolean saleRecorded = SQLInventory.mealSold(
+                                    orderItem.getMealId(),
+                                    orderItem.getQuantity()
+                            );
+
+                            if (!saleRecorded) {
+                                allUpdatesSuccessful = false;
+                                JOptionPane.showMessageDialog(null,
+                                        "Error updating inventory for meal ID " + orderItem.getMealId(),
+                                        "Inventory Update Error",
+                                        JOptionPane.ERROR_MESSAGE);
+                                break;
+                            }
+                        }
+
+                        if (allUpdatesSuccessful) {
+                            // Show confirmation pop-up
+                            showImageFrame("pics/pop up frame.png");
+
+                            // Clear the shared order and reset the UI
+                            SharedData.clearOrder();
+                            loggingTextArea.removeAll();
+                            loggingPriceArea.removeAll();
+                            totalPrice = 0.0;
+                            totalPriceLabel.setText("₱0.00");
+
+                            loggingTextArea.revalidate();
+                            loggingTextArea.repaint();
+                            loggingPriceArea.revalidate();
+                            loggingPriceArea.repaint();
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Error creating order",
+                                "Order Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Error processing order: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
-
-            // Show confirmation pop-up
-            showImageFrame("pics/pop up frame.png");
-
-            // Clear the shared order and reset the UI
-            SharedData.clearOrder();
-            loggingTextArea.removeAll();
-            loggingPriceArea.removeAll();
-            totalPrice = 0.0;
-            totalPriceLabel.setText("₱0.00");
-
-            loggingTextArea.revalidate();
-            loggingTextArea.repaint();
-            loggingPriceArea.revalidate();
-            loggingPriceArea.repaint();
         });
 
         navButton = new NavigatorButtonManager();

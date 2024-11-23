@@ -10,7 +10,15 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import org.example.SQLQueries.SQLUser;
 //import org.example.SQLQueries;
@@ -24,7 +32,7 @@ public class LoginPage extends JFrame{
     LoginPage()
     {
         //make frame for login
-        loginFrame = new JFrame();
+        loginFrame = new JFrame("Kalapukan Bombers Foods - Login");
         loginFrame.setSize(1000, 600);
         loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         loginFrame.setUndecorated(true);

@@ -11,8 +11,11 @@ public class Main {
     //   SwingUtilities.invokeLater(LoginPage::new);
     // SwingUtilities.invokeLater(InventoryCRUDEmployee::new);
         //SwingUtilities.invokeLater(MainFrameEmployee::new);
-    //    SwingUtilities.invokeLater(MainFrameManager::new);
+//       SwingUtilities.invokeLater(MainFrameManager::new);
         //SwingUtilities.invokeLater(InventoryCRUD::new);
-      SwingUtilities.invokeLater(UserCRUD::new);
+//       SwingUtilities.invokeLater(UserCRUD::new);
+        SwingUtilities.invokeLater(OrderCrud::new);
+
     }
 }
+//
