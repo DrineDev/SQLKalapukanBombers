@@ -21,4 +21,4 @@ EditMeal
     Ig insert sa new image, dili pa ang processedImage ang e display (disregard ni or dili? di man kaayo mo matter)
 
 OrderCRUD.java
-  1. Pop up orders
+  1. GUI Fix
