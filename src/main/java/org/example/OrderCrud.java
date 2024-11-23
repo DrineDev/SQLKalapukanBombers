@@ -1,7 +1,9 @@
 package org.example;
 
 import org.example.Classes.Order;
+import org.example.Classes.OrderItem;
 import org.example.SQLQueries.SQLOrder;
+import org.example.SQLQueries.SQLOrderItems;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -75,10 +77,10 @@ public class OrderCrud extends JFrame {
 
         OrderLabel.setBounds(307,12,51,13);
         RightSideLineLabel.setBounds(24,35,613,3);
-        Order_IDLabel.setBounds(32,45,67,14);
-        Order_DateLabel.setBounds(168,45,84,14);
-        StatusLabel.setBounds(395, 45,54,14);
-        Total_AmountLabel.setBounds(524,45,97,14);
+        Order_IDLabel.setBounds(46,45,67,14);
+        Order_DateLabel.setBounds(232,45,84,14);
+        StatusLabel.setBounds(457, 45,54,14);
+        Total_AmountLabel.setBounds(538,45,97,14);
 
         RightSidePanel.add(OrderLabel);
         RightSidePanel.add(RightSideLineLabel);
@@ -93,19 +95,42 @@ public class OrderCrud extends JFrame {
         RightScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 
+        JPanel OrderItemsPanel = new JPanel();
+        OrderItemsPanel.setLayout(null);
+        OrderItemsPanel.setBackground(Color.WHITE);
+        OrderItemsPanel.setBounds(33, 267, 240, 290);
+        OrderItemsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY,2,true));
+
+        JLabel mealIdHeader = new JLabel("Meal ID");
+        JLabel quantityHeader = new JLabel("Quantity");
+        JLabel priceHeader = new JLabel("Price");
+        JLabel subtotalHeader = new JLabel("Subtotal");
+
+        mealIdHeader.setBounds(10, 10, 50, 20);
+        quantityHeader.setBounds(70, 10, 50, 20);
+        priceHeader.setBounds(130, 10, 50, 20);
+        subtotalHeader.setBounds(180, 10, 50, 20);
+
+        OrderItemsPanel.add(mealIdHeader);
+        OrderItemsPanel.add(quantityHeader);
+        OrderItemsPanel.add(priceHeader);
+        OrderItemsPanel.add(subtotalHeader);
+
+
+
         JPanel OrderPanel = new JPanel();
         OrderPanel.setLayout(new BoxLayout(OrderPanel,BoxLayout.Y_AXIS));
-        OrderPanel.setBounds(24,72,73,419);
+        OrderPanel.setBounds(24,72,113,419);
         OrderPanel.setBorder(new LineBorder(Color.GRAY,2,false));
 
         JPanel Order_Date_Panel = new JPanel();
         Order_Date_Panel.setLayout(new BoxLayout(Order_Date_Panel,BoxLayout.Y_AXIS));
-        Order_Date_Panel.setBounds(97,72,220,419);
+        Order_Date_Panel.setBounds(107,72,330,419);
         Order_Date_Panel.setBorder(new LineBorder(Color.GRAY,2,false));
 
         JPanel Status_Panel = new JPanel();
         Status_Panel.setLayout(new BoxLayout(Status_Panel,BoxLayout.Y_AXIS));
-        Status_Panel.setBounds(317,72,220,419);
+        Status_Panel.setBounds(418,72,120,419);
         Status_Panel.setBorder(new LineBorder(Color.GRAY,2,false));
 
         JPanel Total_Amount_Panel = new JPanel();
@@ -118,19 +143,27 @@ public class OrderCrud extends JFrame {
 
         for (Order order : orders) {
             // Order ID Panel
-            JButton orderIDLabel = new JButton("Order ID: " + order.getOrderId());
-            OrderPanel.add(orderIDLabel);
+            JButton orderIDButton = new JButton(String.valueOf(order.getOrderId()));
+            OrderPanel.add(orderIDButton);
+            List<OrderItem> items = SQLOrderItems.getOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())));
+
+            orderIDButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    displayOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())), OrderItemsPanel);
+                }
+            });
 
             // Order Date Panel
-            JLabel orderDateLabel = new JLabel("Date: " + order.getOrderDate());
+            JLabel orderDateLabel = new JLabel(order.getOrderDate());
             Order_Date_Panel.add(orderDateLabel);
 
             // Status Panel
-            JLabel statusLabel = new JLabel("Status: " + order.getStatus());
+            JLabel statusLabel = new JLabel(order.getStatus());
             Status_Panel.add(statusLabel);
 
             // Total Amount Panel
-            JLabel totalAmountLabel = new JLabel("Total: $" + String.format("%.2f", order.getTotalAmount()));
+            JLabel totalAmountLabel = new JLabel(String.format("%.2f", order.getTotalAmount()));
             Total_Amount_Panel.add(totalAmountLabel);
         }
 
@@ -144,27 +177,63 @@ public class OrderCrud extends JFrame {
 
 
 
+
         //Add Order button for addorderpanel
         ImageIcon AddButtonImage = new ImageIcon("pics/Add order.png");
         JButton AddButton = new JButton(AddButtonImage);
         AddButton.setPreferredSize(new Dimension(130,40));
 
 
-        ImageIcon BottomLeftAddButtonImage = new ImageIcon("pics/BottomLeftAddButton.png");
-        JButton BottomLeftAddButton = new JButton(BottomLeftAddButtonImage);
-        BottomLeftAddButton.setBounds(70, 228, 100,34);
-        BottomLeftAddButton.setBorderPainted(false);
+        ImageIcon ConfirmationPanelText1 = new ImageIcon("pics/Are you sure you want to.png");
+        ImageIcon ConfirmationPanelText2 = new ImageIcon("pics/you to go to the Main Menu_.png");
+        JLabel ConfirmationTextLabel = new JLabel(ConfirmationPanelText1);
+        JLabel ConfirmationTextLabel2 = new JLabel(ConfirmationPanelText2);
 
+        ConfirmationTextLabel.setBounds(52,9,145,15);
+        ConfirmationTextLabel2.setBounds(27,30,195,15);
+        ImageIcon CancelImageIcon = new ImageIcon("pics/Group 1.png");
+        ImageIcon ConfirmImageIcon = new ImageIcon("pics/Group 3.png");
+        JButton CancelButton = new JButton(CancelImageIcon);
+        JButton ConfirmButton = new JButton(ConfirmImageIcon);
 
+        CancelButton.setBounds(61,123, 120,32);
+        CancelButton.setContentAreaFilled(false);
+        CancelButton.setBorderPainted(false);
+        ConfirmButton.setBounds(61,72,120,30);
+        ConfirmButton.setContentAreaFilled(false);
+        ConfirmButton.setBorderPainted(false);
+        JPanel ConfirmationPanel = new JPanel();
+        ConfirmationPanel.setLayout(null);
+        ConfirmationPanel.setBounds(505, 235, 250,200);
+        ConfirmationPanel.setBorder(new LineBorder(Color.PINK,2,false));
+        ConfirmationPanel.add(CancelButton);
+        ConfirmationPanel.add(ConfirmButton);
+        ConfirmationPanel.add(ConfirmationTextLabel);
+        ConfirmationPanel.add(ConfirmationTextLabel2);
+        ConfirmationPanel.setVisible(false);
 
-        //shuts off bottomleftpanel after adding an order
-        BottomLeftAddButton.addActionListener(new ActionListener() {
+       AddButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ConfirmationPanel.setVisible(true);
+            }
+        });
+
+        CancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ConfirmationPanel.setVisible(false);
+            }
+        });
+
+        ConfirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(MainFrameManager::new);
                 Frame.dispose();
             }
         });
+
 
 
 
@@ -230,7 +299,6 @@ public class OrderCrud extends JFrame {
         UpdateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BottomLeftAddButton.setEnabled(false);
                 UpdateOrderPanel.setVisible(true);
             }
         });
@@ -319,7 +387,6 @@ public class OrderCrud extends JFrame {
         YesButton.setContentAreaFilled(false);
         YesButton.setBorderPainted(false);
         YesButton.setBounds(170,129,90,30);
-        YesButton.addActionListener(ActionListener -> DeletePopUpFrame.setVisible(false));
 
         //Delete Button Function to warn user of deleting meal order
         DeleteButton.addActionListener(new ActionListener() {
@@ -416,6 +483,7 @@ public class OrderCrud extends JFrame {
             }
         });
 
+        Frame.add(ConfirmationPanel);
         Frame.add(ExitButton);
         Frame.add(RightSideBottom);
         Frame.add(TopLeftPanel);
@@ -445,7 +513,7 @@ public class OrderCrud extends JFrame {
         JPanel buttonPanel = new JPanel() {
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(BUTTON_WIDTH, totalHeight );
+                return new Dimension(BUTTON_WIDTH + 30, totalHeight + 35);
             }
 
             @Override
@@ -563,4 +631,38 @@ public class OrderCrud extends JFrame {
         return button;
     }
 
+    private void displayOrderItems(int orderId, JPanel orderItemsPanel) {
+        // Clear existing components except headers
+        Component[] components = orderItemsPanel.getComponents();
+        for (int i = 4; i < components.length; i++) {
+            orderItemsPanel.remove(components[i]);
+        }
+
+        // Get order items
+        List<OrderItem> items = SQLOrderItems.getOrderItems(orderId);
+
+        // Display items
+        int yOffset = 40;
+        for (OrderItem item : items) {
+            JLabel mealId = new JLabel(String.valueOf(item.getMealId()));
+            JLabel quantity = new JLabel(String.valueOf(item.getQuantity()));
+            JLabel price = new JLabel(String.format("%.2f", item.getUnitPrice()));
+            JLabel subtotal = new JLabel(String.format("%.2f", item.getSubtotal()));
+
+            mealId.setBounds(10, yOffset, 50, 20);
+            quantity.setBounds(70, yOffset, 50, 20);
+            price.setBounds(130, yOffset, 50, 20);
+            subtotal.setBounds(180, yOffset, 50, 20);
+
+            orderItemsPanel.add(mealId);
+            orderItemsPanel.add(quantity);
+            orderItemsPanel.add(price);
+            orderItemsPanel.add(subtotal);
+
+            yOffset += 25;
+        }
+
+        orderItemsPanel.revalidate();
+        orderItemsPanel.repaint();
+    }
 }
