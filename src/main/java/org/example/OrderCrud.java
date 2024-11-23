@@ -18,8 +18,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class OrderCrud extends JFrame {
-    private JFrame Frame;
-    private JButton ExitButton;
+    private final JFrame Frame;
     private JTable orderTable;
     private DefaultTableModel tableModel;
     private JPopupMenu popupMenu;
@@ -35,14 +34,14 @@ public class OrderCrud extends JFrame {
     public OrderCrud() {
         //Exit Button
         ImageIcon ExitImageIcon = new ImageIcon("pics/exit button.png");
-        ExitButton = new JButton();
-        ExitButton.setIcon(ExitImageIcon);
-        ExitButton.setContentAreaFilled(false);
-        ExitButton.setFocusPainted(false);
-        ExitButton.setBorderPainted(false);
-        ExitButton.setBounds(962, 15, 20, 20);
-        ExitButton.addActionListener(e -> System.exit(0));
-        ExitButton.setVisible(true);
+        JButton exitButton = new JButton();
+        exitButton.setIcon(ExitImageIcon);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setFocusPainted(false);
+        exitButton.setBorderPainted(false);
+        exitButton.setBounds(962, 15, 20, 20);
+        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.setVisible(true);
 
 
         //Frame Initialization
@@ -95,27 +94,7 @@ public class OrderCrud extends JFrame {
         RightScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 
-        JPanel OrderItemsPanel = new JPanel();
-        OrderItemsPanel.setLayout(null);
-        OrderItemsPanel.setBackground(Color.WHITE);
-        OrderItemsPanel.setBounds(33, 267, 240, 290);
-        OrderItemsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY,2,true));
-
-        JLabel mealIdHeader = new JLabel("Meal ID");
-        JLabel quantityHeader = new JLabel("Quantity");
-        JLabel priceHeader = new JLabel("Price");
-        JLabel subtotalHeader = new JLabel("Subtotal");
-
-        mealIdHeader.setBounds(10, 10, 50, 20);
-        quantityHeader.setBounds(70, 10, 50, 20);
-        priceHeader.setBounds(130, 10, 50, 20);
-        subtotalHeader.setBounds(180, 10, 50, 20);
-
-        OrderItemsPanel.add(mealIdHeader);
-        OrderItemsPanel.add(quantityHeader);
-        OrderItemsPanel.add(priceHeader);
-        OrderItemsPanel.add(subtotalHeader);
-
+        JPanel OrderItemsPanel = getjPanel();
 
 
         JPanel OrderPanel = new JPanel();
@@ -125,17 +104,17 @@ public class OrderCrud extends JFrame {
 
         JPanel Order_Date_Panel = new JPanel();
         Order_Date_Panel.setLayout(new BoxLayout(Order_Date_Panel,BoxLayout.Y_AXIS));
-        Order_Date_Panel.setBounds(107,72,330,419);
+        Order_Date_Panel.setBounds(107,72,310,419);
         Order_Date_Panel.setBorder(new LineBorder(Color.GRAY,2,false));
 
         JPanel Status_Panel = new JPanel();
         Status_Panel.setLayout(new BoxLayout(Status_Panel,BoxLayout.Y_AXIS));
-        Status_Panel.setBounds(418,72,120,419);
+        Status_Panel.setBounds(408,72,130,419);
         Status_Panel.setBorder(new LineBorder(Color.GRAY,2,false));
 
         JPanel Total_Amount_Panel = new JPanel();
         Total_Amount_Panel.setLayout(new BoxLayout(Total_Amount_Panel,BoxLayout.Y_AXIS));
-        Total_Amount_Panel.setBounds(537, 72, 99,419);
+        Total_Amount_Panel.setBounds(527, 72, 109,419);
         Total_Amount_Panel.setBorder(new LineBorder(Color.GRAY,2,false));
 
 
@@ -150,6 +129,7 @@ public class OrderCrud extends JFrame {
             orderIDButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    Frame.add(OrderItemsPanel);
                     displayOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())), OrderItemsPanel);
                 }
             });
@@ -483,8 +463,10 @@ public class OrderCrud extends JFrame {
             }
         });
 
+
+
         Frame.add(ConfirmationPanel);
-        Frame.add(ExitButton);
+        Frame.add(exitButton);
         Frame.add(RightSideBottom);
         Frame.add(TopLeftPanel);
         Frame.add(RightSidePanel);
@@ -492,6 +474,30 @@ public class OrderCrud extends JFrame {
         Frame.add(RightScrollPane);
         Frame.add(navButton);
         Frame.setVisible(true);
+    }
+
+    private static JPanel getjPanel() {
+        JPanel OrderItemsPanel = new JPanel();
+        OrderItemsPanel.setLayout(null);
+        OrderItemsPanel.setBackground(Color.WHITE);
+        OrderItemsPanel.setBounds(33, 267, 240, 290);
+        OrderItemsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY,2,true));
+
+        JLabel mealIdHeader = new JLabel("Meal ID");
+        JLabel quantityHeader = new JLabel("Quantity");
+        JLabel priceHeader = new JLabel("Price");
+        JLabel subtotalHeader = new JLabel("Subtotal");
+
+        mealIdHeader.setBounds(10, 10, 50, 20);
+        quantityHeader.setBounds(70, 10, 50, 20);
+        priceHeader.setBounds(130, 10, 50, 20);
+        subtotalHeader.setBounds(180, 10, 50, 20);
+
+        OrderItemsPanel.add(mealIdHeader);
+        OrderItemsPanel.add(quantityHeader);
+        OrderItemsPanel.add(priceHeader);
+        OrderItemsPanel.add(subtotalHeader);
+        return OrderItemsPanel;
     }
 
     private void createPopupMenu() {
