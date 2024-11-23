@@ -25,9 +25,8 @@ public class AddFood extends JPanel {
     private JLayeredPane layeredPane;
 
     public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameManager mainFrame) {
-        setLayout(null); // Change to null layout for absolute positioning
+        setLayout(null);
 
-        // Create layered pane to handle overlapping components
         layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(300, 300));
         layeredPane.setBounds(0, 0, 300, 300);
@@ -38,16 +37,29 @@ public class AddFood extends JPanel {
         mainPanel.setBounds(0, 0, 300, 300);
         mainPanel.setOpaque(false);
 
-        // Create the top-right button
-        JButton topRightButton = new JButton("i");
-        topRightButton.setFont(new Font("Arial", Font.BOLD, 16));
-        topRightButton.setForeground(Color.GRAY);
-        topRightButton.setBounds(270, 5, 25, 25);
+        // Add low stock warning if applicable
+        int currentStock = SQLInventory.getQuantityAvailable(mealID);
+        if (currentStock < 5) {
+            JLabel warningLabel = new JLabel("!");
+            warningLabel.setFont(new Font("Arial", Font.BOLD, 35));
+            warningLabel.setForeground(Color.RED);
+            warningLabel.setBounds(10, 5, 20, 20);
+
+            // Create a tooltip
+            warningLabel.setToolTipText("Low stock: " + currentStock + " remaining");
+
+            layeredPane.add(warningLabel, JLayeredPane.POPUP_LAYER);
+        }
+
+        // Create the info button (existing code)
+        JButton topRightButton = new JButton();
+        topRightButton.setIcon(new ImageIcon("pics/meal info icon.png"));
+        topRightButton.setForeground(Color.WHITE);
+        topRightButton.setBounds(250, 10, 42, 12);
         topRightButton.setBorderPainted(false);
         topRightButton.setContentAreaFilled(false);
         topRightButton.setFocusPainted(false);
         topRightButton.addActionListener(e -> {
-            // INFO OF MEALS PANEL
             SwingUtilities.invokeLater(() -> new MealInfoMainFrame(mealID));
         });
 
@@ -103,9 +115,8 @@ public class AddFood extends JPanel {
     }
 
     public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameEmployee mainFrame) {
-        setLayout(null); // Change to null layout for absolute positioning
+        setLayout(null);
 
-        // Create layered pane to handle overlapping components
         layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(300, 300));
         layeredPane.setBounds(0, 0, 300, 300);
@@ -116,11 +127,25 @@ public class AddFood extends JPanel {
         mainPanel.setBounds(0, 0, 300, 300);
         mainPanel.setOpaque(false);
 
-        // Create the top-right button
-        JButton topRightButton = new JButton("i");
-        topRightButton.setFont(new Font("Arial", Font.BOLD, 16));
-        topRightButton.setForeground(Color.GRAY);
-        topRightButton.setBounds(270, 5, 25, 25);
+        // Add low stock warning if applicable
+        int currentStock = SQLInventory.getQuantityAvailable(mealID);
+        if (currentStock < 5) {
+            JLabel warningLabel = new JLabel("!");
+            warningLabel.setFont(new Font("Arial", Font.BOLD, 35));
+            warningLabel.setForeground(Color.RED);
+            warningLabel.setBounds(10, 5, 20, 20);
+
+            // Create a tooltip
+            warningLabel.setToolTipText("Low stock: " + currentStock + " remaining");
+
+            layeredPane.add(warningLabel, JLayeredPane.POPUP_LAYER);
+        }
+
+        // Create the info button (existing code)
+        JButton topRightButton = new JButton();
+        topRightButton.setIcon(new ImageIcon("pics/meal info icon.png"));
+        topRightButton.setForeground(Color.WHITE);
+        topRightButton.setBounds(250, 10, 42, 12);
         topRightButton.setBorderPainted(false);
         topRightButton.setContentAreaFilled(false);
         topRightButton.setFocusPainted(false);

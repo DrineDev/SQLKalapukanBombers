@@ -77,6 +77,11 @@ public class MealInfoMainFrame extends JFrame {
 
         // Add text areas
         for (int i = 0; i < textAreas.length; i++) {
+            if (i == 4) { // FOR RED COLOR WHEN STOCKS LESS THAN 5
+                if(SQLInventory.getQuantityAvailable(mealId) <= 5) {
+                    textAreas[i].setForeground(Color.RED);
+                }
+            }
             mc.gridy = i + 1;
             middlePanel.add(textAreas[i], mc);
         }
@@ -126,6 +131,7 @@ public class MealInfoMainFrame extends JFrame {
         textArea.setEditable(false);
         textArea.setBackground(Color.WHITE);
         textArea.setForeground(Color.BLACK);
+        textArea.setFont(new Font("Inter", Font.PLAIN, 14));
 
         // Calculate preferred size based on content
         int preferredWidth = 280;  // Slightly less than frame width to account for margins

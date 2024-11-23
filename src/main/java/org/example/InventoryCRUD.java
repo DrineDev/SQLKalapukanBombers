@@ -291,7 +291,7 @@ public class InventoryCRUD {
         // Add matching items
         for (AddInventory item : allFoodItems) {
             int mealId = item.getMealId();
-            String mealName = getMealNameFromDatabase(mealId);
+            String mealName = SQLMeal.getName(mealId);
 
             if (mealName != null && mealName.toLowerCase().contains(searchText)) {
                 gbc.gridx = (gbc.gridx + 1) % 2;
@@ -304,44 +304,21 @@ public class InventoryCRUD {
         foodItemsPanel.repaint();
     }
 
-    //function mukuha sa mealname sa database gamit ang meal id
-    private String getMealNameFromDatabase(int mealId) {
-        String mealName = null;
-        try (java.sql.Connection conn = java.sql.DriverManager.getConnection(DB_URL);
-             java.sql.PreparedStatement stmt = conn.prepareStatement("SELECT Name FROM MEALS WHERE Meal_ID = ?")) {
-
-            stmt.setInt(1, mealId);
-            try (java.sql.ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    mealName = rs.getString("Name");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Error retrieving meal name: " + e.getMessage(),
-                    "Database Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-        return mealName;
-    }
-
     private JPanel createFoodItemsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 2, 10, 10));
         panel.setBackground(Color.WHITE);
 
-        try (java.sql.Connection conn = java.sql.DriverManager.getConnection(DB_URL);
-             java.sql.Statement stmt = conn.createStatement();
-             java.sql.ResultSet rs = stmt.executeQuery("SELECT Meal_ID FROM MEALS ORDER BY Meal_ID")) {
+        try {
+            List<Integer> mealIds = SQLMeal.getAllMealIds();
 
-            while (rs.next()) {
-                int mealID = rs.getInt("Meal_ID");
-                AddInventory addInventory = new AddInventory(mealID, leftContentPanel);
+            for (int mealId : mealIds) {
+                AddInventory addInventory = new AddInventory(mealId, leftContentPanel);
                 panel.add(addInventory);
-                foodItemComponents.put(mealID, addInventory);
+                foodItemComponents.put(mealId, addInventory);
                 allFoodItems.add(addInventory); // Store in our list
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(mainFrame,

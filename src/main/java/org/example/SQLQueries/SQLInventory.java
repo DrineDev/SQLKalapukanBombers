@@ -126,6 +126,7 @@ public class SQLInventory {
             e.printStackTrace();
         }
     }
+
     public static void setQuantitySold(int Meal_Id, int Quantity_Sold) {
         String query = "UPDATE INVENTORY SET Quantity_Sold = ? WHERE Meal_ID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
@@ -139,4 +140,53 @@ public class SQLInventory {
         }
     }
 
+    public static boolean mealSold(int Meal_Id, int Quantity) {
+        try (Connection connection = DriverManager.getConnection(DB_URL)) {
+            // Get current quantities
+            int currentAvailable = getQuantityAvailable(Meal_Id);
+            int currentSold = getQuantitySold(Meal_Id);
+
+            // Check if enough quantity is available
+            if (currentAvailable < Quantity) {
+                System.out.println("Error: Not enough quantity available");
+                return false;
+            }
+
+            // Calculate new quantities
+            int newAvailable = currentAvailable - Quantity;
+            int newSold = currentSold + Quantity;
+
+            // Update both quantities in a single transaction
+            connection.setAutoCommit(false);
+            try {
+                // Update Quantity_Available
+                String updateAvailable = "UPDATE INVENTORY SET Quantity_Available = ? WHERE Meal_ID = ?";
+                PreparedStatement psAvailable = connection.prepareStatement(updateAvailable);
+                psAvailable.setInt(1, newAvailable);
+                psAvailable.setInt(2, Meal_Id);
+                psAvailable.executeUpdate();
+
+                // Update Quantity_Sold
+                String updateSold = "UPDATE INVENTORY SET Quantity_Sold = ? WHERE Meal_ID = ?";
+                PreparedStatement psSold = connection.prepareStatement(updateSold);
+                psSold.setInt(1, newSold);
+                psSold.setInt(2, Meal_Id);
+                psSold.executeUpdate();
+
+                connection.commit();
+                System.out.println("Sale recorded successfully");
+                return true;
+
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Error recording sale: " + e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Database connection error: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
