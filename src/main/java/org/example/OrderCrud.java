@@ -5,10 +5,14 @@ import org.example.SQLQueries.SQLOrder;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class OrderCrud extends JFrame {
@@ -16,6 +20,14 @@ public class OrderCrud extends JFrame {
     private JButton ExitButton;
     private JTable orderTable;
     private DefaultTableModel tableModel;
+    private JPopupMenu popupMenu;
+    private JRadioButton mainMenuButton, inventoryButton, orderButton, salesButton, promotionsButton;
+    private ButtonGroup buttonGroup;
+
+    private static final int BUTTON_HEIGHT = 50;
+    private static final int BUTTON_WIDTH = 150;
+    private static final int VERTICAL_SPACING = 10;
+    private static final int VERTICAL_PADDING = 20;
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
     public OrderCrud() {
@@ -106,7 +118,7 @@ public class OrderCrud extends JFrame {
 
         for (Order order : orders) {
             // Order ID Panel
-            JLabel orderIDLabel = new JLabel("Order ID: " + order.getOrderId());
+            JButton orderIDLabel = new JButton("Order ID: " + order.getOrderId());
             OrderPanel.add(orderIDLabel);
 
             // Order Date Panel
@@ -143,101 +155,14 @@ public class OrderCrud extends JFrame {
         BottomLeftAddButton.setBounds(70, 228, 100,34);
         BottomLeftAddButton.setBorderPainted(false);
 
-        //Initialize Add Order panel buttons
-        JTextField Order_ID_Textfield = new JTextField();
-        JTextField Order_Date_Textfield = new JTextField();
-        JTextField Status_Textfield = new JTextField();
-        JTextField Date_Textfield = new JTextField();
-        Order_ID_Textfield.setBounds(22, 24, 195, 26);
-        Order_ID_Textfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        Order_Date_Textfield.setBounds(22, 75, 195, 26);
-        Order_Date_Textfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        Status_Textfield.setBounds(22, 126, 195, 26);
-        Status_Textfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        Date_Textfield.setBounds(22, 177, 195, 26);
-        Date_Textfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-
-
-        Order_ID_Textfield.setBackground(Color.white);
-        Order_Date_Textfield.setBackground(Color.white);
-        Status_Textfield.setBackground(Color.white);
-        Date_Textfield.setBackground(Color.white);
-
-
-
-        ImageIcon Order_ID_Text = new ImageIcon("pics/Order_ID (1).png");
-        ImageIcon Order_Date_Text = new ImageIcon("pics/Order_Date.png");
-        ImageIcon Status_Text = new ImageIcon("pics/Status.png");
-        ImageIcon Total_Amount_Text = new ImageIcon("pics/Total_Amount.png");
-
-
-        JLabel Order_ID_Label = new JLabel(Order_ID_Text);
-        Order_ID_Label.setBounds(101, 50, 47,10);
-        JLabel Order_Date_Label = new JLabel(Order_Date_Text);
-        Order_Date_Label.setBounds(95, 101, 59,10);
-        JLabel Status_Label= new JLabel(Status_Text);
-        Status_Label.setBounds(98, 152, 47,10);
-        JLabel Total_Amount_Label = new JLabel(Total_Amount_Text);
-        Total_Amount_Label.setBounds(83, 202, 87, 11);
-
-
-
-        //AddOrderPanel Options
-        JPanel AddOrderPanel = new JPanel();
-        AddOrderPanel.setLayout(null);
-        AddOrderPanel.setBackground(Color.WHITE);
-        AddOrderPanel.setBounds(33, 267, 240, 290);
-        AddOrderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-
-        AddOrderPanel.add(Order_ID_Textfield);
-        AddOrderPanel.add(Order_ID_Label);
-        AddOrderPanel.add(Order_Date_Textfield);
-        AddOrderPanel.add(Order_Date_Label);
-        AddOrderPanel.add(Status_Textfield);
-        AddOrderPanel.add(Status_Label);
-        AddOrderPanel.add(Date_Textfield);
-        AddOrderPanel.add(Total_Amount_Label);
-        AddOrderPanel.add(BottomLeftAddButton);
-
-
-        AddOrderPanel.setVisible(false);
-        AddButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AddOrderPanel.setVisible(true);
-                BottomLeftAddButton.setEnabled(true);
-            }
-        });
 
 
         //shuts off bottomleftpanel after adding an order
         BottomLeftAddButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    if (Order_ID_Textfield.getText().isEmpty() ||
-                            Order_Date_Textfield.getText().isEmpty() ||
-                            Status_Textfield.getText().isEmpty() ||
-                            Date_Textfield.getText().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "All fields must filled", "Input error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    int Order_ID = Integer.parseInt(Order_ID_Textfield.getText());
-                    String Order_Date = Order_Date_Textfield.getText();
-                    String Status = Status_Textfield.getText();
-                    Double Total_Amount = Double.parseDouble(Date_Textfield.getText());
-
-
-                    if (Order_Date != null && Status != null && Total_Amount != 0) {
-                        AddOrderPanel.setVisible(false);
-                        JOptionPane.showMessageDialog(null, "Order added successfully", "Add Confirmation", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Failed to add order", "Add error", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch(NumberFormatException ex){
-                    JOptionPane.showMessageDialog(null, "Invalid number format in fields", "Input error", JOptionPane.ERROR_MESSAGE);
-                }
+                SwingUtilities.invokeLater(MainFrameManager::new);
+                Frame.dispose();
             }
         });
 
@@ -305,7 +230,6 @@ public class OrderCrud extends JFrame {
         UpdateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddOrderPanel.setVisible(false);
                 BottomLeftAddButton.setEnabled(false);
                 UpdateOrderPanel.setVisible(true);
             }
@@ -326,7 +250,7 @@ public class OrderCrud extends JFrame {
                         return;
                     }
 
-                    int Order_ID = Integer.parseInt(Order_ID_Textfield.getText());
+                    int Order_ID = Integer.parseInt(Order_ID_Textfield2.getText());
                     String Order_Date = Order_Date_Textfield2.getText();
                     String Status = Status_Textfield2.getText();
                     Double Total_Amount = Double.parseDouble(Total_Amount_Textfield2.getText());
@@ -410,7 +334,7 @@ public class OrderCrud extends JFrame {
         YesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int OrderId = Integer.parseInt(Order_ID_Textfield.getText());
+                int OrderId = Integer.parseInt(Order_ID_Textfield2.getText());
 
                 SQLOrder.deleteOrder(OrderId);
                 DeletePopUpFrame.setVisible(false);
@@ -454,57 +378,189 @@ public class OrderCrud extends JFrame {
 
 
 
+
         // Create and initialize the MenuButton
-        ImageIcon MenuButtonImage = new ImageIcon("pics/menu.png");
-        JButton MenuButton = new JButton(MenuButtonImage);
-        MenuButton.setBounds(10, 10, 50, 40);
-        MenuButton.setBorderPainted(false);
-        MenuButton.setContentAreaFilled(false);
-        MenuButton.setBackground(Color.PINK);
+        createPopupMenu();
 
+// Add a component (e.g., a button or the frame itself) to trigger the popup menu
+        Frame.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                showPopupMenu(e);
+            }
 
-        NavigatorButtonManager navButtonOrder = new NavigatorButtonManager();
-        navButtonOrder.setBounds(10,10,206,360);
-        navButtonOrder.setOpaque(true);
-        navButtonOrder.setBackground(Color.WHITE);
-        navButtonOrder.setBounds(10, 10, 206, 360);
-        navButtonOrder.setVisible(false);
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                showPopupMenu(e);
+            }
 
-
-        //Drops down menu to go to Inventory, Order
-        MenuButton.addActionListener(e -> {
-            boolean isVisible = navButtonOrder.isVisible();
-            navButtonOrder.setVisible(!isVisible); // Toggle visibility
-            navButtonOrder.getParent().revalidate(); // Revalidate the layout
-            navButtonOrder.getParent().repaint();    // Repaint to remove lingering visuals
+            private void showPopupMenu(MouseEvent e) {
+                if (e.isPopupTrigger()) { // Detect right-click
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
         });
 
-        Frame.add(navButtonOrder, Integer.valueOf(2));
-        Frame.add(MenuButton);
+        ImageIcon navButtonIcon = new ImageIcon("pics/menu.png");
+        JButton navButton = new JButton (navButtonIcon);
+
+        navButton.setBounds(10,10,50,40);
+        navButton.setBorderPainted(false);
+        navButton.setContentAreaFilled(false);
+        navButton.setFocusPainted(false);
+
+        navButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                popupMenu.show(navButton, 0, navButton.getHeight()); // Display popup menu below the button
+            }
+        });
+
         Frame.add(ExitButton);
         Frame.add(RightSideBottom);
         Frame.add(TopLeftPanel);
         Frame.add(RightSidePanel);
-        Frame.add(AddOrderPanel);
         Frame.add(UpdateOrderPanel);
         Frame.add(RightScrollPane);
+        Frame.add(navButton);
         Frame.setVisible(true);
     }
 
-//    private void loadOrders() {
-//        tableModel.setRowCount(0);
-//
-//        List<Order> orders = SQLCreate.createOrderTable();
-//        if(orders != null) {
-//            for(Order order : orders) {
-//                Object[] row = {
-//                        order.getOrderId(),
-//                        order.getMealId();
-//                order.getMealQuantity(),
-//                        order.getDate()
-//                };
-//                tableModel.addRow(row);
-//            }
-//        }
-//    }
+    private void createPopupMenu() {
+        popupMenu = new JPopupMenu() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                ImageIcon backgroundImage = new ImageIcon("pics/menu box.png");
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
+
+            }
+        };
+        popupMenu.setOpaque(false);
+        popupMenu.setBorder(null);
+
+        // Calculate total height for 5 buttons
+        int totalHeight = (BUTTON_HEIGHT * 5) + (VERTICAL_SPACING * 4) + (VERTICAL_PADDING * 2);
+
+        // Create panel with fixed size - removed horizontal padding
+        JPanel buttonPanel = new JPanel() {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(BUTTON_WIDTH, totalHeight );
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                return getPreferredSize();
+            }
+
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+        };
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.setOpaque(false);
+
+        // Main Menu Button
+        ImageIcon mainMenuDeselected = new ImageIcon("pics/main menu deselected.png");
+        ImageIcon mainMenuSelected = new ImageIcon("pics/main menu selected.png");
+        mainMenuButton = createRadioButton(mainMenuDeselected, mainMenuSelected);
+        mainMenuButton.addActionListener(e -> {
+            if (mainMenuButton.isSelected()) {
+                Window window = SwingUtilities.getWindowAncestor(OrderCrud.this);
+                SwingUtilities.invokeLater(MainFrameManager::new);
+                window.dispose();
+            }
+        });
+
+        // Inventory Button
+        ImageIcon inventoryDeselected = new ImageIcon("pics/inventory deselected.png");
+        ImageIcon inventorySelected = new ImageIcon("pics/inventory selected.png");
+        inventoryButton = createRadioButton(inventoryDeselected, inventorySelected);
+        inventoryButton.setSelected(true);
+        inventoryButton.addActionListener(e -> {
+            if (inventoryButton.isSelected()) {
+                Window window = SwingUtilities.getWindowAncestor(OrderCrud.this);
+                SwingUtilities.invokeLater(InventoryCRUD::new);
+                window.dispose();
+            }
+        });
+
+        // Order Button
+        ImageIcon orderDeselected = new ImageIcon("pics/order deselected.png");
+        ImageIcon orderSelected = new ImageIcon("pics/order selected.png");
+        orderButton = createRadioButton(orderDeselected, orderSelected);
+        orderButton.addActionListener(e -> {
+            if (orderButton.isSelected()) {
+                Window window = SwingUtilities.getWindowAncestor(OrderCrud.this);
+                SwingUtilities.invokeLater(OrderCrud::new);
+                window.dispose();
+            }
+        });
+
+        // Sales Button
+        ImageIcon salesDeselected = new ImageIcon("pics/sales deselected.png");
+        ImageIcon salesSelected = new ImageIcon("pics/sales selected.png");
+        salesButton = createRadioButton(salesDeselected, salesSelected);
+
+        // Promotions Button
+        ImageIcon promotionsDeselected = new ImageIcon("pics/promotions deselected.png");
+        ImageIcon promotionsSelected = new ImageIcon("pics/promotions selected.png");
+        promotionsButton = createRadioButton(promotionsDeselected, promotionsSelected);
+
+        // Group buttons
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(mainMenuButton);
+        buttonGroup.add(inventoryButton);
+        buttonGroup.add(orderButton);
+        buttonGroup.add(salesButton);
+        buttonGroup.add(promotionsButton);
+
+        // Add buttons to panel with proper spacing
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_PADDING));
+        buttonPanel.add(mainMenuButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
+        buttonPanel.add(inventoryButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
+        buttonPanel.add(orderButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
+        buttonPanel.add(salesButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
+        buttonPanel.add(promotionsButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_PADDING));
+
+        // Add panel to popup menu
+        popupMenu.add(buttonPanel);
+
+        // Set popup size
+        popupMenu.setPopupSize(buttonPanel.getPreferredSize());
+
+        // Add popup menu listener
+        popupMenu.addPopupMenuListener(new PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                buttonGroup.clearSelection();
+            }
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {
+                buttonGroup.clearSelection();
+            }
+        });
+    }
+
+    private JRadioButton createRadioButton(ImageIcon defaultIcon, ImageIcon selectedIcon) {
+        JRadioButton button = new JRadioButton(defaultIcon);
+        button.setFocusPainted(false);
+        button.setBorder(null);
+        button.setSelectedIcon(selectedIcon);
+        button.setDisabledSelectedIcon(defaultIcon);
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+        return button;
+    }
+
 }
