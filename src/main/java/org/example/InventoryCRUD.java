@@ -135,11 +135,12 @@ public class InventoryCRUD {
 
     private JButton createAddButton() {
         JButton button = new JButton("Add");
-        button.setPreferredSize(new Dimension(100, 30));
+        button.setPreferredSize(new Dimension(80, 30));
         button.setMaximumSize(new Dimension(280, 30));
         button.setBackground(PRIMARY_COLOR);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setIcon(new ImageIcon("pics/add panel.png"));
         button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
         button.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
@@ -156,11 +157,12 @@ public class InventoryCRUD {
 
     private JButton createConfirmButton() {
         JButton button = new JButton("Confirm");
-        button.setPreferredSize(new Dimension(100, 30));
+        button.setPreferredSize(new Dimension(80, 30));
         button.setMaximumSize(new Dimension(280, 30));
         button.setBackground(PRIMARY_COLOR);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setIcon(new ImageIcon("pics/confirm.png"));
         button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
         button.addActionListener(e -> {
             try {
@@ -194,7 +196,7 @@ public class InventoryCRUD {
     private JPanel createRightPanel() {
         JPanel rightSideWhole = new JPanel(new BorderLayout());
         rightSideWhole.setPreferredSize(RIGHT_PANEL_SIZE);
-        rightSideWhole.setBackground(Color.WHITE);
+        rightSideWhole.setBackground(PRIMARY_COLOR);
         rightSideWhole.setBorder(new EmptyBorder(0, 20, 0, 0));
 
         JPanel topPanel = createTopPanel();
@@ -202,6 +204,8 @@ public class InventoryCRUD {
 
         foodItemsPanel = createFoodItemsPanel();
         JScrollPane scrollPane = createScrollPane(foodItemsPanel, SCROLL_PANE_SIZE);
+        scrollPane.setBorder(new EmptyBorder(10, 15, 0, 0));
+        scrollPane.setBackground(Color.WHITE);
 
         JPanel rightSideBottom = new JPanel();
         rightSideBottom.setLayout(new BoxLayout(rightSideBottom, BoxLayout.Y_AXIS));
@@ -214,12 +218,12 @@ public class InventoryCRUD {
 
     private JPanel createTopPanel() {
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(Color.WHITE);
+        topPanel.setBackground(PRIMARY_COLOR);
         topPanel.setBorder(new EmptyBorder(20, 0, 20, 0)); // Adjusted padding
 
         // Create a container for search panel with FlowLayout
         JPanel searchContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        searchContainer.setBackground(Color.WHITE);
+        searchContainer.setBackground(PRIMARY_COLOR);
 
         // Create and add search panel to container
         JPanel searchPanel = createSearchPanel();
@@ -227,7 +231,7 @@ public class InventoryCRUD {
 
         // Create exit button container with FlowLayout
         JPanel exitButtonContainer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        exitButtonContainer.setBackground(Color.WHITE);
+        exitButtonContainer.setBackground(PRIMARY_COLOR);
         exitButton = createExitButton();
         exitButtonContainer.add(exitButton);
 
@@ -240,7 +244,7 @@ public class InventoryCRUD {
 
     private JPanel createSearchPanel() {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        searchPanel.setBackground(Color.WHITE);
+        searchPanel.setBackground(PRIMARY_COLOR);
 
         searchField = new JTextField();
         searchField.setPreferredSize(SEARCH_FIELD_SIZE);
