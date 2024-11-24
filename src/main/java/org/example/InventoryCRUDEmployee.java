@@ -3,8 +3,6 @@ package org.example;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -74,7 +72,7 @@ public class InventoryCRUDEmployee extends JFrame {
     private void initializeNavButton() {
         navButton = new NavigatorButtonInventoryEmployee();
         navButton.setPreferredSize(new Dimension(50, 50));
-        navButton.addOrderButtonListener(e -> {
+        navButton.addMainMenuButtonListener(e -> {
             SwingUtilities.invokeLater(MainFrameEmployee::new);
             mainFrame.dispose();
         });
