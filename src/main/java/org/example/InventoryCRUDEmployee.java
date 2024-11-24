@@ -1,6 +1,8 @@
 package org.example;
 
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -18,7 +20,7 @@ public class InventoryCRUDEmployee extends JFrame {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
     private static final Color PRIMARY_COLOR = new Color(248, 146, 137);
     private static final Dimension FRAME_SIZE = new Dimension(1000, 600);
-    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(200, 30);
+    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(300, 30);
     private static final int GRID_GAP = 20;
     private static final int BORDER_THICKNESS = 20;
     private static final int SCROLL_UNIT_INCREMENT = 20;
@@ -71,7 +73,7 @@ public class InventoryCRUDEmployee extends JFrame {
 
     private void initializeNavButton() {
         navButton = new NavigatorButtonInventoryEmployee();
-        navButton.setPreferredSize(new Dimension(150, 50));
+        navButton.setPreferredSize(new Dimension(50, 50));
         navButton.addOrderButtonListener(e -> {
             SwingUtilities.invokeLater(MainFrameEmployee::new);
             mainFrame.dispose();
@@ -115,11 +117,30 @@ public class InventoryCRUDEmployee extends JFrame {
         searchPanel.setOpaque(false);
 
         // Create search field with specified size
-        searchField = new JTextField();
+        searchField = new JTextField("Search");
         searchField.setPreferredSize(SEARCH_FIELD_SIZE);
         searchField.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(Color.WHITE, 1),
                 BorderFactory.createEmptyBorder(2, 5, 2, 5)));
+
+        searchField.setForeground(Color.GRAY); // Make placeholder text gray
+        searchField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (searchField.getText().equals("Search")) {
+                    searchField.setText("");
+                    searchField.setForeground(Color.WHITE); // Change text color to white when typing
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (searchField.getText().isEmpty()) {
+                    searchField.setText("Search");
+                    searchField.setForeground(Color.GRAY);
+                }
+            }
+        });
 
 
         searchPanel.add(searchField);
