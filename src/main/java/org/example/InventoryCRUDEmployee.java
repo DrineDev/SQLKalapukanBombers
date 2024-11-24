@@ -19,6 +19,7 @@ public class InventoryCRUDEmployee extends JFrame {
     private static final Color PRIMARY_COLOR = new Color(248, 146, 137);
     private static final Dimension FRAME_SIZE = new Dimension(1000, 600);
     private static final Dimension SEARCH_FIELD_SIZE = new Dimension(300, 30);
+    private static final Dimension SORT_BUTTON_SIZE = new Dimension(120, 30);
     private static final int GRID_GAP = 20;
     private static final int BORDER_THICKNESS = 20;
     private static final int SCROLL_UNIT_INCREMENT = 20;
@@ -30,6 +31,17 @@ public class InventoryCRUDEmployee extends JFrame {
     private JTextField searchField;
     private JPanel foodItemsPanel;
     private ExitAndLogoutButtonFrame exit;
+
+    private JButton sortStockButton;
+    private JButton sortAlphaButton;
+    private SortState stockSortState = SortState.DEFAULT;
+    private SortState alphaSortState = SortState.DEFAULT;
+
+    private enum SortState {
+        DEFAULT,
+        ASCENDING,
+        DESCENDING
+    }
 
     public InventoryCRUDEmployee() {
         initializeGUI();
@@ -93,10 +105,16 @@ public class InventoryCRUDEmployee extends JFrame {
         leftPanel.setOpaque(false);
         leftPanel.add(navButton);
 
-        // Center panel for search
+        // Center panel for search and sort controls
         JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         centerPanel.setOpaque(false);
-        centerPanel.add(createSearchPanel());
+
+        // Add search panel and sort buttons
+        JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        controlsPanel.setOpaque(false);
+        controlsPanel.add(createSearchPanel());
+        controlsPanel.add(createSortButtonsPanel());
+        centerPanel.add(controlsPanel);
 
         // Right panel for exit button
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -108,6 +126,131 @@ public class InventoryCRUDEmployee extends JFrame {
         topPanel.add(rightPanel, BorderLayout.EAST);
 
         return topPanel;
+    }
+
+    private JPanel createSortButtonsPanel() {
+        JPanel sortPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        sortPanel.setOpaque(false);
+
+        sortStockButton = createSortButton("Sort by Stock");
+        sortAlphaButton = createSortButton("Sort by Name");
+
+        sortStockButton.addActionListener(e -> handleStockSort());
+        sortAlphaButton.addActionListener(e -> handleAlphaSort());
+
+        sortPanel.add(sortStockButton);
+        sortPanel.add(sortAlphaButton);
+
+        return sortPanel;
+    }
+
+    private JButton createSortButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(SORT_BUTTON_SIZE);
+        button.setBackground(PRIMARY_COLOR);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                button.setBackground(Color.WHITE);
+                button.setForeground(PRIMARY_COLOR);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                button.setBackground(PRIMARY_COLOR);
+                button.setForeground(Color.WHITE);
+            }
+        });
+
+        return button;
+    }
+
+    private void handleStockSort() {
+        stockSortState = switch (stockSortState) {
+            case DEFAULT -> SortState.ASCENDING;
+            case ASCENDING -> SortState.DESCENDING;
+            case DESCENDING -> SortState.DEFAULT;
+        };
+        alphaSortState = SortState.DEFAULT; // Reset other sort state
+        updateSortButtonText();
+        filterItems();
+    }
+
+    private void handleAlphaSort() {
+        alphaSortState = switch (alphaSortState) {
+            case DEFAULT -> SortState.ASCENDING;
+            case ASCENDING -> SortState.DESCENDING;
+            case DESCENDING -> SortState.DEFAULT;
+        };
+        stockSortState = SortState.DEFAULT; // Reset other sort state
+        updateSortButtonText();
+        filterItems();
+    }
+
+    private void updateSortButtonText() {
+        sortStockButton.setText("Sort by Stock " + getSortIndicator(stockSortState));
+        sortAlphaButton.setText("Sort by Name " + getSortIndicator(alphaSortState));
+    }
+
+    private String getSortIndicator(SortState state) {
+        return switch (state) {
+            case ASCENDING -> "↑";
+            case DESCENDING -> "↓";
+            default -> "";
+        };
+    }
+
+    private void filterItems() {
+        String rawSearchText = searchField.getText().toLowerCase().trim();
+        final String searchText = rawSearchText.equals("search") ? "" : rawSearchText;
+
+        // Remove all current components
+        foodItemsPanel.removeAll();
+
+        // Get all meal IDs and create AddInventory items
+        List<AddInventory> items = SQLMeal.getAllMealIds().stream()
+                .map(mealId -> new AddInventory(mealId, "employee"))
+                .filter(item -> {
+                    String mealName = getMealNameFromDatabase(item.getMealId());
+                    return mealName != null && mealName.toLowerCase().contains(searchText);
+                })
+                .sorted((item1, item2) -> {
+                    // Apply sorting based on active sort state
+                    if (stockSortState != SortState.DEFAULT) {
+                        int compare = Integer.compare(
+                                item1.getQuantityAvailable(),
+                                item2.getQuantityAvailable()
+                        );
+                        return stockSortState == SortState.ASCENDING ? compare : -compare;
+                    } else if (alphaSortState != SortState.DEFAULT) {
+                        String name1 = getMealNameFromDatabase(item1.getMealId());
+                        String name2 = getMealNameFromDatabase(item2.getMealId());
+                        int compare = name1.compareToIgnoreCase(name2);
+                        return alphaSortState == SortState.ASCENDING ? compare : -compare;
+                    }
+                    return 0; // Default order
+                })
+                .toList();
+
+        // Add sorted and filtered items to the panel
+        for (AddInventory item : items) {
+            foodItemsPanel.add(item);
+        }
+
+        // Show "No items found" message if necessary
+        if (items.isEmpty()) {
+            JLabel noItemsLabel = new JLabel("No food items found in inventory");
+            noItemsLabel.setHorizontalAlignment(JLabel.CENTER);
+            foodItemsPanel.add(noItemsLabel);
+        }
+
+        // Refresh the panel
+        foodItemsPanel.revalidate();
+        foodItemsPanel.repaint();
     }
 
     private JPanel createSearchPanel() {
@@ -162,27 +305,6 @@ public class InventoryCRUDEmployee extends JFrame {
         });
 
         return searchPanel;
-    }
-
-    private void filterItems() {
-        String searchText = searchField.getText().toLowerCase().trim();
-
-        // Remove all current components
-        foodItemsPanel.removeAll();
-
-        // Re-add only matching items
-        List<Integer> mealIds = SQLMeal.getAllMealIds();
-        for (Integer mealId : mealIds) {
-            String mealName = getMealNameFromDatabase(mealId);
-
-            if (mealName != null && mealName.toLowerCase().contains(searchText)) {
-                foodItemsPanel.add(new AddInventory(mealId, "employee"));
-            }
-        }
-
-        // Refresh the panel
-        foodItemsPanel.revalidate();
-        foodItemsPanel.repaint();
     }
 
     private String getMealNameFromDatabase(int mealId) {
