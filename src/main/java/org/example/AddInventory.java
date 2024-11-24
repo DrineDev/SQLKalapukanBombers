@@ -24,7 +24,6 @@ public class AddInventory extends JPanel {
     private JPanel leftContentPanel;
     private int mealID;
     private Boolean markedForDeletion = false;
-    private ExitAndLogoutButtonFrame exit;
 
     public AddInventory(int mealID, JPanel leftContentPanel) {
         this.mealID = mealID;
@@ -129,12 +128,11 @@ public class AddInventory extends JPanel {
         private void openEditWindow(int mealID) {
             JFrame editWindow = new JFrame("Edit Meal Details");
             editWindow.setSize(800, 600);
-            editWindow.setLocationRelativeTo(this);
+            editWindow.setLocationRelativeTo(null);
             editWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             editWindow.setLayout(null);
             editWindow.setUndecorated(true);
 
-            exit = new ExitAndLogoutButtonFrame(editWindow);
             ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
             JButton exitButton = new JButton();
             exitButton.setBounds(750,5,50,50);
@@ -142,7 +140,7 @@ public class AddInventory extends JPanel {
             exitButton.setContentAreaFilled(false);
             exitButton.setFocusPainted(false);
             exitButton.setBorderPainted(false);
-            exitButton.addActionListener(e -> exit.setVisible(true));
+            exitButton.addActionListener(e -> editWindow.dispose());
 
             // Set the frame and content pane background to white
             editWindow.getContentPane().setBackground(new Color(248, 146, 137));
