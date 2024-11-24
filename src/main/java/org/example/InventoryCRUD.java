@@ -34,7 +34,7 @@ public class InventoryCRUD {
     private static final Dimension RIGHT_PANEL_SIZE = new Dimension(680, 2000);
     private static final Dimension SCROLL_PANE_SIZE = new Dimension(680, 500);
     private static final Dimension LEFT_SCROLL_PANE_SIZE = new Dimension(280, 400);
-    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(200, 30);
+    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(300, 30);
 
     private JFrame mainFrame;
     private JButton exitButton;

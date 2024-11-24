@@ -18,7 +18,7 @@ public class InventoryCRUDEmployee extends JFrame {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
     private static final Color PRIMARY_COLOR = new Color(248, 146, 137);
     private static final Dimension FRAME_SIZE = new Dimension(1000, 600);
-    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(200, 30);
+    private static final Dimension SEARCH_FIELD_SIZE = new Dimension(300, 30);
     private static final int GRID_GAP = 20;
     private static final int BORDER_THICKNESS = 20;
     private static final int SCROLL_UNIT_INCREMENT = 20;
@@ -71,7 +71,7 @@ public class InventoryCRUDEmployee extends JFrame {
 
     private void initializeNavButton() {
         navButton = new NavigatorButtonInventoryEmployee();
-        navButton.setPreferredSize(new Dimension(150, 50));
+        navButton.setPreferredSize(new Dimension(50, 50));
         navButton.addOrderButtonListener(e -> {
             SwingUtilities.invokeLater(MainFrameEmployee::new);
             mainFrame.dispose();
