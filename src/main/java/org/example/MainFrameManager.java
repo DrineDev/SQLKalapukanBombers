@@ -139,7 +139,7 @@ public class MainFrameManager extends JFrame {
 
         activeIDs = SQLMeal.getActiveMealIds();
         for(Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, MainFrameManager.this));
         }
 
         vegetarianButton = new JCheckBox("Vegetarian");
@@ -415,13 +415,13 @@ public class MainFrameManager extends JFrame {
                         showImageFrame("pics/pop up frame.png");
                         clearCheckoutArea();
                     } else {
-                        showImageFrame("pics/worst error.png");
+                        showImageFrame("pics/error.png");
                     }
                 } else {
-                    showImageFrame("pics/worst error.png");
+                    showImageFrame("pics/error.png");
                 }
             } catch (Exception ex) {
-                showImageFrame("pics/worst error.png");
+                showImageFrame("pics/error.png");
                 ex.printStackTrace();
             }
         });
