@@ -127,7 +127,7 @@ public class InventoryCRUDEmployee extends JFrame {
             public void focusGained(FocusEvent e) {
                 if (searchField.getText().equals("Search")) {
                     searchField.setText("");
-                    searchField.setForeground(Color.WHITE); // Change text color to white when typing
+                    searchField.setForeground(Color.BLACK); // Change text color to white when typing
                 }
             }
 

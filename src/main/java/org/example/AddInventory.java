@@ -19,12 +19,12 @@ import org.example.SQLQueries.SQLMeal;
 public class AddInventory extends JPanel {
     private ImageIcon foodImage;
     private int quantityAvailable;
-    private float price;
     private JLabel quantityLabel;
     private JLabel nameLabel;
     private JPanel leftContentPanel;
     private int mealID;
     private Boolean markedForDeletion = false;
+    private ExitAndLogoutButtonFrame exit;
 
     public AddInventory(int mealID, JPanel leftContentPanel) {
         this.mealID = mealID;
@@ -132,6 +132,17 @@ public class AddInventory extends JPanel {
             editWindow.setLocationRelativeTo(this);
             editWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             editWindow.setLayout(null);
+            editWindow.setUndecorated(true);
+
+            exit = new ExitAndLogoutButtonFrame(editWindow);
+            ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
+            JButton exitButton = new JButton();
+            exitButton.setBounds(750,5,50,50);
+            exitButton.setIcon(exitImageIcon);
+            exitButton.setContentAreaFilled(false);
+            exitButton.setFocusPainted(false);
+            exitButton.setBorderPainted(false);
+            exitButton.addActionListener(e -> exit.setVisible(true));
 
             // Set the frame and content pane background to white
             editWindow.getContentPane().setBackground(new Color(248, 146, 137));
@@ -156,88 +167,72 @@ public class AddInventory extends JPanel {
             nameLabel.setForeground(new Color(248, 146, 137));
             nameLabel.setBackground(new Color(255, 255, 255));
 
-            JLabel typeLabel = new JLabel("Type:");
-            typeLabel.setBounds(50, 100, 100, 30);
-            typeLabel.setOpaque(true);
-            typeLabel.setForeground(new Color(248, 146, 137));
-            typeLabel.setBackground(new Color(255, 255, 255));
+            JTextField nameField = new JTextField();
+            nameField.setBounds(160, 60, 200, 30);
+            nameField.setBackground(new Color(255,255,255));
 
             JLabel descriptionLabel = new JLabel("Description:");
-            descriptionLabel.setBounds(50, 140, 100, 30);
+            descriptionLabel.setBounds(50, 100, 100, 30);
             descriptionLabel.setOpaque(true);
             descriptionLabel.setForeground(new Color(248, 146, 137));
             descriptionLabel.setBackground(new Color(255, 255, 255));
 
+            JTextArea descriptionArea = new JTextArea();
+            descriptionArea.setLineWrap(true);
+            descriptionArea.setWrapStyleWord(true);
+            JScrollPane descScrollPane = new JScrollPane(descriptionArea);
+            descScrollPane.setBounds(160, 100, 200, 50);
+            descScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            descScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+            descScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
+            descScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+            descriptionArea.setBackground(new Color(255,255,255));
+
             JLabel ingredientsLabel = new JLabel("Ingredients:");
-            ingredientsLabel.setBounds(50, 200, 100, 30);
+            ingredientsLabel.setBounds(50, 160, 100, 30);
             ingredientsLabel.setOpaque(true);
             ingredientsLabel.setForeground(new Color(248, 146, 137));
             ingredientsLabel.setBackground(new Color(255, 255, 255));
 
+            JTextArea ingredientsArea = new JTextArea();
+            ingredientsArea.setLineWrap(true);
+            ingredientsArea.setWrapStyleWord(true);
+            JScrollPane ingredScrollPane = new JScrollPane(ingredientsArea);
+            ingredScrollPane.setBounds(160, 160, 200, 50);
+            ingredScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            ingredScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+            ingredScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
+            ingredScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+            ingredientsArea.setBackground(new Color(255,255,255));
+
             JLabel servingSizeLabel = new JLabel("Serving Size:");
-            servingSizeLabel.setBounds(50, 260, 100, 30);
+            servingSizeLabel.setBounds(50, 220, 100, 30);
             servingSizeLabel.setOpaque(true);
             servingSizeLabel.setForeground(new Color(248, 146, 137));
             servingSizeLabel.setBackground(new Color(255, 255, 255));
 
+            JTextField servingSizeField = new JTextField();
+            servingSizeField.setBounds(160, 220, 200, 30);
+            servingSizeField.setBackground(new Color(255,255,255));
+            servingSizeField.setInputVerifier(new ServingSizeVerifier());
+
             JLabel categoryLabel = new JLabel("Category:");
-            categoryLabel.setBounds(50, 300, 100, 30);
+            categoryLabel.setBounds(50, 260, 100, 30);
             categoryLabel.setOpaque(true);
             categoryLabel.setForeground(new Color(248, 146, 137));
             categoryLabel.setBackground(new Color(255, 255, 255));
 
-            // Create radio buttons for Type
-            JPanel typePanel = new JPanel();
-            typePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
-            typePanel.setBounds(160, 100, 200, 30);
-            typePanel.setBackground(Color.WHITE);
+            ImageIcon radioSelected = new ImageIcon("pics/check_box.png");
+            ImageIcon radioUnselected = new ImageIcon("pics/checkbox default.png");
 
-            ButtonGroup typeGroup = new ButtonGroup();
-            JRadioButton breakfastButton = new JRadioButton("Breakfast");
-            JRadioButton lunchButton = new JRadioButton("Lunch");
-            JRadioButton dinnerButton = new JRadioButton("Dinner");
-            breakfastButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
-            lunchButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
-            dinnerButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
-            breakfastButton.setSelectedIcon(new ImageIcon("check_box.png"));
-            lunchButton.setSelectedIcon(new ImageIcon("check_box.png"));
-            dinnerButton.setSelectedIcon(new ImageIcon("check_box.png"));
-
-            breakfastButton.setBackground(Color.WHITE);
-            lunchButton.setBackground(Color.WHITE);
-            dinnerButton.setBackground(Color.WHITE);
-
-            breakfastButton.setForeground(new Color(248, 146, 137));
-            lunchButton.setForeground(new Color(248, 146, 137));
-            dinnerButton.setForeground(new Color(248, 146, 137));
-
-            typeGroup.add(breakfastButton);
-            typeGroup.add(lunchButton);
-            typeGroup.add(dinnerButton);
-
-            typePanel.add(breakfastButton);
-            typePanel.add(lunchButton);
-            typePanel.add(dinnerButton);
-
-            // Create radio buttons for Category
             JPanel categoryPanel = new JPanel();
             categoryPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
-            categoryPanel.setBounds(160, 300, 240, 30);
+            categoryPanel.setBounds(160, 260, 240, 30);
             categoryPanel.setBackground(Color.WHITE);
 
             ButtonGroup categoryGroup = new ButtonGroup();
-            JRadioButton nonVegButton = new JRadioButton("Non-Vegetarian");
-            JRadioButton vegButton = new JRadioButton("Vegetarian");
-            nonVegButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
-            vegButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
-            nonVegButton.setSelectedIcon(new ImageIcon("pics/check_box.png"));
-            vegButton.setSelectedIcon(new ImageIcon("pics/check_box.png"));
-
-            nonVegButton.setBackground(Color.WHITE);
-            vegButton.setBackground(Color.WHITE);
-
-            nonVegButton.setForeground(new Color(248, 146, 137));
-            vegButton.setForeground(new Color(248, 146, 137));
+            JRadioButton nonVegButton = createCustomRadioButton("Non-Vegetarian", radioSelected, radioUnselected);
+            JRadioButton vegButton = createCustomRadioButton("Vegetarian", radioSelected, radioUnselected);
 
             categoryGroup.add(nonVegButton);
             categoryGroup.add(vegButton);
@@ -246,64 +241,10 @@ public class AddInventory extends JPanel {
             categoryPanel.add(vegButton);
 
             JLabel nutritionLabel = new JLabel("Nutrition Facts:");
-            nutritionLabel.setBounds(50, 340, 100, 30);
+            nutritionLabel.setBounds(50, 300, 100, 30);
             nutritionLabel.setOpaque(true);
             nutritionLabel.setForeground(new Color(248, 146, 137));
             nutritionLabel.setBackground(new Color(255, 255, 255));
-
-            JLabel stocksLabel = new JLabel("Stocks Available:");
-            stocksLabel.setBounds(50, 400, 100, 30);
-            stocksLabel.setOpaque(true);
-            stocksLabel.setForeground(new Color(248, 146, 137));
-            stocksLabel.setBackground(new Color(255, 255, 255));
-
-            JLabel priceLabel = new JLabel("Price:");
-            priceLabel.setBounds(50, 440, 100, 30);
-            priceLabel.setOpaque(true);
-            priceLabel.setForeground(new Color(248, 146, 137));
-            priceLabel.setBackground(new Color(255, 255, 255));
-
-            // Text Fields and Areas
-            JTextField nameField = new JTextField();
-            nameField.setBounds(160, 60, 200, 30);
-            nameField.setBackground(new Color(255,255,255));
-
-            JTextField typeField = new JTextField();
-            typeField.setBounds(160, 100, 200, 30);
-            typeField.setBackground(new Color(255,255,255));
-            typeField.setInputVerifier(new MealTypeVerifier());
-
-            JTextArea descriptionArea = new JTextArea();
-            descriptionArea.setLineWrap(true);
-            descriptionArea.setWrapStyleWord(true);
-            JScrollPane descScrollPane = new JScrollPane(descriptionArea);
-            descScrollPane.setBounds(160, 140, 200, 50);
-            descScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            descScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
-            descScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
-            descScrollPane.getVerticalScrollBar().setUnitIncrement(20);
-            descriptionArea.setBackground(new Color(255,255,255));
-
-            JTextArea ingredientsArea = new JTextArea();
-            ingredientsArea.setLineWrap(true);
-            ingredientsArea.setWrapStyleWord(true);
-            JScrollPane ingredScrollPane = new JScrollPane(ingredientsArea);
-            ingredScrollPane.setBounds(160, 200, 200, 50);
-            ingredScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            ingredScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
-            ingredScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
-            ingredScrollPane.getVerticalScrollBar().setUnitIncrement(20);
-            ingredientsArea.setBackground(new Color(255,255,255));
-
-            JTextField servingSizeField = new JTextField();
-            servingSizeField.setBounds(160, 260, 200, 30);
-            servingSizeField.setBackground(new Color(255,255,255));
-            servingSizeField.setInputVerifier(new ServingSizeVerifier());
-
-            JTextField categoryField = new JTextField();
-            categoryField.setBounds(160, 300, 200, 30);
-            categoryField.setBackground(new Color(255,255,255));
-            categoryField.setInputVerifier(new CategoryVerifier());
 
             JTextArea nutritionArea = new JTextArea();
             nutritionArea.setLineWrap(true);
@@ -313,27 +254,64 @@ public class AddInventory extends JPanel {
             nutritionScrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
             nutritionScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(8, 0));
             nutritionScrollPane.getVerticalScrollBar().setUnitIncrement(20);
-            nutritionScrollPane.setBounds(160, 340, 200, 50);
+            nutritionScrollPane.setBounds(160, 300, 200, 50);
             nutritionArea.setBackground(new Color(255,255,255));
 
+            JLabel stocksLabel = new JLabel("Stocks Available:");
+            stocksLabel.setBounds(50, 360, 100, 30);
+            stocksLabel.setOpaque(true);
+            stocksLabel.setForeground(new Color(248, 146, 137));
+            stocksLabel.setBackground(new Color(255, 255, 255));
+
             JTextField stocksField = new JTextField();
-            stocksField.setBounds(160, 400, 200, 30);
+            stocksField.setBounds(160, 360, 200, 30);
             stocksField.setBackground(new Color(255,255,255));
             stocksField.setText(String.valueOf(this.quantityAvailable));
             stocksField.setInputVerifier(new StocksVerifier());
 
+            JLabel priceLabel = new JLabel("Price:");
+            priceLabel.setBounds(50, 400, 100, 30);
+            priceLabel.setOpaque(true);
+            priceLabel.setForeground(new Color(248, 146, 137));
+            priceLabel.setBackground(new Color(255, 255, 255));
+
             JTextField priceField = new JTextField();
-            priceField.setBounds(160, 440, 200, 30);
+            priceField.setBounds(160, 400, 200, 30);
             priceField.setBackground(new Color(255,255,255));
             priceField.setInputVerifier(new PriceVerifier());
 
-            // Spicy Checkbox
-            JCheckBox spicyCheckBox = new JCheckBox("Spicy");
+            // Type Section - Moved after price
+            JLabel typeLabel = new JLabel("Type:");
+            typeLabel.setBounds(50, 440, 100, 30);
+            typeLabel.setOpaque(true);
+            typeLabel.setForeground(new Color(248, 146, 137));
+            typeLabel.setBackground(new Color(255, 255, 255));
+
+            JPanel typePanel = new JPanel();
+            typePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+            typePanel.setBounds(160, 440, 300, 30);
+            typePanel.setBackground(Color.WHITE);
+
+            ButtonGroup typeGroup = new ButtonGroup();
+            JRadioButton breakfastButton = createCustomRadioButton("Breakfast", radioSelected, radioUnselected);
+            JRadioButton lunchButton = createCustomRadioButton("Lunch", radioSelected, radioUnselected);
+            JRadioButton dinnerButton = createCustomRadioButton("Dinner", radioSelected, radioUnselected);
+
+            typeGroup.add(breakfastButton);
+            typeGroup.add(lunchButton);
+            typeGroup.add(dinnerButton);
+
+            typePanel.add(breakfastButton);
+            typePanel.add(lunchButton);
+            typePanel.add(dinnerButton);
+
+            ImageIcon checkboxSelected = new ImageIcon("pics/check_box.png");
+            ImageIcon checkboxUnselected = new ImageIcon("pics/checkbox default.png");
+
+            JCheckBox spicyCheckBox = createCustomCheckBox("Spicy", checkboxSelected, checkboxUnselected);
             spicyCheckBox.setBounds(160, 480, 100, 30);
             spicyCheckBox.setBackground(Color.WHITE);
             spicyCheckBox.setForeground(new Color(248, 146, 137));
-            spicyCheckBox.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
-            spicyCheckBox.setSelectedIcon(new ImageIcon("pics/check_box.png"));
 
             // Image Panel
             JPanel imagePanel = new JPanel();
@@ -496,6 +474,7 @@ public class AddInventory extends JPanel {
             });
 
             // Add components to main panel
+            mainPanel.add(exitButton);
             mainPanel.add(editLabel);
             mainPanel.add(nameLabel);
             mainPanel.add(nameField);
@@ -697,6 +676,27 @@ public class AddInventory extends JPanel {
                 return false;
             }
         }
+    }
+
+    private JRadioButton createCustomRadioButton(String text, ImageIcon selectedIcon, ImageIcon unselectedIcon) {
+        JRadioButton button = new JRadioButton(text);
+        button.setIcon(unselectedIcon);
+        button.setSelectedIcon(selectedIcon);
+        button.setBackground(Color.WHITE);
+        button.setForeground(new Color(248, 146, 137));
+        button.setFocusPainted(false);
+        return button;
+    }
+
+    // Helper method to create custom checkbox
+    private JCheckBox createCustomCheckBox(String text, ImageIcon selectedIcon, ImageIcon unselectedIcon) {
+        JCheckBox checkbox = new JCheckBox(text);
+        checkbox.setIcon(unselectedIcon);
+        checkbox.setSelectedIcon(selectedIcon);
+        checkbox.setBackground(Color.WHITE);
+        checkbox.setForeground(new Color(248, 146, 137));
+        checkbox.setFocusPainted(false);
+        return checkbox;
     }
 
         //helper method kuhag mealID
