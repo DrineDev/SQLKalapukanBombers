@@ -3,10 +3,6 @@
 Final Project for Software Engineering Elective 1 - Java
 
 # TO DO
-MainFrameManager.java & MainFrameEmployee.java
-  1. naay grey nga bar sa right kung naay order
-  2. checkout boxes gui fix
-  3. checkout button dapat dili mo checkout kung walay order
 
 InventoryCrud.java
   1. gui fix make search bar bigger
@@ -31,11 +27,7 @@ OrderCRUD.java
 
 NavigationButtonManager.java
   1. ang uban cruds kay dili mo load or wrong nga crud ang i load
-  2. small gui issue nga dili selected iyang current place, e.g. naa sa order pero ang highlighted kay inventory
-  3. no user crud
      
 NavigationButtonInventory.java
   1. dapat walay order nga directory, instead make it main menu tapos need sad siya mo adtos main menu
      
-UserCrud.java
-  1. add me pls :(
