@@ -1,31 +1,13 @@
 package org.example;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.InputVerifier;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -204,6 +186,65 @@ public class AddInventory extends JPanel {
             categoryLabel.setForeground(new Color(248, 146, 137));
             categoryLabel.setBackground(new Color(255, 255, 255));
 
+            // Create radio buttons for Type
+            JPanel typePanel = new JPanel();
+            typePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+            typePanel.setBounds(160, 100, 200, 30);
+            typePanel.setBackground(Color.WHITE);
+
+            ButtonGroup typeGroup = new ButtonGroup();
+            JRadioButton breakfastButton = new JRadioButton("Breakfast");
+            JRadioButton lunchButton = new JRadioButton("Lunch");
+            JRadioButton dinnerButton = new JRadioButton("Dinner");
+            breakfastButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
+            lunchButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
+            dinnerButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
+            breakfastButton.setSelectedIcon(new ImageIcon("check_box.png"));
+            lunchButton.setSelectedIcon(new ImageIcon("check_box.png"));
+            dinnerButton.setSelectedIcon(new ImageIcon("check_box.png"));
+
+            breakfastButton.setBackground(Color.WHITE);
+            lunchButton.setBackground(Color.WHITE);
+            dinnerButton.setBackground(Color.WHITE);
+
+            breakfastButton.setForeground(new Color(248, 146, 137));
+            lunchButton.setForeground(new Color(248, 146, 137));
+            dinnerButton.setForeground(new Color(248, 146, 137));
+
+            typeGroup.add(breakfastButton);
+            typeGroup.add(lunchButton);
+            typeGroup.add(dinnerButton);
+
+            typePanel.add(breakfastButton);
+            typePanel.add(lunchButton);
+            typePanel.add(dinnerButton);
+
+            // Create radio buttons for Category
+            JPanel categoryPanel = new JPanel();
+            categoryPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+            categoryPanel.setBounds(160, 300, 240, 30);
+            categoryPanel.setBackground(Color.WHITE);
+
+            ButtonGroup categoryGroup = new ButtonGroup();
+            JRadioButton nonVegButton = new JRadioButton("Non-Vegetarian");
+            JRadioButton vegButton = new JRadioButton("Vegetarian");
+            nonVegButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
+            vegButton.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
+            nonVegButton.setSelectedIcon(new ImageIcon("pics/check_box.png"));
+            vegButton.setSelectedIcon(new ImageIcon("pics/check_box.png"));
+
+            nonVegButton.setBackground(Color.WHITE);
+            vegButton.setBackground(Color.WHITE);
+
+            nonVegButton.setForeground(new Color(248, 146, 137));
+            vegButton.setForeground(new Color(248, 146, 137));
+
+            categoryGroup.add(nonVegButton);
+            categoryGroup.add(vegButton);
+
+            categoryPanel.add(nonVegButton);
+            categoryPanel.add(vegButton);
+
             JLabel nutritionLabel = new JLabel("Nutrition Facts:");
             nutritionLabel.setBounds(50, 340, 100, 30);
             nutritionLabel.setOpaque(true);
@@ -291,6 +332,8 @@ public class AddInventory extends JPanel {
             spicyCheckBox.setBounds(160, 480, 100, 30);
             spicyCheckBox.setBackground(Color.WHITE);
             spicyCheckBox.setForeground(new Color(248, 146, 137));
+            spicyCheckBox.setDisabledSelectedIcon(new ImageIcon("pics/checkbox default.png"));
+            spicyCheckBox.setSelectedIcon(new ImageIcon("pics/check_box.png"));
 
             // Image Panel
             JPanel imagePanel = new JPanel();
@@ -324,11 +367,26 @@ public class AddInventory extends JPanel {
                 Meal meal = SQLMeal.getMealInfo(mealID);
                 if (meal != null) {
                     nameField.setText(meal.getName());
-                    typeField.setText(meal.getType());
+                    switch (meal.getType().toLowerCase()) {
+                        case "breakfast":
+                            breakfastButton.setSelected(true);
+                            break;
+                        case "lunch":
+                            lunchButton.setSelected(true);
+                            break;
+                        case "dinner":
+                            dinnerButton.setSelected(true);
+                            break;
+                    }
                     descriptionArea.setText(meal.getDescription());
                     ingredientsArea.setText(meal.getIngredients());
                     servingSizeField.setText(meal.getServingSize());
-                    categoryField.setText(meal.getCategory());
+                    // Set category radio button
+                    if (meal.getCategory().equalsIgnoreCase("vegetarian")) {
+                        vegButton.setSelected(true);
+                    } else {
+                        nonVegButton.setSelected(true);
+                    }
                     nutritionArea.setText(meal.getNutritionFact());
                     spicyCheckBox.setSelected(meal.getIsSpicy());
                     stocksField.setText(String.valueOf(quantityAvailable));
@@ -377,6 +435,21 @@ public class AddInventory extends JPanel {
                         errorLabel.setText("Meal name is required");
                         return;
                     }
+                    // Get selected type
+                    String selectedType = "";
+                    if (breakfastButton.isSelected()) selectedType = "Breakfast";
+                    else if (lunchButton.isSelected()) selectedType = "Lunch";
+                    else if (dinnerButton.isSelected()) selectedType = "Dinner";
+
+                    // Get selected category
+                    String selectedCategory = "";
+                    if (vegButton.isSelected()) selectedCategory = "Vegetarian";
+                    else if (nonVegButton.isSelected()) selectedCategory = "Non-Vegetarian";
+
+                    if (selectedType.isEmpty() || selectedCategory.isEmpty()) {
+                        errorLabel.setText("Please select both type and category");
+                        return;
+                    }
                     float price;
                     try {
                         price = Float.parseFloat(priceField.getText().trim());
@@ -392,13 +465,14 @@ public class AddInventory extends JPanel {
                     Meal updatedMeal = new Meal(
                             mealID,
                             nameField.getText().trim(),
-                            typeField.getText().trim(),
+                            selectedType,
                             descriptionArea.getText().trim(),
                             ingredientsArea.getText().trim(),
                             servingSizeField.getText().trim(),
                             selectedImage[0],
-                            categoryField.getText().trim(),
-                            "", spicyCheckBox.isSelected()
+                            selectedCategory,
+                            "",
+                            spicyCheckBox.isSelected()
                     );
 
                     SharedData.addUpdatedMeal(updatedMeal);
@@ -426,7 +500,7 @@ public class AddInventory extends JPanel {
             mainPanel.add(nameLabel);
             mainPanel.add(nameField);
             mainPanel.add(typeLabel);
-            mainPanel.add(typeField);
+            mainPanel.add(typePanel);
             mainPanel.add(descriptionLabel);
             mainPanel.add(descScrollPane);
             mainPanel.add(ingredientsLabel);
@@ -434,7 +508,7 @@ public class AddInventory extends JPanel {
             mainPanel.add(servingSizeLabel);
             mainPanel.add(servingSizeField);
             mainPanel.add(categoryLabel);
-            mainPanel.add(categoryField);
+            mainPanel.add(categoryPanel);
             mainPanel.add(nutritionLabel);
             mainPanel.add(nutritionScrollPane);
             mainPanel.add(stocksLabel);
