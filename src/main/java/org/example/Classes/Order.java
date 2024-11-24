@@ -7,7 +7,7 @@ import java.util.List;
 import org.example.SQLQueries.SQLOrder;
 
 public class Order {
-    private static int _orderId;
+    private int _orderId;
     private String _orderDate;
     private String _status;
     private double _totalAmount;
@@ -41,7 +41,7 @@ public class Order {
     }
 
     // Getters
-    public static int getOrderId() { return _orderId; }
+    public int getOrderId() { return _orderId; }
     public String getOrderDate() { return _orderDate; }
     public String getStatus() { return _status; }
     public double getTotalAmount() { return _totalAmount; }
