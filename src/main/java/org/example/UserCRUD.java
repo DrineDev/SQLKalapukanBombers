@@ -82,8 +82,8 @@ public class UserCRUD extends JFrame {
         setupLoggingArea();
 
         // Navigation buttons
-        NavigatorButtonManager navButton = new NavigatorButtonManager();
-        navButton.setBounds(5, 5, 206, 360);
+        NavigatorButtonManager navButton = new NavigatorButtonManager("UserCrud");
+        navButton.setBounds(5, 5, 206, 420);
 
         // Exit button
         setupExitButton();

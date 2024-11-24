@@ -122,15 +122,15 @@ public class OrderCrud extends JFrame {
 
         for (Order order : orders) {
             // Order ID Panel
-            JButton orderIDButton = new JButton(String.valueOf(Order.getOrderId()));
+            JButton orderIDButton = new JButton(String.valueOf(order.getOrderId()));
             OrderPanel.add(orderIDButton);
-            List<OrderItem> items = SQLOrderItems.getOrderItems(Integer.parseInt(String.valueOf(Order.getOrderId())));
+            List<OrderItem> items = SQLOrderItems.getOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())));
 
             orderIDButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Frame.add(OrderItemsPanel);
-                    displayOrderItems(Integer.parseInt(String.valueOf(Order.getOrderId())), OrderItemsPanel);
+                    displayOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())), OrderItemsPanel);
                 }
             });
 
@@ -138,48 +138,9 @@ public class OrderCrud extends JFrame {
             JLabel orderDateLabel = new JLabel(order.getOrderDate());
             Order_Date_Panel.add(orderDateLabel);
 
-            
-
             // Status Panel
-            JButton StatusButton = new JButton(order.getStatus());
-
-            // Create popup menu for status options
-            JPopupMenu statusMenu = new JPopupMenu();
-            JMenuItem pendingItem = new JMenuItem("Pending");
-            JMenuItem orderedItem = new JMenuItem("Ordered");
-
-            // Add menu items to popup menu
-            statusMenu.add(pendingItem);
-            statusMenu.add(orderedItem);
-
-            // Add action listeners for menu items
-            pendingItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    StatusButton.setText("Pending");
-                    // Update the status in the database
-                    SQLOrder.updateOrderStatus(Order.getOrderId(), "Pending");
-                }
-            });
-
-            orderedItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    StatusButton.setText("Ordered");
-                    // Update the status in the database
-                    SQLOrder.updateOrderStatus(Order.getOrderId(), "Ordered");
-                }
-            });
-
-            // Add action listener to StatusButton to show popup menu
-            StatusButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    statusMenu.show(StatusButton, 0, StatusButton.getHeight());
-                }
-            });
-
-            Status_Panel.add(StatusButton);
+            JLabel statusLabel = new JLabel(order.getStatus());
+            Status_Panel.add(statusLabel);
 
             // Total Amount Panel
             JLabel totalAmountLabel = new JLabel(String.format("%.2f", order.getTotalAmount()));
@@ -258,55 +219,141 @@ public class OrderCrud extends JFrame {
 
 
 
+        ImageIcon UpdateButtonImage = new ImageIcon("pics/update order.png");
+        JButton UpdateButton = new JButton(UpdateButtonImage);
+        UpdateButton.setPreferredSize(new Dimension(130,40));
 
-        //Panel to delete orderitems in each orderid
+        ImageIcon BottomLeftUpdateButtonImage = new ImageIcon("pics/BottomLeftUpdateButton.png");
+        JButton BottomLeftUpdateButton = new JButton(BottomLeftUpdateButtonImage);
+        BottomLeftUpdateButton.setBounds(70, 228, 100,34);
+        BottomLeftUpdateButton.setBorderPainted(false);
+
+
+        JTextField Order_ID_Textfield2 = new JTextField();
+        JTextField Order_Date_Textfield2 = new JTextField();
+        JTextField Status_Textfield2 = new JTextField();
+        JTextField Total_Amount_Textfield2 = new JTextField();
+        Order_ID_Textfield2.setBounds(22, 24, 195, 26);
+        Order_ID_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Order_Date_Textfield2.setBounds(22, 75, 195, 26);
+        Order_Date_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Status_Textfield2.setBounds(22, 126, 195, 26);
+        Status_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        Total_Amount_Textfield2.setBounds(22, 177, 195, 26);
+        Total_Amount_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+
+        ImageIcon Order_ID_Text2 = new ImageIcon("pics/Order_ID (1).png");
+        ImageIcon Order_Date_Text2 = new ImageIcon("pics/Order_Date.png");
+        ImageIcon Status_Text2 = new ImageIcon("pics/Status.png");
+        ImageIcon Total_Amount2 = new ImageIcon("pics/Total_Amount.png");
+
+        JLabel Order_ID_Label2 = new JLabel(Order_ID_Text2);
+        Order_ID_Label2.setBounds(101, 50, 47,10);
+        JLabel Order_Date_Label2 = new JLabel(Order_Date_Text2);
+        Order_Date_Label2.setBounds(95, 101, 59,10);
+        JLabel Status_Label2 = new JLabel(Status_Text2);
+        Status_Label2.setBounds(98, 152, 47,10);
+        JLabel Total_Amount_Label2 = new JLabel(Total_Amount2);
+        Total_Amount_Label2.setBounds(83, 202, 87, 11);
+
         JPanel UpdateOrderPanel = new JPanel();
         UpdateOrderPanel.setLayout(null);
         UpdateOrderPanel.setBackground(Color.WHITE);
         UpdateOrderPanel.setBounds(33,267,240,290);
         UpdateOrderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY,2,true));
 
+        UpdateOrderPanel.add(Order_ID_Textfield2);
+        UpdateOrderPanel.add(Order_ID_Label2);
+        UpdateOrderPanel.add(Order_Date_Textfield2);
+        UpdateOrderPanel.add(Order_Date_Label2);
+        UpdateOrderPanel.add(Status_Textfield2);
+        UpdateOrderPanel.add(Status_Label2);
+        UpdateOrderPanel.add(Total_Amount_Textfield2);
+        UpdateOrderPanel.add(Total_Amount_Label2);
+        UpdateOrderPanel.add(BottomLeftUpdateButton);
 
 
-        ImageIcon WarningTextImage = new ImageIcon("pics/warningtext.png");
-        JLabel WarningText = new JLabel(WarningTextImage);
-        WarningText.setBounds(55,32,190,32);
+
+        UpdateOrderPanel.setVisible(false);
+        UpdateButton.setBackground(Color.GRAY);
+        UpdateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UpdateOrderPanel.setVisible(true);
+            }
+        });
+
+
+        //shuts off bottomleftpanel after updating an order
+        BottomLeftUpdateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (Order_ID_Textfield2.getText().isEmpty() ||
+                            Order_Date_Textfield2.getText().isEmpty() ||
+                            Status_Textfield2.getText().isEmpty() ||
+                            Total_Amount_Textfield2.getText().isEmpty())
+                    {
+                        JOptionPane.showMessageDialog(null, "All fields must be filled.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    int Order_ID = Integer.parseInt(Order_ID_Textfield2.getText());
+                    String Order_Date = Order_Date_Textfield2.getText();
+                    String Status = Status_Textfield2.getText();
+                    Double Total_Amount = Double.parseDouble(Total_Amount_Textfield2.getText());
+
+                    if(Order_ID < 0) {
+                        JOptionPane.showMessageDialog(null, "All fields must have an input", "Add Order error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    SQLOrder.editOrder(Order_ID, Order_Date, Status, Total_Amount);
+                    UpdateOrderPanel.setVisible(false);
+
+                    if (Order_Date != null || Status != null || Total_Amount > 0) {
+                        UpdateOrderPanel.setVisible(false);
+                        JOptionPane.showMessageDialog(null,
+                                "Order updated successfully",
+                                "Update Confirmation",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to update order",
+                                "Update Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "Invalid number format in input fields",
+                            "Input Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+
 
         ImageIcon DeleteButtonImage = new ImageIcon("pics/delete order.png");
         JButton DeleteButton = new JButton(DeleteButtonImage);
         DeleteButton.setPreferredSize(new Dimension(130,40));
 
-// Configure the text field with proper bounds
-        JTextField DeleteidTextfield = new JTextField("OrderID: ");
-        DeleteidTextfield.setFont(new Font("Arial", Font.PLAIN, 12));
-        DeleteidTextfield.setBounds(55, 80, 190, 30); // Set explicit bounds for the text field
-        DeleteidTextfield.setBackground(Color.WHITE);
-        DeleteidTextfield.setBorder(BorderFactory.createLineBorder(Color.PINK,2,false));
 
-// Remove or adjust the label since we're showing the text directly in the text field
-        JLabel DeleteidTextfieldLabel = new JLabel();
-        DeleteidTextfieldLabel.setBounds(55, 32, 190, 32);
-        DeleteidTextfieldLabel.setBackground(Color.WHITE);
-
-// Warning Panel configuration
+        //Warning Panel after pressing Delete Button
         JPanel WarningPanel = new JPanel();
+        ImageIcon WarningTextImage = new ImageIcon("pics/warningtext.png");
+        JLabel WarningText = new JLabel(WarningTextImage);
+        WarningText.setBounds(55,32,190,32);
         WarningPanel.setBackground(Color.WHITE);
-        WarningPanel.setBounds(0, 0, 300, 200); // Match the size of DeletePopUpFrame
+        WarningPanel.setBounds(300,45,660,620);
         WarningPanel.setBorder(new LineBorder(new Color(208,108,108,255)));
         WarningPanel.setLayout(null);
-
-// Add components to the panel
         WarningPanel.add(WarningText);
-        WarningPanel.add(DeleteidTextfieldLabel);
-        WarningPanel.add(DeleteidTextfield);
 
-// Configure the popup frame
+        //new Frame for delete pop up
         JFrame DeletePopUpFrame = new JFrame();
-        DeletePopUpFrame.setBounds(300, 45, 300, 200);
+        DeletePopUpFrame.setBounds(300,45,300,200);
         DeletePopUpFrame.setUndecorated(true);
         DeletePopUpFrame.setLocationRelativeTo(null);
         DeletePopUpFrame.add(WarningPanel);
-
 
 
         ImageIcon NoImage = new ImageIcon("pics/no.png");
@@ -331,37 +378,13 @@ public class OrderCrud extends JFrame {
             }
         });
 
-
         YesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    // Only try to parse the order ID when the button is clicked
-                    String orderIdText = DeleteidTextfield.getText().trim();
-                    // Remove the default text if it's still there
-                    if (orderIdText.equals("OrderID: ")) {
-                        JOptionPane.showMessageDialog(Frame,
-                                "Please enter a valid order ID",
-                                "Invalid Input",
-                                JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
+                int OrderId = Integer.parseInt(Order_ID_Textfield2.getText());
 
-                    int DeleteOrderid = Integer.parseInt(orderIdText);
-                    SQLOrder.deleteOrder(DeleteOrderid);
-                    DeletePopUpFrame.setVisible(false);
-
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(Frame,
-                            "Please enter a valid numeric order ID",
-                            "Invalid Input",
-                            JOptionPane.ERROR_MESSAGE);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(Frame,
-                            "Error deleting order: " + ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+                SQLOrder.deleteOrder(OrderId);
+                DeletePopUpFrame.setVisible(false);
             }
         });
 
@@ -369,6 +392,9 @@ public class OrderCrud extends JFrame {
         AddButton.setBackground(Color.pink);
         AddButton.setContentAreaFilled(false);
         AddButton.setBorderPainted(false);
+        UpdateButton.setBackground(Color.pink);
+        UpdateButton.setContentAreaFilled(false);
+        UpdateButton.setBorderPainted(false);
         DeleteButton.setBackground(Color.red);
         DeleteButton.setContentAreaFilled(false);
         DeleteButton.setBorderPainted(false);
@@ -384,8 +410,10 @@ public class OrderCrud extends JFrame {
         TopLeftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         TopLeftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         AddButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        UpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         DeleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         TopLeftPanel.add(AddButton);
+        TopLeftPanel.add(UpdateButton);
         TopLeftPanel.add(DeleteButton);
 
 
@@ -644,4 +672,3 @@ public class OrderCrud extends JFrame {
         orderItemsPanel.repaint();
     }
 }
-
