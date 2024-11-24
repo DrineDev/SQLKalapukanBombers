@@ -82,8 +82,8 @@ public class UserCRUD extends JFrame {
         setupLoggingArea();
 
         // Navigation buttons
-        NavigatorButtonManager navButton = new NavigatorButtonManager();
-        navButton.setBounds(5, 5, 206, 360);
+        NavigatorButtonManager navButton = new NavigatorButtonManager("UserCrud");
+        navButton.setBounds(5, 5, 206, 420);
 
         // Exit button
         setupExitButton();
@@ -246,6 +246,9 @@ public class UserCRUD extends JFrame {
     }
 
     private void setupExitButton() {
+        ExitAndLogoutButtonFrame exit = new ExitAndLogoutButtonFrame(UserCRUD.this);
+        exit.setVisible(false);
+
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button2.png");
         exitButton = new JButton();
         exitButton.setIcon(exitImageIcon);
@@ -253,7 +256,7 @@ public class UserCRUD extends JFrame {
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
         exitButton.setBounds(970, 10, 20, 20);
-        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.addActionListener(e -> exit.setVisible(true));
     }
 
     private JPanel createLogPanel(List<String> items) {

@@ -34,23 +34,23 @@ public class NavigatorButtonEmployee extends JPanel
         popupPanel.add(popupLabel);
 
 
-        ImageIcon orderS = new ImageIcon("pics/order selected.png");
-        ImageIcon orderD = new ImageIcon("pics/order deselected.png");
-        JRadioButton orderButton = new JRadioButton(orderD);
-        orderButton.setBounds(15,13,190,56);
-        orderButton.setFocusPainted(false);
-        orderButton.setBorder(null);
-        orderButton.setSelectedIcon(orderS);
-        orderButton.setDisabledSelectedIcon(orderD);
-        orderButton.setSelected(true);
+        ImageIcon mainMenuS = new ImageIcon("pics/main menu selected.png");
+        ImageIcon mainMenuD = new ImageIcon("pics/main menu deselected.png");
+        JRadioButton mainMenuButton = new JRadioButton(mainMenuD);
+        mainMenuButton.setBounds(15,13,190,56);
+        mainMenuButton.setFocusPainted(false);
+        mainMenuButton.setBorder(null);
+        mainMenuButton.setSelectedIcon(mainMenuS);
+        mainMenuButton.setDisabledSelectedIcon(mainMenuD);
+        mainMenuButton.setSelected(true);
 
-        orderButton.addActionListener(new ActionListener()
+        mainMenuButton.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (orderButton.isSelected())
+                if (mainMenuButton.isSelected())
                 {
-                    orderButton.setSelected(true);
+                    mainMenuButton.setSelected(true);
                 }
                 else
                 {
@@ -87,7 +87,7 @@ public class NavigatorButtonEmployee extends JPanel
         });
 
         ButtonGroup bGroup = new ButtonGroup();
-        bGroup.add(orderButton);
+        bGroup.add(mainMenuButton);
         bGroup.add(inventoryButton);
 
         ImageIcon menuIcon = new ImageIcon("pics/menu button.png");
@@ -110,7 +110,7 @@ public class NavigatorButtonEmployee extends JPanel
 
         //add everything
         this.add(menuButton);
-        popupLabel.add(orderButton);
+        popupLabel.add(mainMenuButton);
         popupLabel.add(inventoryButton);
         this.add(popupPanel);
         this.setVisible(true);

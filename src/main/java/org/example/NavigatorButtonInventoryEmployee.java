@@ -12,7 +12,7 @@ import javax.swing.event.PopupMenuListener;
 
 public class NavigatorButtonInventoryEmployee extends JToggleButton {
     private JPopupMenu popupMenu;
-    private JRadioButton orderButton;
+    private JRadioButton mainMenuButton;
     private JRadioButton inventoryButton;
     private ButtonGroup buttonGroup;
 
@@ -113,13 +113,13 @@ public class NavigatorButtonInventoryEmployee extends JToggleButton {
         });
 
         // Order Button
-        ImageIcon orderDeselected = new ImageIcon("pics/order deselected.png");
-        ImageIcon orderSelected = new ImageIcon("pics/order selected.png");
-        orderButton = createRadioButton(orderDeselected, orderSelected);
-        orderButton.addActionListener(e -> {
-            if (orderButton.isSelected()) {
+        ImageIcon mainMenuDeselected = new ImageIcon("pics/main menu deselected.png");
+        ImageIcon mainMenuSelected = new ImageIcon("pics/main menu selected.png");
+        mainMenuButton = createRadioButton(mainMenuDeselected, mainMenuSelected);
+        mainMenuButton.addActionListener(e -> {
+            if (mainMenuButton.isSelected()) {
                 Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventoryEmployee.this);
-                SwingUtilities.invokeLater(OrderCrud::new);
+                SwingUtilities.invokeLater(MainFrameEmployee::new);
                 window.dispose();
             }
         });
@@ -127,13 +127,13 @@ public class NavigatorButtonInventoryEmployee extends JToggleButton {
         // Group buttons
         buttonGroup = new ButtonGroup();
         buttonGroup.add(inventoryButton);
-        buttonGroup.add(orderButton);
+        buttonGroup.add(mainMenuButton);
 
         // Add buttons to panel with proper spacing
         buttonPanel.add(Box.createVerticalStrut(VERTICAL_PADDING));
         buttonPanel.add(inventoryButton);
         buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
-        buttonPanel.add(orderButton);
+        buttonPanel.add(mainMenuButton);
         buttonPanel.add(Box.createVerticalStrut(VERTICAL_PADDING));
 
         // Add panel to popup menu
@@ -170,8 +170,8 @@ public class NavigatorButtonInventoryEmployee extends JToggleButton {
         return button;
     }
 
-    public void addOrderButtonListener(ActionListener listener) {
-        orderButton.addActionListener(listener);
+    public void addMainMenuButtonListener(ActionListener listener) {
+        mainMenuButton.addActionListener(listener);
     }
     public void addInventoryButtonListener(ActionListener listener) {
         inventoryButton.addActionListener(listener);
