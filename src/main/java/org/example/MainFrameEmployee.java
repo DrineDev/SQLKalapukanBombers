@@ -52,12 +52,23 @@ public class MainFrameEmployee extends JFrame {
     private JPanel pricePanel;
     private JLabel totalLabel;
     private JLabel leftSideCheckout;
+    private JPanel checkoutContentPanel;
     private JButton checkoutButton;
     private NavigatorButtonEmployee navButton;
     private JLabel totalPriceLabel;
     private double totalPrice;
 
     public MainFrameEmployee() {
+        // Frame initialization
+        mainFrame = new JFrame();
+        mainFrame.setSize(1000, 600);
+        mainFrame.setUndecorated(true);
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLocationRelativeTo(null);
+
+        ExitAndLogoutButtonFrame exit = new ExitAndLogoutButtonFrame(mainFrame);
+        exit.setVisible(false);
 
         // Exit button
         ImageIcon exitImageIcon = new ImageIcon("pics/exit button.png");
@@ -66,7 +77,7 @@ public class MainFrameEmployee extends JFrame {
         exitButton.setContentAreaFilled(false);
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
-        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.addActionListener(e -> exit.setVisible(true));
 
         // Frame initialization
         mainFrame = new JFrame("Kalapukan Bombers Foods - Add Order");
@@ -124,24 +135,7 @@ public class MainFrameEmployee extends JFrame {
         leftSideCategory = new JLabel();
 
         // logging text for checkout
-        loggingTextArea = new JPanel();
-        loggingTextArea.setBounds(0, 0, 170, 265);
-        loggingTextArea.setLayout(new BoxLayout(loggingTextArea, BoxLayout.Y_AXIS));
-
-        loggingPriceArea = new JPanel();
-        loggingPriceArea.setBounds(180, 0, 60, 265);
-        loggingPriceArea.setLayout(new BoxLayout(loggingPriceArea, BoxLayout.Y_AXIS));
-
-        loggingScroll = new JScrollPane();
-        loggingScroll.setBounds(10, 10, 235, 265);
-        loggingScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        loggingScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        loggingScroll.getVerticalScrollBar().setUI(new customScrollBarUI());
-        loggingScroll.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
-        loggingScroll.getVerticalScrollBar().setUnitIncrement(20);
-        loggingScroll.setBorder(null);
-        loggingScroll.add(loggingTextArea);
-        loggingScroll.add(loggingPriceArea);
+        setupCheckoutArea();
 
         activeIDs = SQLMeal.getActiveMealIds();
         for(Integer activeId : activeIDs) {
@@ -269,10 +263,13 @@ public class MainFrameEmployee extends JFrame {
 
         totalLabel = new JLabel("Total: ");
         totalLabel.setBounds(10, 290, 90,22);
+        totalLabel.setBackground(Color.white);
         pricePanel = new JPanel();
         pricePanel.setBounds(170,290, 75,22);
+        pricePanel.setBackground(Color.white);
         totalPriceLabel = new JLabel("₱0.00");
         pricePanel.add(totalPriceLabel);
+        pricePanel.setBackground(Color.white);
 
         ImageIcon checkoutArea = new ImageIcon("pics/checkout box.png");
         leftSideCheckout = new JLabel();
@@ -294,97 +291,143 @@ public class MainFrameEmployee extends JFrame {
         checkoutButton.setContentAreaFilled(false);
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(e -> {
+        checkoutButton.addActionListener(e ->
+        {
+            // Check if there are any items in the order
+            if (SharedData.order.getOrderItems().isEmpty()) {
+                showImageFrame("pics/empty order warning.png");
+                return;
+            }
+
             try {
-                // Start by checking if there's enough inventory for all items
+                // Check inventory and collect unavailable items
+                StringBuilder unavailableItems = new StringBuilder();
                 boolean sufficientInventory = true;
+
                 for (OrderItem orderItem : SharedData.order.getOrderItems()) {
                     int availableQuantity = SQLInventory.getQuantityAvailable(orderItem.getMealId());
+                    String mealName = SQLMeal.getName(orderItem.getMealId());
+
                     if (availableQuantity < orderItem.getQuantity()) {
                         sufficientInventory = false;
-                        JOptionPane.showMessageDialog(null,
-                                "Not enough inventory for meal ID " + orderItem.getMealId() +
-                                        "\nAvailable: " + availableQuantity +
-                                        "\nRequested: " + orderItem.getQuantity(),
-                                "Insufficient Inventory",
-                                JOptionPane.ERROR_MESSAGE);
-                        break;
+                        unavailableItems.append("• ").append(mealName)
+                                .append(" (Ordered: ").append(orderItem.getQuantity())
+                                .append(", Available: ").append(availableQuantity)
+                                .append(")\n");
                     }
                 }
 
-                if (sufficientInventory) {
-                    // Add the order to the database
-                    int orderId = SQLOrder.addOrder(
-                            SharedData.order.getOrderDate().toString(),
-                            SharedData.order.getStatus(),
-                            SharedData.order.getTotalAmount()
-                    );
+                if (!sufficientInventory) {
+                    // Create a custom warning panel
+                    JWindow warningWindow = new JWindow();
+                    warningWindow.setSize(400, 300);
+                    warningWindow.setLocationRelativeTo(mainFrame);
 
-                    // Add all order items to the database and update inventory
-                    if (orderId != -1) {
-                        SharedData.order.setOrderId(orderId); // Set the generated order ID
+                    JPanel warningPanel = new JPanel() {
+                        @Override
+                        protected void paintComponent(Graphics g) {
+                            super.paintComponent(g);
+                            // Draw your background image
+                            ImageIcon bgImage = new ImageIcon("pics/inventory warning bg.png");
+                            g.drawImage(bgImage.getImage(), 0, 0, this);
 
-                        boolean allUpdatesSuccessful = true;
+                            // Set up text properties
+                            g.setColor(Color.BLACK);
 
-                        for (OrderItem orderItem : SharedData.order.getOrderItems()) {
-                            // Add order item
-                            SQLOrderItems.addOrderItem(
-                                    orderId,
-                                    orderItem.getMealId(),
-                                    orderItem.getQuantity(),
-                                    orderItem.getSubtotal()
-                            );
-
-                            // Update inventory
-                            boolean saleRecorded = SQLInventory.mealSold(
-                                    orderItem.getMealId(),
-                                    orderItem.getQuantity()
-                            );
-
-                            if (!saleRecorded) {
-                                allUpdatesSuccessful = false;
-                                JOptionPane.showMessageDialog(null,
-                                        "Error updating inventory for meal ID " + orderItem.getMealId(),
-                                        "Inventory Update Error",
-                                        JOptionPane.ERROR_MESSAGE);
-                                break;
+                            // Draw the warning message
+                            String[] lines = unavailableItems.toString().split("\n");
+                            int y = 45; // Starting y position
+                            for (String line : lines) {
+                                g.drawString(line, 30, y);
+                                y += 18; // Line spacing
                             }
                         }
+                    };
 
-                        if (allUpdatesSuccessful) {
-                            // Show confirmation pop-up
-                            showImageFrame("pics/pop up frame.png");
+                    warningPanel.setPreferredSize(new Dimension(400, 300));
+                    warningWindow.setContentPane(warningPanel);
 
-                            // Clear the shared order and reset the UI
-                            SharedData.clearOrder();
-                            loggingTextArea.removeAll();
-                            loggingPriceArea.removeAll();
-                            totalPrice = 0.0;
-                            totalPriceLabel.setText("₱0.00");
+                    // Set rounded corners
+                    Float shape = new RoundRectangle2D.Float(0, 0, 400, 300, 18, 18);
+                    warningWindow.setShape(shape);
 
-                            loggingTextArea.revalidate();
-                            loggingTextArea.repaint();
-                            loggingPriceArea.revalidate();
-                            loggingPriceArea.repaint();
+                    // Show warning with fade effect
+                    warningWindow.setOpacity(0.0f);
+                    warningWindow.setVisible(true);
+
+                    // Fade in
+                    Timer fadeInTimer = new Timer(20, null);
+                    fadeInTimer.addActionListener(new ActionListener() {
+                        float opacity = 0.0f;
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            opacity += 0.05f;
+                            if (opacity >= 1.0f) {
+                                opacity = 1.0f;
+                                fadeInTimer.stop();
+                                // Wait before starting fade out
+                                new Timer(3200, evt -> startFadeOut(warningWindow)).start();
+                            }
+                            warningWindow.setOpacity(opacity);
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(null,
-                                "Error creating order",
-                                "Order Error",
-                                JOptionPane.ERROR_MESSAGE);
+                    });
+                    fadeInTimer.start();
+
+                    // Clear the checkout area
+                    clearCheckoutArea();
+                    return;
+                }
+
+                // Rest of the checkout process
+                int orderId = SQLOrder.addOrder(
+                        SharedData.order.getOrderDate().toString(),
+                        SharedData.order.getStatus(),
+                        SharedData.order.getTotalAmount()
+                );
+
+                if (orderId != -1) {
+                    SharedData.order.setOrderId(orderId);
+                    boolean allUpdatesSuccessful = true;
+
+                    for (OrderItem orderItem : SharedData.order.getOrderItems()) {
+                        // Separate the operations and check them individually
+                        int orderItemResult = SQLOrderItems.addOrderItem(
+                                orderId,
+                                orderItem.getMealId(),
+                                orderItem.getQuantity(),
+                                orderItem.getSubtotal()
+                        );
+
+                        boolean inventoryResult = SQLInventory.mealSold(
+                                orderItem.getMealId(),
+                                orderItem.getQuantity()
+                        );
+
+                        // Check if both operations were successful
+                        if (orderItemResult == -1 || !inventoryResult) {
+                            allUpdatesSuccessful = false;
+                            break;
+                        }
                     }
+
+                    if (allUpdatesSuccessful) {
+                        showImageFrame("pics/pop up frame.png");
+                        clearCheckoutArea();
+                    } else {
+                        showImageFrame("pics/worst error.png");
+                    }
+                } else {
+                    showImageFrame("pics/worst error.png");
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null,
-                        "Error processing order: " + ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                showImageFrame("pics/worst error.png");
                 ex.printStackTrace();
             }
         });
 
         navButton = new NavigatorButtonEmployee();
-        navButton.setBounds(12, 7, 206, 360);
+        navButton.setBounds(12, 7, 206, 420);
         navButton.setBackground(null);
 
         leftSide.add(navButton);
@@ -398,6 +441,78 @@ public class MainFrameEmployee extends JFrame {
         SharedData.order = new Order(time, "Pending");
 
         mainFrame.setVisible(true);
+    }
+    private void clearCheckoutArea() {
+        SharedData.clearOrder();
+        loggingTextArea.removeAll();
+        loggingPriceArea.removeAll();
+        totalPrice = 0.0;
+        totalPriceLabel.setText("₱0.00");
+
+        loggingTextArea.revalidate();
+        loggingTextArea.repaint();
+        loggingPriceArea.revalidate();
+        loggingPriceArea.repaint();
+    }
+
+    private void setupCheckoutArea() {
+        // Create a panel that will contain both the text and price areas
+        checkoutContentPanel = new JPanel();
+        checkoutContentPanel.setLayout(new BorderLayout());
+        checkoutContentPanel.setBackground(Color.WHITE);
+
+        // Setup logging text area
+        loggingTextArea = new JPanel();
+        loggingTextArea.setLayout(new BoxLayout(loggingTextArea, BoxLayout.Y_AXIS));
+        loggingTextArea.setBackground(Color.WHITE);
+
+        // Setup logging price area
+        loggingPriceArea = new JPanel();
+        loggingPriceArea.setLayout(new BoxLayout(loggingPriceArea, BoxLayout.Y_AXIS));
+        loggingPriceArea.setBackground(Color.WHITE);
+
+        // Create a panel to hold both logging areas side by side
+        JPanel loggingContainer = new JPanel();
+        loggingContainer.setLayout(new BorderLayout());
+        loggingContainer.setBackground(Color.WHITE);
+        loggingContainer.add(loggingTextArea, BorderLayout.CENTER);
+        loggingContainer.add(loggingPriceArea, BorderLayout.EAST);
+
+        // Setup the scroll pane with proper settings
+        loggingScroll = new JScrollPane(loggingContainer);
+        loggingScroll.setBounds(10, 10, 235, 265);
+        loggingScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        loggingScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        loggingScroll.getVerticalScrollBar().setUI(new customScrollBarUI());
+        loggingScroll.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
+        loggingScroll.getVerticalScrollBar().setUnitIncrement(20);
+        loggingScroll.setBorder(null);
+        loggingScroll.setBackground(Color.WHITE);
+        loggingScroll.getViewport().setBackground(Color.WHITE);
+
+        // Setup total price area
+        JPanel totalContainer = new JPanel(new BorderLayout());
+        totalContainer.setBackground(Color.WHITE);
+        totalContainer.setBorder(new EmptyBorder(5, 10, 5, 10));
+
+        totalLabel = new JLabel("Total: ");
+        pricePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        pricePanel.setBackground(Color.WHITE);
+        totalPriceLabel = new JLabel("₱0.00");
+        pricePanel.add(totalPriceLabel);
+
+        totalContainer.add(totalLabel, BorderLayout.WEST);
+        totalContainer.add(pricePanel, BorderLayout.EAST);
+
+        // Add components to the checkout content panel
+        checkoutContentPanel.add(loggingScroll, BorderLayout.CENTER);
+        checkoutContentPanel.add(totalContainer, BorderLayout.SOUTH);
+
+        // Setup the checkout area
+        leftSideCheckout = new JLabel(new ImageIcon("pics/checkout box.png"));
+        leftSideCheckout.setLayout(new BorderLayout());
+        leftSideCheckout.setBounds(35, 195, 250, 320);
+        leftSideCheckout.add(checkoutContentPanel, BorderLayout.CENTER);
     }
 
     private void updateFoodItemsPanel() {
