@@ -17,13 +17,14 @@ public class NavigatorButtonInventory extends JToggleButton {
     private JRadioButton mainMenuButton;
     private JRadioButton promotionsButton;
     private JRadioButton salesButton;
+    private JRadioButton usersButton;
     private ButtonGroup buttonGroup;
 
     // Constants for sizing
     private static final int BUTTON_WIDTH = 190;
     private static final int BUTTON_HEIGHT = 56;
     private static final int VERTICAL_SPACING = 2;
-    private static final int VERTICAL_PADDING = 15; // Renamed from PADDING to clarify it's only for vertical
+    private static final int VERTICAL_PADDING = 15;
 
     public NavigatorButtonInventory() {
         ImageIcon menuIcon = new ImageIcon("pics/menu button.png");
@@ -79,8 +80,8 @@ public class NavigatorButtonInventory extends JToggleButton {
         popupMenu.setOpaque(false);
         popupMenu.setBorder(null);
 
-        // Calculate total height for 5 buttons
-        int totalHeight = (BUTTON_HEIGHT * 5) + (VERTICAL_SPACING * 4) + (VERTICAL_PADDING * 2);
+        // Calculate total height for 6 buttons
+        int totalHeight = (BUTTON_HEIGHT * 6) + (VERTICAL_SPACING * 5) + (VERTICAL_PADDING * 2);
 
         // Create panel with fixed size - removed horizontal padding
         JPanel buttonPanel = new JPanel() {
@@ -139,6 +140,17 @@ public class NavigatorButtonInventory extends JToggleButton {
             }
         });
 
+        ImageIcon userDeselected = new ImageIcon("pics/user deselected.png");
+        ImageIcon userSelected = new ImageIcon("pics/user selected.png");
+        usersButton = createRadioButton(userDeselected, userSelected);
+        usersButton.addActionListener(e -> {
+            if (usersButton.isSelected()) {
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                SwingUtilities.invokeLater(UserCRUD::new);
+                window.dispose();
+            }
+        });
+
         // Sales Button
         ImageIcon salesDeselected = new ImageIcon("pics/sales deselected.png");
         ImageIcon salesSelected = new ImageIcon("pics/sales selected.png");
@@ -154,6 +166,7 @@ public class NavigatorButtonInventory extends JToggleButton {
         buttonGroup.add(mainMenuButton);
         buttonGroup.add(inventoryButton);
         buttonGroup.add(orderButton);
+        buttonGroup.add(usersButton);
         buttonGroup.add(salesButton);
         buttonGroup.add(promotionsButton);
 
@@ -164,6 +177,8 @@ public class NavigatorButtonInventory extends JToggleButton {
         buttonPanel.add(inventoryButton);
         buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
         buttonPanel.add(orderButton);
+        buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
+        buttonPanel.add(usersButton);
         buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
         buttonPanel.add(salesButton);
         buttonPanel.add(Box.createVerticalStrut(VERTICAL_SPACING));
@@ -207,7 +222,7 @@ public class NavigatorButtonInventory extends JToggleButton {
     public void addOrderButtonListener(ActionListener listener) {
         orderButton.addActionListener(listener);
     }
-
+    public void addUsersButtonListener(ActionListener listener) {usersButton.addActionListener(listener);}
     public void addInventoryButtonListener(ActionListener listener) {
         inventoryButton.addActionListener(listener);
     }
