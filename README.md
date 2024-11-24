@@ -4,10 +4,6 @@ Final Project for Software Engineering Elective 1 - Java
 
 # TO DO
 
-AddMeal.java
-  1. dapat makita pud kung naa nay image na insert sa insert image button (maybe sabutan pa)
-       Ako na na addan og JOptionPane if na insertan na og image?
-
 OrderCRUD.java
   1. GUI Fix
 
