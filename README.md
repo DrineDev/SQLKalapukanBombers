@@ -15,6 +15,7 @@ InventoryCrud.java
 AddMeal.java
   1. JPopup for when meal is added
   2. dapat makita pud kung naa nay image na insert sa insert image button (maybe sabutan pa)
+       Ako na na addan og JOptionPane if na insertan na og image?
 
 EditMeal
   1. adjust input verifiers
