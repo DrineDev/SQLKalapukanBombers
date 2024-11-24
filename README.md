@@ -4,10 +4,6 @@ Final Project for Software Engineering Elective 1 - Java
 
 # TO DO
 
-InventoryCrud.java
-  1. gui fix make search bar bigger
-  2. dapat ba naay
-
 InventoryCrud.java && InventoryCrudEmployee.java
   1. SORTING...
 
