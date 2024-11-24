@@ -415,13 +415,13 @@ public class MainFrameManager extends JFrame {
                         showImageFrame("pics/pop up frame.png");
                         clearCheckoutArea();
                     } else {
-                        showImageFrame("pics/error.png");
+                        showImageFrame("pics/worst error.png");
                     }
                 } else {
-                    showImageFrame("pics/error.png");
+                    showImageFrame("pics/worst error.png");
                 }
             } catch (Exception ex) {
-                showImageFrame("pics/error.png");
+                showImageFrame("pics/worst error.png");
                 ex.printStackTrace();
             }
         });
