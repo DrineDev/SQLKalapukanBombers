@@ -9,25 +9,29 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
+public class NavigatorButtonManager extends JPanel {
+    JToggleButton mainButton;
+    JToggleButton inventoryButton;
+    JToggleButton orderButton;
+    JToggleButton userButton;
+    JToggleButton salesButton;
+    JToggleButton promotionsButton;
+    private boolean isProcessingChange = false;
 
-public class NavigatorButtonManager extends JPanel
-{
-
-    public NavigatorButtonManager()
-    {
-        this.setPreferredSize(new Dimension(200,350));
+    NavigatorButtonManager(String whereAmI) {
+        this.setPreferredSize(new Dimension(200, 420));
         this.setLayout(null);
-        //this.setBackground(null);
         this.setFocusable(true);
         this.setOpaque(false);
 
-
         JPanel popupPanel = new JPanel();
-        popupPanel.setBounds(0,48, 200,500);
+        popupPanel.setBounds(0, 48, 200, 500);
         popupPanel.setOpaque(false);
         popupPanel.setVisible(false);
 
@@ -39,168 +43,127 @@ public class NavigatorButtonManager extends JPanel
         popupLabel.setOpaque(false);
         popupPanel.add(popupLabel);
 
-
+        // Main Button
         ImageIcon mainS = new ImageIcon("pics/main menu selected.png");
         ImageIcon mainD = new ImageIcon("pics/main menu deselected.png");
-        JRadioButton mainButton = new JRadioButton(mainD);
-        mainButton.setBounds(15,13,190,56);
-        mainButton.setFocusPainted(false);
-        mainButton.setBorder(null);
-        mainButton.setSelectedIcon(mainS);
-        mainButton.setDisabledSelectedIcon(mainD);
-        mainButton.setSelected(true);
+        mainButton = new JToggleButton(mainD);
+        mainButton.setBounds(15, 13, 190, 56);
+        setupButtonStyle(mainButton, mainS, mainD);
+        mainButton.addActionListener(e -> handleButtonClick("MainMenu", MainFrameManager::new));
 
-        // orderButton.addActionListener(new ActionListener()
-        // {
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         if (orderButton.isSelected())
-        //         {
-        //             orderButton.setSelected(true);
-        //         }
-        //         else
-        //         {
-        //             //change to order crud
-        //         }
-        //     }
-        // });
-
+        // Inventory Button
         ImageIcon inventoryS = new ImageIcon("pics/inventory selected.png");
         ImageIcon inventoryD = new ImageIcon("pics/inventory deselected.png");
-        JRadioButton inventoryButton = new JRadioButton(inventoryD);
-        inventoryButton.setBounds(15,71, 190,56);
-        inventoryButton.setFocusPainted(false);
-        inventoryButton.setBorder(null);
-        inventoryButton.setSelectedIcon(inventoryS);
-        inventoryButton.setDisabledSelectedIcon(inventoryD);
-        inventoryButton.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if (inventoryButton.isSelected())
-                {
-                    Window window = SwingUtilities.getWindowAncestor(NavigatorButtonManager.this);
-                    SwingUtilities.invokeLater(InventoryCRUD::new);
-                    window.dispose();
-                }
-                else
-                {
+        inventoryButton = new JToggleButton(inventoryD);
+        inventoryButton.setBounds(15, 71, 190, 56);
+        setupButtonStyle(inventoryButton, inventoryS, inventoryD);
+        inventoryButton.addActionListener(e -> handleButtonClick("InventoryCRUD", InventoryCRUD::new));
 
-                    //change to inventory crud
-                }
-            }
-        });
-
+        // Order Button
         ImageIcon orderS = new ImageIcon("pics/order selected.png");
         ImageIcon orderD = new ImageIcon("pics/order deselected.png");
-        JRadioButton orderButton = new JRadioButton(orderD);
+        orderButton = new JToggleButton(orderD);
         orderButton.setBounds(15, 129, 190, 56);
-        orderButton.setFocusPainted(false);
-        orderButton.setBorder(null);
-        orderButton.setSelectedIcon(orderS);
-        orderButton.setDisabledSelectedIcon(orderD);
-        orderButton.addActionListener(new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(orderButton.isSelected())
-                {
-                    Window window = SwingUtilities.getWindowAncestor(NavigatorButtonManager.this);
-                    SwingUtilities.invokeLater(OrderCrud::new);
-                    window.dispose();
-                }
-                else
-                {
-                    //do something
-                }
-            }
-        });
+        setupButtonStyle(orderButton, orderS, orderD);
+        orderButton.addActionListener(e -> handleButtonClick("OrderCRUD", () -> {
+            // Uncomment when OrderCRUD is ready
+            // new OrderCRUD();
+        }));
 
+        // User Button
+        ImageIcon userS = new ImageIcon("pics/user selected.png");
+        ImageIcon userD = new ImageIcon("pics/user deselected.png");
+        userButton = new JToggleButton(userD);
+        userButton.setBounds(15, 187, 190, 56);
+        setupButtonStyle(userButton, userS, userD);
+        userButton.addActionListener(e -> handleButtonClick("UserCrud", UserCRUD::new));
+
+        // Sales Button
         ImageIcon salesS = new ImageIcon("pics/sales selected.png");
         ImageIcon salesD = new ImageIcon("pics/sales deselected.png");
-        JRadioButton salesButton = new JRadioButton(salesD);
-        salesButton.setBounds(15,187,190,56);
-        salesButton.setFocusPainted(false);
-        salesButton.setBorder(null);
-        salesButton.setSelectedIcon(salesS);
-        salesButton.setDisabledSelectedIcon(salesD);
-        salesButton.addActionListener(new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(salesButton.isSelected())
-                {
-                    // DO THIS WHEN SALES CRUD IS DONE!!!!!!!!!!
+        salesButton = new JToggleButton(salesD);
+        salesButton.setBounds(15, 245, 190, 56);
+        setupButtonStyle(salesButton, salesS, salesD);
+        salesButton.addActionListener(e -> handleButtonClick("SalesCRUD", () -> {
+            // Uncomment when SalesCRUD is ready
+            // new SalesCRUD();
+        }));
 
-                    // Window window = SwingUtilities.getWindowAncestor(NavigatorButtonManager.this);
-                    // SwingUtilities.invokeLater(OrderCrud::new);
-                    // window.dispose();
-                }
-                else
-                {
-                    //do something
-                }
-            }
-        });
-
+        // Promotions Button
         ImageIcon promotionsS = new ImageIcon("pics/promotions selected.png");
         ImageIcon promotionsD = new ImageIcon("pics/promotions deselected.png");
-        JRadioButton promotionsButton = new JRadioButton(promotionsD);
-        promotionsButton.setBounds(15,245,190,56);
-        promotionsButton.setFocusPainted(false);
-        promotionsButton.setBorder(null);
-        promotionsButton.setSelectedIcon(promotionsS);
-        promotionsButton.setDisabledSelectedIcon(promotionsD);
-        promotionsButton.addActionListener(new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if (promotionsButton.isSelected())
-                {
-                    // ALSO DO THIS AFTER PROMOTIONS CRUD IS DONE NIGGA!!!!!!!
+        promotionsButton = new JToggleButton(promotionsD);
+        promotionsButton.setBounds(15, 303, 190, 56);
+        setupButtonStyle(promotionsButton, promotionsS, promotionsD);
+        promotionsButton.addActionListener(e -> handleButtonClick("PromotionsCRUD", () -> {
+            // Uncomment when PromotionsCRUD is ready
+            // new PromotionsCRUD();
+        }));
 
-                    // Window window = SwingUtilities.getWindowAncestor(NavigatorButtonManager.this);
-                    // SwingUtilities.invokeLater(OrderCrud::new);
-                    // window.dispose();
-                }
-                else
-                {
-                    //do something napud
-                }
-            }
-        });
-
+        // Menu Button
         ImageIcon menuIcon = new ImageIcon("pics/menu button.png");
         JCheckBox menuButton = new JCheckBox(menuIcon);
-        menuButton.setBounds(0, 0, 48,48);
+        menuButton.setBounds(0, 0, 48, 48);
         menuButton.setBorder(null);
         menuButton.setFocusPainted(false);
         menuButton.setContentAreaFilled(false);
-        menuButton.addActionListener(new ActionListener()
-        {
+        menuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (menuButton.isSelected()) {
-                    popupPanel.setVisible(true);
-                } else {
-                    popupPanel.setVisible(false);
-                }
+                popupPanel.setVisible(menuButton.isSelected());
             }
         });
 
-        //add everything
+        // Set initial button states
+        setInitialButtonState(whereAmI);
+
+        // Add components
         this.add(menuButton);
         popupLabel.add(mainButton);
         popupLabel.add(inventoryButton);
         popupLabel.add(orderButton);
+        popupLabel.add(userButton);
         popupLabel.add(salesButton);
         popupLabel.add(promotionsButton);
         this.add(popupPanel);
         this.setVisible(true);
     }
 
+    private void setInitialButtonState(String whereAmI) {
+        mainButton.setSelected(whereAmI.equals("MainMenu"));
+        inventoryButton.setSelected(whereAmI.equals("InventoryCRUD"));
+        orderButton.setSelected(whereAmI.equals("OrderCRUD"));
+        userButton.setSelected(whereAmI.equals("UserCrud"));
+        salesButton.setSelected(whereAmI.equals("SalesCRUD"));
+        promotionsButton.setSelected(whereAmI.equals("PromotionsCRUD"));
+    }
+
+    private void setupButtonStyle(JToggleButton button, ImageIcon selectedIcon, ImageIcon deselectedIcon) {
+        button.setFocusPainted(false);
+        button.setBorder(null);
+        button.setContentAreaFilled(false);
+        button.setSelectedIcon(selectedIcon);
+        button.setDisabledSelectedIcon(deselectedIcon);
+    }
+
+    private void handleButtonClick(String targetLocation, Runnable frameConstructor) {
+        if (isProcessingChange) return;
+        isProcessingChange = true;
+
+        Window currentWindow = SwingUtilities.getWindowAncestor(this);
+        if (currentWindow != null) {
+            // Create new frame first
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    frameConstructor.run();
+                    // Dispose the old window after the new one is created
+                    currentWindow.dispose();
+                } finally {
+                    isProcessingChange = false;
+                }
+            });
+        } else {
+            isProcessingChange = false;
+        }
+    }
 }
