@@ -1,10 +1,7 @@
 package org.example;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -246,12 +243,32 @@ public class InventoryCRUD {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         searchPanel.setBackground(PRIMARY_COLOR);
 
-        searchField = new JTextField();
+        searchField = new JTextField("Search");
         searchField.setPreferredSize(SEARCH_FIELD_SIZE);
         searchField.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(PRIMARY_COLOR, 1),
                 BorderFactory.createEmptyBorder(2, 5, 2, 5)
         ));
+
+        searchField.setForeground(Color.GRAY); // Make placeholder text gray
+        searchField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (searchField.getText().equals("Search")) {
+                    searchField.setText("");
+                    searchField.setForeground(Color.WHITE); // Change text color to white when typing
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (searchField.getText().isEmpty()) {
+                    searchField.setText("Search");
+                    searchField.setForeground(Color.GRAY);
+                }
+            }
+        });
+
 
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
