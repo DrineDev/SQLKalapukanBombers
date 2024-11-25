@@ -7,6 +7,8 @@ import org.example.SQLQueries.SQLOrderItems;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
@@ -15,7 +17,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderCrud extends JFrame {
     private final JFrame Frame;
@@ -24,6 +28,7 @@ public class OrderCrud extends JFrame {
     private JPopupMenu popupMenu;
     private JRadioButton mainMenuButton, inventoryButton, orderButton, salesButton, promotionsButton;
     private ButtonGroup buttonGroup;
+    private JPanel orderItemsPanel;
 
     private static final int BUTTON_HEIGHT = 50;
     private static final int BUTTON_WIDTH = 150;
@@ -53,11 +58,10 @@ public class OrderCrud extends JFrame {
         Frame.setLocationRelativeTo(null);
         Frame.getContentPane().setBackground(Color.PINK);
 
-        JPanel RightSidePanel = new JPanel();
-        RightSidePanel.setLayout(null);
-        RightSidePanel.setBounds(302, 45, 660, 520);
-        RightSidePanel.setBackground(Color.WHITE);
-        RightSidePanel.setBorder(new LineBorder(Color.GRAY,2,true));
+        NavigatorButtonOrder navButton = new NavigatorButtonOrder();
+
+        navButton.setBounds(10,10,48,48);
+
 
 
         ImageIcon OrderImage = new ImageIcon("pics/Orders.png");
@@ -78,8 +82,46 @@ public class OrderCrud extends JFrame {
         RightSideLineLabel.setBounds(24,35,613,3);
         Order_IDLabel.setBounds(46,45,67,14);
         Order_DateLabel.setBounds(232,45,84,14);
-        StatusLabel.setBounds(457, 45,54,14);
+        StatusLabel.setBounds(427, 45,54,14);
         Total_AmountLabel.setBounds(538,45,97,14);
+
+
+
+        JScrollPane orderItemsScrollPane = getjPanel();
+
+
+        JPanel OrderPanel = new JPanel();
+        OrderPanel.setLayout(new BoxLayout(OrderPanel,BoxLayout.Y_AXIS));
+        OrderPanel.setBounds(24,72,80,419);
+        OrderPanel.setBackground(Color.WHITE);
+
+        JPanel Order_Date_Panel = new JPanel();
+        Order_Date_Panel.setLayout(new BoxLayout(Order_Date_Panel,BoxLayout.Y_AXIS));
+        Order_Date_Panel.setBounds(135,72,250,419);
+        Order_Date_Panel.setBackground(Color.WHITE);
+
+
+        JPanel Status_Panel = new JPanel();
+        Status_Panel.setLayout(new BoxLayout(Status_Panel,BoxLayout.Y_AXIS));
+        Status_Panel.setBounds(400,72,60,419);
+        Status_Panel.setBorder(null);
+        Status_Panel.setBackground(Color.WHITE);
+
+
+        JPanel Total_Amount_Panel = new JPanel();
+        Total_Amount_Panel.setLayout(new BoxLayout(Total_Amount_Panel,BoxLayout.Y_AXIS));
+        Total_Amount_Panel.setBounds(527, 72, 109,419);
+        Total_Amount_Panel.setBorder(null);
+        Total_Amount_Panel.setBackground(Color.WHITE);
+
+        JPanel RightSidePanel = new JPanel();
+        RightSidePanel.setLayout(null);  // Changed to null layout for absolute positioning
+        RightSidePanel.setBackground(Color.WHITE);
+        RightSidePanel.setBounds(302, 45, 660, 520);  // Match scroll pane width
+        RightSidePanel.add(OrderPanel);
+        RightSidePanel.add(Order_Date_Panel);
+        RightSidePanel.add(Status_Panel);
+        RightSidePanel.add(Total_Amount_Panel);
 
         RightSidePanel.add(OrderLabel);
         RightSidePanel.add(RightSideLineLabel);
@@ -88,75 +130,63 @@ public class OrderCrud extends JFrame {
         RightSidePanel.add(StatusLabel);
         RightSidePanel.add(Total_AmountLabel);
 
-        JScrollPane RightScrollPane = new JScrollPane(RightSidePanel);
-        RightScrollPane.setBounds(302, 45,660,520);
-        RightScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        RightScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-
-        JPanel OrderItemsPanel = getjPanel();
-
-
-        JPanel OrderPanel = new JPanel();
-        OrderPanel.setLayout(new BoxLayout(OrderPanel,BoxLayout.Y_AXIS));
-        OrderPanel.setBounds(24,72,113,419);
-        OrderPanel.setBorder(new LineBorder(Color.GRAY,2,false));
-
-        JPanel Order_Date_Panel = new JPanel();
-        Order_Date_Panel.setLayout(new BoxLayout(Order_Date_Panel,BoxLayout.Y_AXIS));
-        Order_Date_Panel.setBounds(107,72,310,419);
-        Order_Date_Panel.setBorder(new LineBorder(Color.GRAY,2,false));
-
-        JPanel Status_Panel = new JPanel();
-        Status_Panel.setLayout(new BoxLayout(Status_Panel,BoxLayout.Y_AXIS));
-        Status_Panel.setBounds(408,72,130,419);
-        Status_Panel.setBorder(new LineBorder(Color.GRAY,2,false));
-
-        JPanel Total_Amount_Panel = new JPanel();
-        Total_Amount_Panel.setLayout(new BoxLayout(Total_Amount_Panel,BoxLayout.Y_AXIS));
-        Total_Amount_Panel.setBounds(527, 72, 109,419);
-        Total_Amount_Panel.setBorder(new LineBorder(Color.GRAY,2,false));
-
-
         List<Order> orders = SQLOrder.getAllOrders();
+        int maxHeight = 419;
 
         for (Order order : orders) {
             // Order ID Panel
             JButton orderIDButton = new JButton(String.valueOf(order.getOrderId()));
+            orderIDButton.setBackground(Color.WHITE);
+            orderIDButton.setBorderPainted(false);
+            orderIDButton.setContentAreaFilled(false);
+            orderIDButton.setRequestFocusEnabled(false);
+            orderIDButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            orderIDButton.setMaximumSize(new Dimension(70, 20));
+            orderIDButton.setPreferredSize(new Dimension(70, 20));
             OrderPanel.add(orderIDButton);
+            RightSidePanel.add(OrderPanel);
             List<OrderItem> items = SQLOrderItems.getOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())));
 
             orderIDButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Frame.add(OrderItemsPanel);
-                    displayOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())), OrderItemsPanel);
+                    Frame.add(orderItemsScrollPane);
+                    displayOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())), orderItemsPanel, orderItemsScrollPane);
                 }
             });
 
             // Order Date Panel
             JLabel orderDateLabel = new JLabel(order.getOrderDate());
+            orderDateLabel.setMaximumSize(new Dimension(250, 20));
+            orderDateLabel.setPreferredSize(new Dimension(250, 20));
             Order_Date_Panel.add(orderDateLabel);
+            Order_Date_Panel.setBorder(null);
+            Order_Date_Panel.setBackground(Color.WHITE);
+            RightSidePanel.add(Order_Date_Panel);
+
 
             // Status Panel
             JLabel statusLabel = new JLabel(order.getStatus());
+            statusLabel.setMaximumSize(new Dimension(60, 20));
+            statusLabel.setPreferredSize(new Dimension(60, 20));
+            statusLabel.setFont(new Font("Inter", Font.BOLD, 14));
             Status_Panel.add(statusLabel);
+            RightSidePanel.add(Status_Panel);
+
 
             // Total Amount Panel
             JLabel totalAmountLabel = new JLabel(String.format("%.2f", order.getTotalAmount()));
+            totalAmountLabel.setMaximumSize(new Dimension(109, 20));
+            totalAmountLabel.setPreferredSize(new Dimension(109, 20));
+            totalAmountLabel.setFont(new Font("Inter", Font.BOLD, 14));
+            totalAmountLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             Total_Amount_Panel.add(totalAmountLabel);
+            RightSidePanel.add(Total_Amount_Panel);
+
         }
 
-        Container PanelContainer = Frame.getContentPane();
-        PanelContainer.setLayout(null);
-        RightSidePanel.add(OrderPanel);
-        RightSidePanel.add(Order_Date_Panel);
-        RightSidePanel.add(Status_Panel);
-        RightSidePanel.add(Total_Amount_Panel);
 
-
-
-
+        RightSidePanel.setPreferredSize(new Dimension(660, maxHeight + 100));
 
         //Add Order button for addorderpanel
         ImageIcon AddButtonImage = new ImageIcon("pics/Add order.png");
@@ -407,8 +437,6 @@ public class OrderCrud extends JFrame {
         TopLeftPanel.setLayout(new BoxLayout(TopLeftPanel, BoxLayout.Y_AXIS));
         TopLeftPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
         TopLeftPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Adds vertical spacing
-        TopLeftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        TopLeftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         AddButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         UpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         DeleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -428,6 +456,13 @@ public class OrderCrud extends JFrame {
 
         // Create and initialize the MenuButton
         createPopupMenu();
+        mainMenuButton.addActionListener(e -> {
+            if (mainMenuButton.isSelected()) {
+                Window window = SwingUtilities.getWindowAncestor(OrderCrud.this);
+                SwingUtilities.invokeLater(MainFrameManager::new);
+                window.dispose();
+            }
+        });
 
 // Add a component (e.g., a button or the frame itself) to trigger the popup menu
         Frame.addMouseListener(new MouseAdapter() {
@@ -448,40 +483,22 @@ public class OrderCrud extends JFrame {
             }
         });
 
-        ImageIcon navButtonIcon = new ImageIcon("pics/menu.png");
-        JButton navButton = new JButton (navButtonIcon);
-
-        navButton.setBounds(10,10,50,40);
-        navButton.setBorderPainted(false);
-        navButton.setContentAreaFilled(false);
-        navButton.setFocusPainted(false);
-
-        navButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                popupMenu.show(navButton, 0, navButton.getHeight()); // Display popup menu below the button
-            }
-        });
 
 
-
+        Frame.add(navButton);
         Frame.add(ConfirmationPanel);
         Frame.add(exitButton);
         Frame.add(RightSideBottom);
         Frame.add(TopLeftPanel);
-        Frame.add(RightSidePanel);
         Frame.add(UpdateOrderPanel);
-        Frame.add(RightScrollPane);
-        Frame.add(navButton);
+        Frame.add(RightSidePanel);
         Frame.setVisible(true);
     }
 
-    private static JPanel getjPanel() {
-        JPanel OrderItemsPanel = new JPanel();
-        OrderItemsPanel.setLayout(null);
-        OrderItemsPanel.setBackground(Color.WHITE);
-        OrderItemsPanel.setBounds(33, 267, 240, 290);
-        OrderItemsPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY,2,true));
+    private JScrollPane getjPanel() {
+        orderItemsPanel = new JPanel();
+        orderItemsPanel.setLayout(null);
+        orderItemsPanel.setBackground(Color.WHITE);
 
         JLabel mealIdHeader = new JLabel("Meal ID");
         JLabel quantityHeader = new JLabel("Quantity");
@@ -493,11 +510,20 @@ public class OrderCrud extends JFrame {
         priceHeader.setBounds(130, 10, 50, 20);
         subtotalHeader.setBounds(180, 10, 50, 20);
 
-        OrderItemsPanel.add(mealIdHeader);
-        OrderItemsPanel.add(quantityHeader);
-        OrderItemsPanel.add(priceHeader);
-        OrderItemsPanel.add(subtotalHeader);
-        return OrderItemsPanel;
+        orderItemsPanel.add(mealIdHeader);
+        orderItemsPanel.add(quantityHeader);
+        orderItemsPanel.add(priceHeader);
+        orderItemsPanel.add(subtotalHeader);
+
+        JScrollPane scrollPane = new JScrollPane(orderItemsPanel);
+        scrollPane.setBounds(33, 267, 240, 290); // Adjust bounds for the scroll pane
+        scrollPane.setBackground(Color.WHITE);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        scrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        return scrollPane;
     }
 
     private void createPopupMenu() {
@@ -539,13 +565,7 @@ public class OrderCrud extends JFrame {
         ImageIcon mainMenuDeselected = new ImageIcon("pics/main menu deselected.png");
         ImageIcon mainMenuSelected = new ImageIcon("pics/main menu selected.png");
         mainMenuButton = createRadioButton(mainMenuDeselected, mainMenuSelected);
-        mainMenuButton.addActionListener(e -> {
-            if (mainMenuButton.isSelected()) {
-                Window window = SwingUtilities.getWindowAncestor(OrderCrud.this);
-                SwingUtilities.invokeLater(MainFrameManager::new);
-                window.dispose();
-            }
-        });
+
 
         // Inventory Button
         ImageIcon inventoryDeselected = new ImageIcon("pics/inventory deselected.png");
@@ -637,7 +657,7 @@ public class OrderCrud extends JFrame {
         return button;
     }
 
-    private void displayOrderItems(int orderId, JPanel orderItemsPanel) {
+    private void displayOrderItems(int orderId, JPanel orderItemsPanel, JScrollPane scrollPane) {
         // Clear existing components except headers
         Component[] components = orderItemsPanel.getComponents();
         for (int i = 4; i < components.length; i++) {
@@ -647,18 +667,52 @@ public class OrderCrud extends JFrame {
         // Get order items
         List<OrderItem> items = SQLOrderItems.getOrderItems(orderId);
 
+        // Store updated quantities
+        Map<Integer, Integer> updatedQuantities = new HashMap<>();
+
         // Display items
         int yOffset = 40;
         for (OrderItem item : items) {
             JLabel mealId = new JLabel(String.valueOf(item.getMealId()));
-            JLabel quantity = new JLabel(String.valueOf(item.getQuantity()));
+            JTextField quantity = new JTextField(String.valueOf(item.getQuantity()));
             JLabel price = new JLabel(String.format("%.2f", item.getUnitPrice()));
             JLabel subtotal = new JLabel(String.format("%.2f", item.getSubtotal()));
+
+            // Track initial quantity
+            updatedQuantities.put(item.getMealId(), item.getQuantity());
 
             mealId.setBounds(10, yOffset, 50, 20);
             quantity.setBounds(70, yOffset, 50, 20);
             price.setBounds(130, yOffset, 50, 20);
             subtotal.setBounds(180, yOffset, 50, 20);
+
+            // Add a DocumentListener to track changes in real-time
+            quantity.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    updateQuantity();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    updateQuantity();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    updateQuantity();
+                }
+
+                private void updateQuantity() {
+                    try {
+                        int newQuantity = Integer.parseInt(quantity.getText());
+                        updatedQuantities.put(item.getMealId(), newQuantity);
+                    } catch (NumberFormatException ex) {
+                        // Handle invalid input gracefully
+                        updatedQuantities.put(item.getMealId(), 0);
+                    }
+                }
+            });
 
             orderItemsPanel.add(mealId);
             orderItemsPanel.add(quantity);
@@ -668,7 +722,34 @@ public class OrderCrud extends JFrame {
             yOffset += 25;
         }
 
-        orderItemsPanel.revalidate();
-        orderItemsPanel.repaint();
+        // Add the single Confirm button at the bottom
+        JButton confirmEdit = new JButton("Confirm");
+        confirmEdit.setBounds(10, yOffset + 10, 100, 30);
+        confirmEdit.setBackground(Color.PINK);
+        confirmEdit.setForeground(Color.WHITE);
+
+        confirmEdit.addActionListener(e -> {
+            for (OrderItem item : items) {
+                int mealId = item.getMealId();
+                int newQuantity = updatedQuantities.getOrDefault(mealId, item.getQuantity());
+
+                if (newQuantity == 0) {
+                    // Remove item from the database if quantity is 0
+                    SQLOrderItems.deleteOrderItem(item.getOrderItemId());
+                } else if (newQuantity != item.getQuantity()) {
+                    // Update the database for changed quantities
+                    SQLOrderItems.updateMealQuantity(orderId, mealId, newQuantity);
+                }
+            }
+            // Refresh the panel after updating
+            displayOrderItems(orderId, orderItemsPanel, scrollPane);
+        });
+
+        orderItemsPanel.add(confirmEdit);
+
+        // Adjust panel size for scroll
+        orderItemsPanel.setPreferredSize(new Dimension(orderItemsPanel.getWidth(), yOffset + 60));
+        scrollPane.revalidate();
+        scrollPane.repaint();
     }
 }
