@@ -6,9 +6,9 @@ OrderCRUD.java
   
 GUI Fix
 
-NavigationButtonManager.java
-  
-ang uban cruds kay dili mo load or wrong nga crud ang i load
-NavigationButtonInventory.java
-  
-dapat walay order nga directory, instead make it main menu tapos need sad siya mo adtos main menu
+TO DO DOCUMENTATIONS
+1. USER MANUAL
+2. USER STORIES
+3. JAR FILE
+4. DEMO VID
+5. SOURCE CODE
