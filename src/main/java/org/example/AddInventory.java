@@ -503,7 +503,8 @@ public class AddInventory extends JLayeredPane {
                         selectedImage[0],
                         selectedCategory,
                         "",
-                        spicyCheckBox.isSelected()
+                        spicyCheckBox.isSelected(),
+                        price
                 );
 
                 SharedData.addUpdatedMeal(updatedMeal);
@@ -511,7 +512,7 @@ public class AddInventory extends JLayeredPane {
                 // Update stock quantity in the inventory table
                 this.quantityAvailable = Integer.parseInt(stocksField.getText().trim());
 
-                SQLInventory.editInventory(mealID, (int) price, this.quantityAvailable, SQLInventory.getQuantitySold(mealID));
+
 
                 // Add log message
                 JLabel logMessage = new JLabel("Updated meal: " + nameField.getText());

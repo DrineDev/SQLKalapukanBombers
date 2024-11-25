@@ -474,6 +474,8 @@ public class InventoryCRUD {
                         updatedMeal.getServingSize(),
                         updatedMeal.getImage(),
                         updatedMeal.getIsSpicy());
+                SQLInventory.setPrice(updatedMeal.getMealId(),updatedMeal.getPrice());
+
 
                 // Update inventory quantity
                 AddInventory inventoryComponent = foodItemComponents.get(updatedMeal.getMealId());
