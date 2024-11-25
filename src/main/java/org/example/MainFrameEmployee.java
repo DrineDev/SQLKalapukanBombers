@@ -15,6 +15,8 @@ import java.awt.event.ItemListener;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.RoundRectangle2D.Float;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.*;
@@ -57,6 +59,7 @@ public class MainFrameEmployee extends JFrame {
     private NavigatorButtonEmployee navButton;
     private JLabel totalPriceLabel;
     private double totalPrice;
+    private boolean isAscendingSort;
 
     public MainFrameEmployee() {
         // Frame initialization
@@ -79,6 +82,70 @@ public class MainFrameEmployee extends JFrame {
         exitButton.setBorderPainted(false);
         exitButton.addActionListener(e -> exit.setVisible(true));
 
+        //for sorting, TODO : pls copy nalang pud ni nga code block to mainframeemployee after actionlistener
+        ImageIcon sortBG = new ImageIcon("pics/sort bg.png");
+        ImageIcon alphabetA = new ImageIcon("pics/alpha ascending.png");
+        ImageIcon alphabetD = new ImageIcon("pics/alpha descending.png");
+        ImageIcon def = new ImageIcon("pics/default sort.png");
+
+        JLabel sortbg = new JLabel(sortBG);
+        sortbg.setBounds(0,0,120,41);
+        JButton alphabetAscending = new JButton(alphabetA);
+        alphabetAscending.setBounds(10,11, 30,30);
+        alphabetAscending.setContentAreaFilled(false);
+        alphabetAscending.setBorderPainted(false);
+        JButton alphabetDescending = new JButton(alphabetD);
+        alphabetDescending.setBounds(45,11,30,30);
+        alphabetDescending.setContentAreaFilled(false);
+        alphabetDescending.setBorderPainted(false);
+        JButton defaultSort = new JButton(def);
+        defaultSort.setBounds(80,11,30,30);
+        defaultSort.setContentAreaFilled(false);
+        defaultSort.setBorderPainted(false);
+
+        JLabel sortParent = new JLabel();
+        sortParent.setPreferredSize(new Dimension(120,41));
+        sortParent.setLayout(null);
+        sortParent.add(alphabetAscending);
+        sortParent.add(alphabetDescending);
+        sortParent.add(defaultSort);
+        sortParent.add(sortbg);
+        sortParent.revalidate();
+        sortParent.repaint();
+
+        alphabetAscending.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isAscendingSort = true; // Set ascending sort
+                // Unselect other sort options
+                alphabetDescending.setSelected(false);
+                defaultSort.setSelected(false);
+                updateFoodItemsPanel(); // Update panel with ascending sort
+            }
+        });
+
+        alphabetDescending.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isAscendingSort = false; // Set descending sort
+                // Unselect other sort options
+                alphabetAscending.setSelected(false);
+                defaultSort.setSelected(false);
+                updateFoodItemsPanel(); // Update panel with descending sort
+            }
+        });
+
+        defaultSort.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isAscendingSort = true; // Default to ascending sort
+                // Unselect other sort options
+                alphabetAscending.setSelected(false);
+                alphabetDescending.setSelected(false);
+                updateFoodItemsPanel(); // Update panel with default sort
+            }
+        });
+
         // Right side tibuok
         rightSideWhole = new JPanel();
         rightSideWhole.setLayout(new BorderLayout());
@@ -87,9 +154,11 @@ public class MainFrameEmployee extends JFrame {
         rightSideWhole.setBorder(new EmptyBorder(0, 20, 0, 0)); // Add left padding
 
         // Panel for exit button
-        exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        exitPanel = new JPanel(new BorderLayout());
         exitPanel.setBackground(Color.white);
-        exitPanel.add(exitButton);
+        exitPanel.setPreferredSize(new Dimension(680,50));
+        exitPanel.add(exitButton, BorderLayout.EAST);
+        exitPanel.add(sortParent, BorderLayout.WEST);
         rightSideWhole.add(exitPanel, BorderLayout.NORTH);
 
         // Bottom area of right side
@@ -131,7 +200,7 @@ public class MainFrameEmployee extends JFrame {
 
         activeIDs = SQLMeal.getActiveMealIds();
         for(Integer activeId : activeIDs) {
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
+            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, MainFrameEmployee.this));
         }
 
         vegetarianButton = new JCheckBox("Vegetarian");
@@ -283,9 +352,9 @@ public class MainFrameEmployee extends JFrame {
         checkoutButton.setContentAreaFilled(false);
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(e -> 
+        checkoutButton.addActionListener(e ->
         {
-                    // Check if there are any items in the order
+            // Check if there are any items in the order
             if (SharedData.order.getOrderItems().isEmpty()) {
                 showImageFrame("pics/empty order warning.png");
                 return;
@@ -295,17 +364,17 @@ public class MainFrameEmployee extends JFrame {
                 // Check inventory and collect unavailable items
                 StringBuilder unavailableItems = new StringBuilder();
                 boolean sufficientInventory = true;
-                
+
                 for (OrderItem orderItem : SharedData.order.getOrderItems()) {
                     int availableQuantity = SQLInventory.getQuantityAvailable(orderItem.getMealId());
-                    String mealName = SQLMeal.getName(orderItem.getMealId()); 
-                    
+                    String mealName = SQLMeal.getName(orderItem.getMealId());
+
                     if (availableQuantity < orderItem.getQuantity()) {
                         sufficientInventory = false;
                         unavailableItems.append("• ").append(mealName)
-                                    .append(" (Ordered: ").append(orderItem.getQuantity())
-                                    .append(", Available: ").append(availableQuantity)
-                                    .append(")\n");
+                                .append(" (Ordered: ").append(orderItem.getQuantity())
+                                .append(", Available: ").append(availableQuantity)
+                                .append(")\n");
                     }
                 }
 
@@ -314,7 +383,7 @@ public class MainFrameEmployee extends JFrame {
                     JWindow warningWindow = new JWindow();
                     warningWindow.setSize(400, 300);
                     warningWindow.setLocationRelativeTo(mainFrame);
-                    
+
                     JPanel warningPanel = new JPanel() {
                         @Override
                         protected void paintComponent(Graphics g) {
@@ -322,10 +391,10 @@ public class MainFrameEmployee extends JFrame {
                             // Draw your background image
                             ImageIcon bgImage = new ImageIcon("pics/inventory warning bg.png");
                             g.drawImage(bgImage.getImage(), 0, 0, this);
-                            
+
                             // Set up text properties
                             g.setColor(Color.BLACK);
-                            
+
                             // Draw the warning message
                             String[] lines = unavailableItems.toString().split("\n");
                             int y = 45; // Starting y position
@@ -335,23 +404,23 @@ public class MainFrameEmployee extends JFrame {
                             }
                         }
                     };
-                    
+
                     warningPanel.setPreferredSize(new Dimension(400, 300));
                     warningWindow.setContentPane(warningPanel);
-                    
+
                     // Set rounded corners
                     Float shape = new RoundRectangle2D.Float(0, 0, 400, 300, 18, 18);
                     warningWindow.setShape(shape);
-                    
+
                     // Show warning with fade effect
                     warningWindow.setOpacity(0.0f);
                     warningWindow.setVisible(true);
-                    
+
                     // Fade in
                     Timer fadeInTimer = new Timer(20, null);
                     fadeInTimer.addActionListener(new ActionListener() {
                         float opacity = 0.0f;
-                        
+
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             opacity += 0.05f;
@@ -365,7 +434,7 @@ public class MainFrameEmployee extends JFrame {
                         }
                     });
                     fadeInTimer.start();
-                    
+
                     // Clear the checkout area
                     clearCheckoutArea();
                     return;
@@ -381,7 +450,7 @@ public class MainFrameEmployee extends JFrame {
                 if (orderId != -1) {
                     SharedData.order.setOrderId(orderId);
                     boolean allUpdatesSuccessful = true;
-            
+
                     for (OrderItem orderItem : SharedData.order.getOrderItems()) {
                         // Separate the operations and check them individually
                         int orderItemResult = SQLOrderItems.addOrderItem(
@@ -390,19 +459,19 @@ public class MainFrameEmployee extends JFrame {
                                 orderItem.getQuantity(),
                                 orderItem.getSubtotal()
                         );
-                        
+
                         boolean inventoryResult = SQLInventory.mealSold(
                                 orderItem.getMealId(),
                                 orderItem.getQuantity()
                         );
-            
+
                         // Check if both operations were successful
                         if (orderItemResult == -1 || !inventoryResult) {
                             allUpdatesSuccessful = false;
                             break;
                         }
                     }
-            
+
                     if (allUpdatesSuccessful) {
                         showImageFrame("pics/pop up frame.png");
                         clearCheckoutArea();
@@ -417,7 +486,6 @@ public class MainFrameEmployee extends JFrame {
                 ex.printStackTrace();
             }
         });
-
 
         navButton = new NavigatorButtonEmployee();
         navButton.setBounds(12, 7, 206, 420);
@@ -519,6 +587,7 @@ public class MainFrameEmployee extends JFrame {
         foodItemsPanel.repaint();
 
         // Loop through activeIDs to apply the filters
+        List<AddFood> filteredItems = new ArrayList<>();
         for (Integer activeId : activeIDs) {
             boolean isVegetarian = vegetarianButton.isSelected();
             boolean isNonVegetarian = nonVegetarianButton.isSelected();
@@ -545,8 +614,20 @@ public class MainFrameEmployee extends JFrame {
             if (isDinner && !SQLMeal.getType(activeId).equals("Dinner"))
                 continue;
 
-            // Add the filtered item to the panel
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
+            // Add the filtered item to the list
+            filteredItems.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
+        }
+
+        // Sort the filtered items based on the selected sort order
+        Collections.sort(filteredItems, (food1, food2) -> {
+            String name1 = SQLMeal.getName(food1.getMealId());
+            String name2 = SQLMeal.getName(food2.getMealId());
+            return isAscendingSort ? name1.compareTo(name2) : name2.compareTo(name1);
+        });
+
+        // Add the sorted items to the panel
+        for (AddFood item : filteredItems) {
+            foodItemsPanel.add(item);
         }
 
         // Refresh the panel
