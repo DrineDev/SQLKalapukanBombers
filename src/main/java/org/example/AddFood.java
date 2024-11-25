@@ -119,6 +119,7 @@ public class AddFood extends JPanel {
 
     public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameEmployee mainFrame) {
         mealId = mealID;
+
         setLayout(null);
 
         layeredPane = new JLayeredPane();
@@ -364,43 +365,37 @@ public class AddFood extends JPanel {
     }
 
     private ActionListener createOrderListener(JLabel amountTextField, JPanel logger, JPanel loggerPrice, int mealID, MainFrameEmployee mainFrame) {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-//                // TODO : ADD FUNCTIONALITY SOON
-//                String foodName = SQLMeal.getName(mealID);
-//                String quantityStr = amountTextField.getText();
-//                int quantity = Integer.parseInt(quantityStr);
-//
-//                if(quantity != 0)
-//                {
-//                    float priceValue = SQLInventory.getPrice(mealID);
-//                    float totalPrice = priceValue * quantity;
-//
-//                    String price = String.format("₱%.2f", totalPrice);
-//                    String logEntry = quantity + " x " + foodName;
-//
-//                    JLabel logText = new JLabel(logEntry);
-//                    JLabel logPrice = new JLabel(price);
-//
-//                    mainFrame.updateTotalPrice(totalPrice);
-//                    logger.add(logText);
-//                    loggerPrice.add(logPrice);
-//                    x = 0;
-//                    amountTextField.setText("" + x + " ");
-//                    showImageFrame("pics/pop up frame order.png");
-//
-//                    logger.revalidate();
-//                    logger.repaint();
-//                    loggerPrice.revalidate();
-//                    loggerPrice.repaint();
-//
-//                    // FOR ADDING TO ORDER
-//                    OrderItem orderItem = new OrderItem(SharedData.order.getOrderId(), mealID, quantity, SQLInventory.getPrice(mealID));
-//                    SharedData.order.addOrderItem(orderItem);
-//                    SQLOrderItems.addOrderItem(SharedData.order.getOrderId(), mealID, quantity, SQLInventory.getPrice(mealID));
-//                }
+        return e -> {
+            String foodName = SQLMeal.getName(mealID);
+            String quantityStr = amountTextField.getText();
+            int quantity = Integer.parseInt(quantityStr);
+
+            if (quantity != 0) {
+                float priceValue = SQLInventory.getPrice(mealID);
+                float totalPrice = priceValue * quantity;
+
+                String price = String.format("₱%.2f", totalPrice);
+                String logEntry = quantity + " x " + foodName;
+
+                JLabel logText = new JLabel(logEntry);
+                logText.setBackground(Color.white);
+                JLabel logPrice = new JLabel(price);
+                logPrice.setBackground(Color.white);
+
+                mainFrame.updateTotalPrice(totalPrice);
+                logger.add(logText);
+                loggerPrice.add(logPrice);
+                x = 0;
+                amountTextField.setText("" + x);
+
+                logger.revalidate();
+                logger.repaint();
+                loggerPrice.revalidate();
+                loggerPrice.repaint();
+
+                // Add to SharedData order (without database interaction)
+                OrderItem orderItem = new OrderItem(SharedData.order.getOrderId(), mealID, quantity, priceValue);
+                SharedData.order.addOrderItem(orderItem);
             }
         };
     }

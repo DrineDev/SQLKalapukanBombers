@@ -24,7 +24,7 @@ public class AddInventory extends JLayeredPane {
     private Boolean markedForDeletion = false;
     private JLabel warningIcon;
     private JPanel mainPanel;
-
+    private JButton mealInfoIcon;
     public AddInventory(int mealID, JPanel leftContentPanel) {
         this.mealID = mealID;
         this.leftContentPanel = leftContentPanel;
@@ -75,6 +75,17 @@ public class AddInventory extends JLayeredPane {
         deleteButton.setBounds(245, 255, 55, 34);
         deleteButton.addActionListener(e -> confirmAndDelete(mealID));
 
+        //meal info icon
+        mealInfoIcon = new JButton(new ImageIcon("pics/meal info icon.png"));
+        mealInfoIcon.setForeground(Color.WHITE);
+        mealInfoIcon.setBounds(240, 5, 50, 24);
+        mealInfoIcon.setFocusPainted(false);
+        mealInfoIcon.setContentAreaFilled(false);
+        mealInfoIcon.setBorderPainted(false);
+        mealInfoIcon.addActionListener(e ->
+        {SwingUtilities.invokeLater(() -> new MealInfoMainFrame(mealID));
+        });
+
         // Warning icon for low stock
         warningIcon = new JLabel("!");
         warningIcon.setBounds(5, 5, 24, 24);
@@ -92,6 +103,9 @@ public class AddInventory extends JLayeredPane {
         // Add panels to layered pane
         this.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
         this.add(warningIcon, JLayeredPane.POPUP_LAYER);
+        this.add(mealInfoIcon, JLayeredPane.POPUP_LAYER);
+
+
 
         // Update warning icon visibility based on initial quantity
         updateWarningVisibility();
@@ -159,6 +173,17 @@ public class AddInventory extends JLayeredPane {
         quantityLabel.setFont(new Font("Inter", Font.BOLD, 14));
         quantityLabel.setForeground(new Color(248, 146, 137));
 
+        //meal info icon
+        mealInfoIcon = new JButton(new ImageIcon("pics/meal info icon.png"));
+        mealInfoIcon.setForeground(Color.WHITE);
+        mealInfoIcon.setBounds(240, 5, 50, 24);
+        mealInfoIcon.setFocusPainted(false);
+        mealInfoIcon.setContentAreaFilled(false);
+        mealInfoIcon.setBorderPainted(false);
+        mealInfoIcon.addActionListener(e ->
+        {SwingUtilities.invokeLater(() -> new MealInfoMainFrame(mealID));
+        });
+
         // Warning icon for low stock
         warningIcon = new JLabel("!");
         warningIcon.setForeground(Color.RED);
@@ -174,6 +199,7 @@ public class AddInventory extends JLayeredPane {
         // Add panels to layered pane
         this.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
         this.add(warningIcon, JLayeredPane.POPUP_LAYER);
+        this.add(mealInfoIcon, JLayeredPane.POPUP_LAYER);
 
         // Update warning icon visibility based on initial quantity
         updateWarningVisibility();
@@ -753,14 +779,14 @@ public class AddInventory extends JLayeredPane {
         return checkbox;
     }
 
-        //helper method kuhag mealID
-        public int getMealID() {return mealID;}
+    //helper method kuhag mealID
+    public int getMealID() {return mealID;}
 
-        public boolean isMarkedForDeletion() {return markedForDeletion;}
+    public boolean isMarkedForDeletion() {return markedForDeletion;}
 
-        public int getQuantityAvailable() {return this.quantityAvailable;}
+    public int getQuantityAvailable() {return this.quantityAvailable;}
 
-        public int getMealId(){
-            return mealID;
-        }
+    public int getMealId(){
+        return mealID;
     }
+}
