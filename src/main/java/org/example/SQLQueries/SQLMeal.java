@@ -307,7 +307,8 @@ public class SQLMeal {
         List<Integer> mealIds = new ArrayList<>();
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
-            String query = "SELECT Meal_ID FROM INVENTORY ORDER BY Meal_ID";
+            // Updated query to include the WHERE condition
+            String query = "SELECT Meal_ID FROM INVENTORY WHERE Quantity_Available > 0 ORDER BY Meal_ID";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
