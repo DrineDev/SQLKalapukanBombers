@@ -15,6 +15,8 @@ import java.awt.event.ItemListener;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.RoundRectangle2D.Float;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.*;
@@ -57,6 +59,7 @@ public class MainFrameManager extends JFrame {
     private NavigatorButtonManager navButton;
     private JLabel totalPriceLabel;
     private double totalPrice;
+    private boolean isAscendingSort;
 
     public MainFrameManager() {
         // Frame initialization
@@ -110,33 +113,38 @@ public class MainFrameManager extends JFrame {
         sortParent.revalidate();
         sortParent.repaint();
 
-        alphabetAscending.addActionListener(new ActionListener() 
-        {
+        alphabetAscending.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                // TODO
+            public void actionPerformed(ActionEvent e) {
+                isAscendingSort = true; // Set ascending sort
+                // Unselect other sort options
+                alphabetDescending.setSelected(false);
+                defaultSort.setSelected(false);
+                updateFoodItemsPanel(); // Update panel with ascending sort
             }
         });
 
-        alphabetDescending.addActionListener(new ActionListener() 
-        {
+        alphabetDescending.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                //TODO
+            public void actionPerformed(ActionEvent e) {
+                isAscendingSort = false; // Set descending sort
+                // Unselect other sort options
+                alphabetAscending.setSelected(false);
+                defaultSort.setSelected(false);
+                updateFoodItemsPanel(); // Update panel with descending sort
             }
         });
 
-        defaultSort.addActionListener(new ActionListener() 
-        {
+        defaultSort.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                //TODO
+            public void actionPerformed(ActionEvent e) {
+                isAscendingSort = true; // Default to ascending sort
+                // Unselect other sort options
+                alphabetAscending.setSelected(false);
+                alphabetDescending.setSelected(false);
+                updateFoodItemsPanel(); // Update panel with default sort
             }
         });
-        // TODO : kutob diri ang code block to be copied, tnx
 
         // Right side tibuok
         rightSideWhole = new JPanel();
@@ -579,6 +587,7 @@ public class MainFrameManager extends JFrame {
         foodItemsPanel.repaint();
 
         // Loop through activeIDs to apply the filters
+        List<AddFood> filteredItems = new ArrayList<>();
         for (Integer activeId : activeIDs) {
             boolean isVegetarian = vegetarianButton.isSelected();
             boolean isNonVegetarian = nonVegetarianButton.isSelected();
@@ -605,8 +614,20 @@ public class MainFrameManager extends JFrame {
             if (isDinner && !SQLMeal.getType(activeId).equals("Dinner"))
                 continue;
 
-            // Add the filtered item to the panel
-            foodItemsPanel.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
+            // Add the filtered item to the list
+            filteredItems.add(new AddFood(activeId, loggingTextArea, loggingPriceArea, this));
+        }
+
+        // Sort the filtered items based on the selected sort order
+        Collections.sort(filteredItems, (food1, food2) -> {
+            String name1 = SQLMeal.getName(food1.getMealId());
+            String name2 = SQLMeal.getName(food2.getMealId());
+            return isAscendingSort ? name1.compareTo(name2) : name2.compareTo(name1);
+        });
+
+        // Add the sorted items to the panel
+        for (AddFood item : filteredItems) {
+            foodItemsPanel.add(item);
         }
 
         // Refresh the panel

@@ -23,8 +23,11 @@ public class AddFood extends JPanel {
     private Timer hoverTimer;
     private final int HOVER_DELAY = 500; // Delay in milliseconds
     private JLayeredPane layeredPane;
+    private int mealId;
 
     public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameManager mainFrame) {
+        mealId = mealID;
+
         setLayout(null);
 
         layeredPane = new JLayeredPane();
@@ -115,6 +118,7 @@ public class AddFood extends JPanel {
     }
 
     public AddFood(int mealID, JPanel loggerText, JPanel loggerPrice, MainFrameEmployee mainFrame) {
+        mealId = mealID;
         setLayout(null);
 
         layeredPane = new JLayeredPane();
@@ -364,39 +368,39 @@ public class AddFood extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                // TODO : ADD FUNCTIONALITY SOON
-                String foodName = SQLMeal.getName(mealID);
-                String quantityStr = amountTextField.getText();
-                int quantity = Integer.parseInt(quantityStr);
-
-                if(quantity != 0)
-                {
-                    float priceValue = SQLInventory.getPrice(mealID);
-                    float totalPrice = priceValue * quantity;
-
-                    String price = String.format("₱%.2f", totalPrice);
-                    String logEntry = quantity + " x " + foodName;
-
-                    JLabel logText = new JLabel(logEntry);
-                    JLabel logPrice = new JLabel(price);
-
-                    mainFrame.updateTotalPrice(totalPrice);
-                    logger.add(logText);
-                    loggerPrice.add(logPrice);
-                    x = 0;
-                    amountTextField.setText("" + x + " ");
-                    showImageFrame("pics/pop up frame order.png");
-
-                    logger.revalidate();
-                    logger.repaint();
-                    loggerPrice.revalidate();
-                    loggerPrice.repaint();
-
-                    // FOR ADDING TO ORDER
-                    OrderItem orderItem = new OrderItem(SharedData.order.getOrderId(), mealID, quantity, SQLInventory.getPrice(mealID));
-                    SharedData.order.addOrderItem(orderItem);
-                    SQLOrderItems.addOrderItem(SharedData.order.getOrderId(), mealID, quantity, SQLInventory.getPrice(mealID));
-                }
+//                // TODO : ADD FUNCTIONALITY SOON
+//                String foodName = SQLMeal.getName(mealID);
+//                String quantityStr = amountTextField.getText();
+//                int quantity = Integer.parseInt(quantityStr);
+//
+//                if(quantity != 0)
+//                {
+//                    float priceValue = SQLInventory.getPrice(mealID);
+//                    float totalPrice = priceValue * quantity;
+//
+//                    String price = String.format("₱%.2f", totalPrice);
+//                    String logEntry = quantity + " x " + foodName;
+//
+//                    JLabel logText = new JLabel(logEntry);
+//                    JLabel logPrice = new JLabel(price);
+//
+//                    mainFrame.updateTotalPrice(totalPrice);
+//                    logger.add(logText);
+//                    loggerPrice.add(logPrice);
+//                    x = 0;
+//                    amountTextField.setText("" + x + " ");
+//                    showImageFrame("pics/pop up frame order.png");
+//
+//                    logger.revalidate();
+//                    logger.repaint();
+//                    loggerPrice.revalidate();
+//                    loggerPrice.repaint();
+//
+//                    // FOR ADDING TO ORDER
+//                    OrderItem orderItem = new OrderItem(SharedData.order.getOrderId(), mealID, quantity, SQLInventory.getPrice(mealID));
+//                    SharedData.order.addOrderItem(orderItem);
+//                    SQLOrderItems.addOrderItem(SharedData.order.getOrderId(), mealID, quantity, SQLInventory.getPrice(mealID));
+//                }
             }
         };
     }
@@ -469,4 +473,8 @@ public class AddFood extends JPanel {
             }
         };
     }
-}  
+
+    public int getMealId() {
+        return mealId;
+    }
+}
