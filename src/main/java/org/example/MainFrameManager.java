@@ -94,14 +94,17 @@ public class MainFrameManager extends JFrame {
         alphabetAscending.setBounds(10,11, 30,30);
         alphabetAscending.setContentAreaFilled(false);
         alphabetAscending.setBorderPainted(false);
+        alphabetAscending.setFocusPainted(false);
         JButton alphabetDescending = new JButton(alphabetD);
         alphabetDescending.setBounds(45,11,30,30);
         alphabetDescending.setContentAreaFilled(false);
         alphabetDescending.setBorderPainted(false);
+        alphabetDescending.setFocusPainted(false);
         JButton defaultSort = new JButton(def);
         defaultSort.setBounds(80,11,30,30);
         defaultSort.setContentAreaFilled(false);
         defaultSort.setBorderPainted(false);
+        defaultSort.setFocusPainted(false);
 
         JLabel sortParent = new JLabel();
         sortParent.setPreferredSize(new Dimension(120,41));
