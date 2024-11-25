@@ -65,10 +65,7 @@ public class NavigatorButtonManager extends JPanel {
         orderButton = new JToggleButton(orderD);
         orderButton.setBounds(15, 129, 190, 56);
         setupButtonStyle(orderButton, orderS, orderD);
-        orderButton.addActionListener(e -> handleButtonClick("OrderCRUD", () -> {
-            // Uncomment when OrderCRUD is ready
-            // new OrderCRUD();
-        }));
+        orderButton.addActionListener(e -> handleButtonClick("OrderCRUD", OrderCrud::new));
 
         // User Button
         ImageIcon userS = new ImageIcon("pics/user selected.png");

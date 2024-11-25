@@ -142,6 +142,30 @@ public class SQLOrderItems {
         }
     }
 
+    public static void updateMealQuantity(int orderId, int mealId, int quantity) {
+        String updateSQL = "UPDATE ORDER_ITEMS SET Quantity = ?, Subtotal = Unit_Price * ? WHERE Order_Id = ? AND Meal_Id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+
+            preparedStatement.setInt(1, quantity);
+            preparedStatement.setInt(2, quantity);
+            preparedStatement.setInt(3, orderId);
+            preparedStatement.setInt(4, mealId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                // Update the total amount for the order after modifying the meal quantity
+                updateOrderTotal(orderId);
+                System.out.println("Meal quantity updated successfully for Order ID: " + orderId + ", Meal ID: " + mealId);
+            } else {
+                System.out.println("No records found to update for Order ID: " + orderId + ", Meal ID: " + mealId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Helper method to get Order ID from Order Item ID
     private static int getOrderIdByOrderItem(int orderItemId) {
         String query = "SELECT Order_Id FROM ORDER_ITEMS WHERE Order_Item_Id = ?";
