@@ -1,9 +1,6 @@
 package org.example.SQLQueries;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class SQLCreate {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";

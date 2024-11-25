@@ -149,6 +149,30 @@ public class SQLOrder {
         return nextOrderId;
     }
 
+    public static void setStatus(int mealId, String newStatus) {
+        String updateStatusSQL = "UPDATE ORDERS SET Status = ? WHERE Order_Id = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(updateStatusSQL)) {
+
+            // Set the parameters for the prepared statement
+            preparedStatement.setString(1, newStatus);
+            preparedStatement.setInt(2, mealId);
+
+            // Execute the update
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Order status updated successfully!");
+            } else {
+                System.out.println("No order found with the given Meal_Id.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static List<Order> getAllOrders() {
         List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM orders"; // Adjust table name as needed
