@@ -14,6 +14,7 @@ public class Meal implements Cloneable {
     private BufferedImage image;
     private String category;
     private boolean isSpicy;
+    private float price;
     private static int instanceNumber = 0;
     private int idNumber;
 
@@ -47,7 +48,7 @@ public class Meal implements Cloneable {
     }
 
     public Meal(int mealId, String name, String type, String description, String ingredients,
-            String servingSize, BufferedImage image, String category, String nutritionFact, boolean isSpicy) {
+            String servingSize, BufferedImage image, String category, String nutritionFact, boolean isSpicy, float price) {
         this.mealId = mealId;
         this.name = name;
         this.type = type;
@@ -58,6 +59,7 @@ public class Meal implements Cloneable {
         this.category = category;
         this.nutritionFact = nutritionFact;
         this.isSpicy = isSpicy;
+        this.price = price;
         idNumber = instanceNumber;
         instanceNumber++;
     }
@@ -145,6 +147,8 @@ public class Meal implements Cloneable {
     public boolean getIsSpicy() {
         return isSpicy;
     }
+
+    public float getPrice(){return price;}
 
     @Override
     public int hashCode() {
