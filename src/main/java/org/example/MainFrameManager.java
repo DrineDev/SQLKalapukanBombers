@@ -60,7 +60,7 @@ public class MainFrameManager extends JFrame {
 
     public MainFrameManager() {
         // Frame initialization
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Kalapukan Bombers Foods - Add Order");
         mainFrame.setSize(1000, 600);
         mainFrame.setUndecorated(true);
         mainFrame.setLayout(new BorderLayout());
@@ -79,13 +79,64 @@ public class MainFrameManager extends JFrame {
         exitButton.setBorderPainted(false);
         exitButton.addActionListener(e -> exit.setVisible(true));
 
-        // Frame initialization
-        mainFrame = new JFrame("Kalapukan Bombers Foods - Add Order");
-        mainFrame.setSize(1000, 600);
-        mainFrame.setUndecorated(true);
-        mainFrame.setLayout(new BorderLayout());
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setLocationRelativeTo(null);
+        //for sorting, TODO : pls copy nalang pud ni nga code block to mainframeemployee after actionlistener
+        ImageIcon sortBG = new ImageIcon("pics/sort bg.png");
+        ImageIcon alphabetA = new ImageIcon("pics/alpha ascending.png");
+        ImageIcon alphabetD = new ImageIcon("pics/alpha descending.png");
+        ImageIcon def = new ImageIcon("pics/default sort.png");
+
+        JLabel sortbg = new JLabel(sortBG);
+        sortbg.setBounds(0,0,120,41);
+        JButton alphabetAscending = new JButton(alphabetA);
+        alphabetAscending.setBounds(10,11, 30,30);
+        alphabetAscending.setContentAreaFilled(false);
+        alphabetAscending.setBorderPainted(false);
+        JButton alphabetDescending = new JButton(alphabetD);
+        alphabetDescending.setBounds(45,11,30,30);
+        alphabetDescending.setContentAreaFilled(false);
+        alphabetDescending.setBorderPainted(false);
+        JButton defaultSort = new JButton(def);
+        defaultSort.setBounds(80,11,30,30);
+        defaultSort.setContentAreaFilled(false);
+        defaultSort.setBorderPainted(false);
+
+        JLabel sortParent = new JLabel();
+        sortParent.setPreferredSize(new Dimension(120,41));
+        sortParent.setLayout(null);
+        sortParent.add(alphabetAscending);
+        sortParent.add(alphabetDescending);
+        sortParent.add(defaultSort);
+        sortParent.add(sortbg);
+        sortParent.revalidate();
+        sortParent.repaint();
+
+        alphabetAscending.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                // TODO
+            }
+        });
+
+        alphabetDescending.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //TODO
+            }
+        });
+
+        defaultSort.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //TODO
+            }
+        });
+        // TODO : kutob diri ang code block to be copied, tnx
 
         // Right side tibuok
         rightSideWhole = new JPanel();
@@ -95,9 +146,11 @@ public class MainFrameManager extends JFrame {
         rightSideWhole.setBorder(new EmptyBorder(0, 20, 0, 0)); // Add left padding
 
         // Panel for exit button
-        exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        exitPanel = new JPanel(new BorderLayout());
         exitPanel.setBackground(Color.white);
-        exitPanel.add(exitButton);
+        exitPanel.setPreferredSize(new Dimension(680,50));
+        exitPanel.add(exitButton, BorderLayout.EAST);
+        exitPanel.add(sortParent, BorderLayout.WEST);
         rightSideWhole.add(exitPanel, BorderLayout.NORTH);
 
         // Bottom area of right side

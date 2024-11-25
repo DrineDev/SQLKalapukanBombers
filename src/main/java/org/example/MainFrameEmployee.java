@@ -60,7 +60,7 @@ public class MainFrameEmployee extends JFrame {
 
     public MainFrameEmployee() {
         // Frame initialization
-        mainFrame = new JFrame();
+        mainFrame = new JFrame("Kalapukan Bombers Foods - Add Order");
         mainFrame.setSize(1000, 600);
         mainFrame.setUndecorated(true);
         mainFrame.setLayout(new BorderLayout());
@@ -78,14 +78,6 @@ public class MainFrameEmployee extends JFrame {
         exitButton.setFocusPainted(false);
         exitButton.setBorderPainted(false);
         exitButton.addActionListener(e -> exit.setVisible(true));
-
-        // Frame initialization
-        mainFrame = new JFrame("Kalapukan Bombers Foods - Add Order");
-        mainFrame.setSize(1000, 600);
-        mainFrame.setUndecorated(true);
-        mainFrame.setLayout(new BorderLayout());
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setLocationRelativeTo(null);
 
         // Right side tibuok
         rightSideWhole = new JPanel();
@@ -340,75 +332,11 @@ public class MainFrameEmployee extends JFrame {
                             for (String line : lines) {
                                 g.drawString(line, 30, y);
                                 y += 18; // Line spacing
-                            }
-                        }
-                    };
 
-                    warningPanel.setPreferredSize(new Dimension(400, 300));
-                    warningWindow.setContentPane(warningPanel);
-
-                    // Set rounded corners
-                    Float shape = new RoundRectangle2D.Float(0, 0, 400, 300, 18, 18);
-                    warningWindow.setShape(shape);
-
-                    // Show warning with fade effect
-                    warningWindow.setOpacity(0.0f);
-                    warningWindow.setVisible(true);
-
-                    // Fade in
-                    Timer fadeInTimer = new Timer(20, null);
-                    fadeInTimer.addActionListener(new ActionListener() {
-                        float opacity = 0.0f;
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            opacity += 0.05f;
-                            if (opacity >= 1.0f) {
-                                opacity = 1.0f;
-                                fadeInTimer.stop();
-                                // Wait before starting fade out
-                                new Timer(3200, evt -> startFadeOut(warningWindow)).start();
                             }
                             warningWindow.setOpacity(opacity);
                         }
-                    });
-                    fadeInTimer.start();
 
-                    // Clear the checkout area
-                    clearCheckoutArea();
-                    return;
-                }
-
-                // Rest of the checkout process
-                int orderId = SQLOrder.addOrder(
-                        SharedData.order.getOrderDate().toString(),
-                        SharedData.order.getStatus(),
-                        SharedData.order.getTotalAmount()
-                );
-
-                if (orderId != -1) {
-                    SharedData.order.setOrderId(orderId);
-                    boolean allUpdatesSuccessful = true;
-
-                    for (OrderItem orderItem : SharedData.order.getOrderItems()) {
-                        // Separate the operations and check them individually
-                        int orderItemResult = SQLOrderItems.addOrderItem(
-                                orderId,
-                                orderItem.getMealId(),
-                                orderItem.getQuantity(),
-                                orderItem.getSubtotal()
-                        );
-
-                        boolean inventoryResult = SQLInventory.mealSold(
-                                orderItem.getMealId(),
-                                orderItem.getQuantity()
-                        );
-
-                        // Check if both operations were successful
-                        if (orderItemResult == -1 || !inventoryResult) {
-                            allUpdatesSuccessful = false;
-                            break;
-                        }
                     }
 
                     if (allUpdatesSuccessful) {
