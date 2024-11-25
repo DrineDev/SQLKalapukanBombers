@@ -84,10 +84,6 @@ public class InventoryCRUDEmployee extends JFrame {
     private void initializeNavButton() {
         navButton = new NavigatorButtonInventoryEmployee();
         navButton.setPreferredSize(new Dimension(50, 50));
-        navButton.addMainMenuButtonListener(e -> {
-            SwingUtilities.invokeLater(MainFrameEmployee::new);
-            mainFrame.dispose();
-        });
 
         navButton.addInventoryButtonListener(e -> {
             // already in inventory

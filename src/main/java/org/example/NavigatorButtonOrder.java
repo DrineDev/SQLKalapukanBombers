@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-public class NavigatorButtonInventory extends JToggleButton {
+public class NavigatorButtonOrder extends JToggleButton {
     private JPopupMenu popupMenu;
     private JRadioButton orderButton;
     private JRadioButton inventoryButton;
@@ -26,7 +26,7 @@ public class NavigatorButtonInventory extends JToggleButton {
     private static final int VERTICAL_SPACING = 2;
     private static final int VERTICAL_PADDING = 15;
 
-    public NavigatorButtonInventory() {
+    public NavigatorButtonOrder() {
         ImageIcon menuIcon = new ImageIcon("pics/menu button.png");
         setIcon(menuIcon);
         setBorder(null);
@@ -48,7 +48,7 @@ public class NavigatorButtonInventory extends JToggleButton {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonOrder.this);
                 if (window != null) {
                     window.addWindowFocusListener(new WindowAdapter() {
                         @Override
@@ -58,7 +58,7 @@ public class NavigatorButtonInventory extends JToggleButton {
                         }
                     });
 
-                    JRootPane rootPane = SwingUtilities.getRootPane(NavigatorButtonInventory.this);
+                    JRootPane rootPane = SwingUtilities.getRootPane(NavigatorButtonOrder.this);
                     if (rootPane != null) {
                         rootPane.getLayeredPane().setLayer(popupMenu, JLayeredPane.POPUP_LAYER);
                     }
@@ -109,7 +109,7 @@ public class NavigatorButtonInventory extends JToggleButton {
         mainMenuButton = createRadioButton(mainMenuDeselected, mainMenuSelected);
         mainMenuButton.addActionListener(e -> {
             if (mainMenuButton.isSelected()) {
-                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonOrder.this);
                 SwingUtilities.invokeLater(MainFrameManager::new);
                 window.dispose();
             }
@@ -119,10 +119,9 @@ public class NavigatorButtonInventory extends JToggleButton {
         ImageIcon inventoryDeselected = new ImageIcon("pics/inventory deselected.png");
         ImageIcon inventorySelected = new ImageIcon("pics/inventory selected.png");
         inventoryButton = createRadioButton(inventoryDeselected, inventorySelected);
-        inventoryButton.setSelected(true);
         inventoryButton.addActionListener(e -> {
             if (inventoryButton.isSelected()) {
-                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonOrder.this);
                 SwingUtilities.invokeLater(InventoryCRUD::new);
                 window.dispose();
             }
@@ -132,9 +131,10 @@ public class NavigatorButtonInventory extends JToggleButton {
         ImageIcon orderDeselected = new ImageIcon("pics/order deselected.png");
         ImageIcon orderSelected = new ImageIcon("pics/order selected.png");
         orderButton = createRadioButton(orderDeselected, orderSelected);
+        orderButton.setSelected(true);
         orderButton.addActionListener(e -> {
             if (orderButton.isSelected()) {
-                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonOrder.this);
                 SwingUtilities.invokeLater(OrderCrud::new);
                 window.dispose();
             }
@@ -145,7 +145,7 @@ public class NavigatorButtonInventory extends JToggleButton {
         usersButton = createRadioButton(userDeselected, userSelected);
         usersButton.addActionListener(e -> {
             if (usersButton.isSelected()) {
-                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonInventory.this);
+                Window window = SwingUtilities.getWindowAncestor(NavigatorButtonOrder.this);
                 SwingUtilities.invokeLater(UserCRUD::new);
                 window.dispose();
             }
