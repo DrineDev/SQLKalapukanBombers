@@ -283,9 +283,9 @@ public class MainFrameEmployee extends JFrame {
         checkoutButton.setContentAreaFilled(false);
         checkoutButton.setFocusPainted(false);
         checkoutButton.setBorder(null);
-        checkoutButton.addActionListener(e ->
+        checkoutButton.addActionListener(e -> 
         {
-            // Check if there are any items in the order
+                    // Check if there are any items in the order
             if (SharedData.order.getOrderItems().isEmpty()) {
                 showImageFrame("pics/empty order warning.png");
                 return;
@@ -295,17 +295,17 @@ public class MainFrameEmployee extends JFrame {
                 // Check inventory and collect unavailable items
                 StringBuilder unavailableItems = new StringBuilder();
                 boolean sufficientInventory = true;
-
+                
                 for (OrderItem orderItem : SharedData.order.getOrderItems()) {
                     int availableQuantity = SQLInventory.getQuantityAvailable(orderItem.getMealId());
-                    String mealName = SQLMeal.getName(orderItem.getMealId());
-
+                    String mealName = SQLMeal.getName(orderItem.getMealId()); 
+                    
                     if (availableQuantity < orderItem.getQuantity()) {
                         sufficientInventory = false;
                         unavailableItems.append("• ").append(mealName)
-                                .append(" (Ordered: ").append(orderItem.getQuantity())
-                                .append(", Available: ").append(availableQuantity)
-                                .append(")\n");
+                                    .append(" (Ordered: ").append(orderItem.getQuantity())
+                                    .append(", Available: ").append(availableQuantity)
+                                    .append(")\n");
                     }
                 }
 
@@ -314,7 +314,7 @@ public class MainFrameEmployee extends JFrame {
                     JWindow warningWindow = new JWindow();
                     warningWindow.setSize(400, 300);
                     warningWindow.setLocationRelativeTo(mainFrame);
-
+                    
                     JPanel warningPanel = new JPanel() {
                         @Override
                         protected void paintComponent(Graphics g) {
@@ -322,37 +322,102 @@ public class MainFrameEmployee extends JFrame {
                             // Draw your background image
                             ImageIcon bgImage = new ImageIcon("pics/inventory warning bg.png");
                             g.drawImage(bgImage.getImage(), 0, 0, this);
-
+                            
                             // Set up text properties
                             g.setColor(Color.BLACK);
-
+                            
                             // Draw the warning message
                             String[] lines = unavailableItems.toString().split("\n");
                             int y = 45; // Starting y position
                             for (String line : lines) {
                                 g.drawString(line, 30, y);
                                 y += 18; // Line spacing
-
+                            }
+                        }
+                    };
+                    
+                    warningPanel.setPreferredSize(new Dimension(400, 300));
+                    warningWindow.setContentPane(warningPanel);
+                    
+                    // Set rounded corners
+                    Float shape = new RoundRectangle2D.Float(0, 0, 400, 300, 18, 18);
+                    warningWindow.setShape(shape);
+                    
+                    // Show warning with fade effect
+                    warningWindow.setOpacity(0.0f);
+                    warningWindow.setVisible(true);
+                    
+                    // Fade in
+                    Timer fadeInTimer = new Timer(20, null);
+                    fadeInTimer.addActionListener(new ActionListener() {
+                        float opacity = 0.0f;
+                        
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            opacity += 0.05f;
+                            if (opacity >= 1.0f) {
+                                opacity = 1.0f;
+                                fadeInTimer.stop();
+                                // Wait before starting fade out
+                                new Timer(3200, evt -> startFadeOut(warningWindow)).start();
                             }
                             warningWindow.setOpacity(opacity);
                         }
+                    });
+                    fadeInTimer.start();
+                    
+                    // Clear the checkout area
+                    clearCheckoutArea();
+                    return;
+                }
 
+                // Rest of the checkout process
+                int orderId = SQLOrder.addOrder(
+                        SharedData.order.getOrderDate().toString(),
+                        SharedData.order.getStatus(),
+                        SharedData.order.getTotalAmount()
+                );
+
+                if (orderId != -1) {
+                    SharedData.order.setOrderId(orderId);
+                    boolean allUpdatesSuccessful = true;
+            
+                    for (OrderItem orderItem : SharedData.order.getOrderItems()) {
+                        // Separate the operations and check them individually
+                        int orderItemResult = SQLOrderItems.addOrderItem(
+                                orderId,
+                                orderItem.getMealId(),
+                                orderItem.getQuantity(),
+                                orderItem.getSubtotal()
+                        );
+                        
+                        boolean inventoryResult = SQLInventory.mealSold(
+                                orderItem.getMealId(),
+                                orderItem.getQuantity()
+                        );
+            
+                        // Check if both operations were successful
+                        if (orderItemResult == -1 || !inventoryResult) {
+                            allUpdatesSuccessful = false;
+                            break;
+                        }
                     }
-
+            
                     if (allUpdatesSuccessful) {
                         showImageFrame("pics/pop up frame.png");
                         clearCheckoutArea();
                     } else {
-                        showImageFrame("pics/worst error.png");
+                        showImageFrame("pics/error.png");
                     }
                 } else {
-                    showImageFrame("pics/worst error.png");
+                    showImageFrame("pics/error.png");
                 }
             } catch (Exception ex) {
-                showImageFrame("pics/worst error.png");
+                showImageFrame("pics/error.png");
                 ex.printStackTrace();
             }
         });
+
 
         navButton = new NavigatorButtonEmployee();
         navButton.setBounds(12, 7, 206, 420);
