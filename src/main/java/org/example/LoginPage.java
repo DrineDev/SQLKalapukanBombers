@@ -61,6 +61,22 @@ public class LoginPage extends JFrame{
         leftSide.setBackground(Color.white);
         leftSide.setLayout(null);
 
+        ImageIcon help = new ImageIcon("pics/help me.png");
+        JButton helpMe = new JButton(help);
+        helpMe.setBounds(12,560,30,30);
+        helpMe.setContentAreaFilled(false);
+        helpMe.setBorderPainted(false);
+        helpMe.setFocusPainted(false);
+        helpMe.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                //TODO
+                System.out.println("help me pls");
+            }
+        });
+
         JPanel leftSidePanel = new JPanel();
         leftSidePanel.setBounds(0,0,400,600);
         leftSidePanel.setBackground(Color.white);
@@ -286,7 +302,7 @@ public class LoginPage extends JFrame{
         leftSidePanel.add(passwordText);
         leftSidePanel.add(loginButton);
         leftSidePanel.add(iDontHaveAccount);
-
+        
         leftSideSignUp.add(fillUpError);
         leftSideSignUp.add(confirmPassError);
         leftSideSignUp.add(userText);
@@ -299,8 +315,9 @@ public class LoginPage extends JFrame{
         leftSideSignUp.add(manager);
         leftSideSignUp.add(signupButton);
         leftSideSignUp.add(managerKeyPassError);
-        leftSideSignUp.add(iChangedMyMind);
+        leftSideSignUp.add(iChangedMyMind);    
 
+        leftSide.add(helpMe);
         leftSide.add(leftSidePanel);
         leftSide.add(leftSideSignUp);
         loginFrame.add(leftSide, BorderLayout.WEST);
