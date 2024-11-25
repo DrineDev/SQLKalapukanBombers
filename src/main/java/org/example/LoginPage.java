@@ -207,7 +207,8 @@ public class LoginPage extends JFrame{
                 }
                 else
                 {
-                    // TODO : add user to the sql
+                    // TODO : VALIDATION WITH MANAGER KEY
+                    SQLUser.addUser(userInput, passInput, "Employee");
 
                     confirmPassError.setVisible(false);
                     fillUpError.setVisible(false);
