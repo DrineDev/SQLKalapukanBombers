@@ -1,6 +1,8 @@
 package org.example.SQLQueries;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLUser {
 
@@ -186,18 +188,23 @@ public class SQLUser {
         }
     }
 
-    public static void addManagerKeyColumn() {
-        String addSQL = "ALTER TABLE USERS ADD COLUMN Manager_Key TEXT";
-        try (Connection conn = DriverManager.getConnection(DB_URL);
-             Statement stmt = conn.createStatement()) {
+    public static List<String> getManagerKeys() {
+        List<String> managerPasswords = new ArrayList<>();
+        String query = "SELECT password FROM USERS WHERE role = 'Manager'";
 
-            // Execute the statement
-            stmt.executeUpdate(addSQL);
-            System.out.println("Column 'Manager_Key' added to USERS table successfully.");
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String password = resultSet.getString("password");
+                managerPasswords.add(password);
+            }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-    }
 
+        return managerPasswords;
+    }
 }

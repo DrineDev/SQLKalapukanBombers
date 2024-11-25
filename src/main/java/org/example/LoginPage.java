@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -135,9 +136,14 @@ public class LoginPage extends JFrame{
         confirmPassError.setBounds(102,110,196,15);
         confirmPassError.setVisible(false);
 
+        ImageIcon managerError = new ImageIcon("pics/manager key error.png");
+        JLabel managerKeyPassError = new JLabel(managerError);
+        managerKeyPassError.setBounds(102,110,215,15);
+        managerKeyPassError.setVisible(false);
+
         //signup success
-        ImageIcon succes = new ImageIcon("pics/sign up success.png");
-        JLabel successMessage = new JLabel(succes);
+        ImageIcon success = new ImageIcon("pics/sign up success.png");
+        JLabel successMessage = new JLabel(success);
         successMessage.setBounds(50,138,300,17);
         successMessage.setVisible(false);
 
@@ -169,7 +175,6 @@ public class LoginPage extends JFrame{
                     {
                         fadeInNewFrameEmployee();
                     }
-
                 }
                 else
                 {
@@ -187,31 +192,34 @@ public class LoginPage extends JFrame{
         signupButton.setBorderPainted(false);
         signupButton.addActionListener(new ActionListener()
         {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
+                List<String> managerKeys = SQLUser.getManagerKeys();
                 String userInput = userText.getText();
                 String passInput = passText.getText();
                 String confirmInput = confirmPassText.getText();
                 String managerInput = managerText.getText();
 
-                if(userInput.isBlank() || passInput.isEmpty() || confirmInput.isEmpty())
-                {
+                if (userInput.isBlank() || passInput.isEmpty() || confirmInput.isEmpty()) {
                     confirmPassError.setVisible(false);
                     fillUpError.setVisible(true);
                 }
-                else if (passInput.equals(confirmInput) == false)
-                {
+                else if (!passInput.equals(confirmInput)) {
                     confirmPassError.setVisible(true);
                     fillUpError.setVisible(false);
                 }
-                else
-                {
-                    // TODO : VALIDATION WITH MANAGER KEY
+                else if (!managerKeys.contains(managerInput)) {
+                    // Manager key validation failed
+                    fillUpError.setVisible(false);
+                    confirmPassError.setVisible(false);
+                    managerKeyPassError.setVisible(true);  // Assuming managerKeyError is a label or component for the error message
+                }
+                else {
+                    // Manager key is valid, proceed with adding user
                     SQLUser.addUser(userInput, passInput, "Employee");
 
                     confirmPassError.setVisible(false);
                     fillUpError.setVisible(false);
+                    managerKeyPassError.setVisible(false);  // Hide the manager key error message
                     System.out.println("nice one!");
                     leftSideSignUp.setVisible(false);
                     leftSidePanel.setVisible(true);
@@ -223,7 +231,6 @@ public class LoginPage extends JFrame{
                     fillUpError.setVisible(false);
                     confirmPassError.setVisible(false);
                 }
-
             }
         });
 
@@ -291,6 +298,7 @@ public class LoginPage extends JFrame{
         leftSideSignUp.add(managerText);
         leftSideSignUp.add(manager);
         leftSideSignUp.add(signupButton);
+        leftSideSignUp.add(managerKeyPassError);
         leftSideSignUp.add(iChangedMyMind);
 
         leftSide.add(leftSidePanel);
