@@ -340,6 +340,20 @@ public class SQLMeal {
         return mealIds;
     }
 
+    public static boolean mealExists(String mealName) throws SQLException {
+        String query = "SELECT COUNT(*) FROM Meals WHERE name = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, mealName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Return true if count > 0
+                }
+            }
+        }
+        return false;
+    }
+
     // Setter methods for each column
     public static void setName(int mealId, String name) {
         setStringValue("UPDATE MEALS SET Name = ? WHERE Meal_Id = ?", mealId, name);
