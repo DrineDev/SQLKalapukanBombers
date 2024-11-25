@@ -1,14 +1,9 @@
 package org.example;
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -67,13 +62,18 @@ public class LoginPage extends JFrame{
         helpMe.setContentAreaFilled(false);
         helpMe.setBorderPainted(false);
         helpMe.setFocusPainted(false);
-        helpMe.addActionListener(new ActionListener() 
+        helpMe.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                //TODO
-                System.out.println("help me pls");
+                try {
+                    Desktop.getDesktop().browse(new URI("https://docs.google.com/document/d/1jPIN_3xfQMmlNpcGu3CzUnA8gAvOC1ra-xebccjeZSU/edit?tab=t.0#heading=h.2fvejpw1027q"));
+                } catch (Exception ex) {
+                    // Handle any exceptions that might occur when trying to open the link
+                    System.err.println("Error opening link: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
             }
         });
 
