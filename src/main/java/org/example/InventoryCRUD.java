@@ -173,14 +173,20 @@ public class InventoryCRUD {
         button.setIcon(new ImageIcon("pics/confirm.png"));
         button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
         button.addActionListener(e -> {
-            try {
-
-                updateInventory();
-            } catch (Exception ex) {
+            if (leftContentPanel.getComponentCount() > 0) {
+                try {
+                    updateInventory();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "Error updating inventory: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
                 JOptionPane.showMessageDialog(mainFrame,
-                        "Error updating inventory: " + ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                        "No items to update",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
             }
         });
 
