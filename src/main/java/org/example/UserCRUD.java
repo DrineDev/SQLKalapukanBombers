@@ -396,25 +396,34 @@ public class UserCRUD extends JFrame {
     private ItemListener createAddUserListener(JTextField username, JTextField password, JTextField role) {
         return new ItemListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
-                String usernameInput = username.getText();
-                String passwordInput = password.getText();
-                String roleInput = role.getText();
+        public void itemStateChanged(ItemEvent e) {
+            String usernameInput = username.getText();
+            String passwordInput = password.getText();
+            String roleInput = role.getText();
 
-                if (usernameInput.isBlank() || passwordInput.isBlank() || roleInput.isBlank()) {
-                    showImageFrame("pics/fill in all error.png");
+            if (usernameInput.isBlank() || passwordInput.isBlank() || roleInput.isBlank()) {
+                showImageFrame("pics/fill in all error.png");
+                username.setText(null);
+                password.setText(null);
+                role.setText(null);
+            } else {
+                if (SQLUser.getUserId(usernameInput) != null) 
+                {
+                    showImageFrame("pics/username exists error.png");
                     username.setText(null);
                     password.setText(null);
                     role.setText(null);
                 } else {
-                    ConfirmationFrameUserCrud confirm = new ConfirmationFrameUserCrud(UserCRUD.this,usernameInput, passwordInput, roleInput);
+                    // Username is unique, proceed with adding user
+                    ConfirmationFrameUserCrud confirm = new ConfirmationFrameUserCrud(UserCRUD.this, usernameInput, passwordInput, roleInput);
                     username.setText(null);
                     password.setText(null);
                     role.setText(null);
                     refreshLogPanels(); // Refresh after adding user
                 }
             }
-        };
+        }
+    };
     }
 
     private ItemListener createEditUserListener(JTextField id, JTextField username, JTextField password, JTextField role) {
@@ -422,19 +431,53 @@ public class UserCRUD extends JFrame {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 String idInput = id.getText();
-                String usernameInput = username.getText();
-                String passwordInput = password.getText();
-                String roleInput = role.getText();
-
-                if (idInput.isBlank() || usernameInput.isBlank() || passwordInput.isBlank() || roleInput.isBlank()) {
-                    showImageFrame("pics/fill in all error.png");
+    
+                try {
+                    int userId = Integer.parseInt(idInput);
+    
+                    // Check if user ID exists
+                    if (SQLUser.getUsername(userId) == null) {
+                        showImageFrame("pics/user id wrong.png");
+                        id.setText(null);
+                        return;
+                    }
+    
+                    // Get input values
+                    String usernameInput = username.getText();
+                    String passwordInput = password.getText();
+                    String roleInput = role.getText();
+    
+                    // Check if username is unique if not blank
+                    if (!usernameInput.isBlank()) {
+                        Integer existingUserId = SQLUser.getUserId(usernameInput);
+                        if (existingUserId != null && existingUserId != userId) {
+                            showImageFrame("pics/username exists error.png");
+                            username.setText(null);
+                            return;
+                        }
+                    }
+    
+                    // Open confirmation frame with all inputs
+                    ConfirmationFrameUserCrud confirm = new ConfirmationFrameUserCrud(
+                        UserCRUD.this, 
+                        idInput, 
+                        usernameInput, 
+                        passwordInput, 
+                        roleInput
+                    );
+    
+                    // Clear input fields
+                    id.setText(null);
+                    username.setText(null);
+                    password.setText(null);
+                    role.setText(null);
+    
+                } catch (NumberFormatException ex) {
                     showImageFrame("pics/user id wrong.png");
-                } else {
-                    ConfirmationFrameUserCrud confirm = new ConfirmationFrameUserCrud(UserCRUD.this, idInput, usernameInput, passwordInput, roleInput);
-                    refreshLogPanels(); // Refresh after editing user
+                    id.setText(null);
                 }
             }
-        };
+        };  
     }
 
     private ItemListener createDeleteUserListener(JTextField id) {
@@ -442,13 +485,28 @@ public class UserCRUD extends JFrame {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 String idInput = id.getText();
-
-                if (idInput.isBlank()) {
+    
+                try {
+                    int userId = Integer.parseInt(idInput);
+    
+                    // Check if user ID exists
+                    if (SQLUser.getUsername(userId) == null) {
+                        showImageFrame("pics/user id wrong.png");
+                        id.setText(null);
+                        return;
+                    }
+                    if (idInput.isBlank()) {
+                        showImageFrame("pics/user id wrong.png");
+                    } else {
+                        ConfirmationFrameUserCrud confirm = new ConfirmationFrameUserCrud(UserCRUD.this, idInput);
+                        refreshLogPanels(); // Refresh after deleting user
+                    }
+                } catch (NumberFormatException ex)
+                {
                     showImageFrame("pics/user id wrong.png");
-                } else {
-                    ConfirmationFrameUserCrud confirm = new ConfirmationFrameUserCrud(UserCRUD.this, idInput);
-                    refreshLogPanels(); // Refresh after deleting user
+                    id.setText(null);
                 }
+                
             }
         };
     }
