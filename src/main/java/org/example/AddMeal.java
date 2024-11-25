@@ -216,7 +216,6 @@ public class AddMeal extends JFrame {
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
-        this.setAlwaysOnTop(true);
 
         // Set background color - using a slightly visible white instead of fully transparent
         this.setBackground(new Color(255, 255, 255));
@@ -444,24 +443,36 @@ public class AddMeal extends JFrame {
         addButton.setContentAreaFilled(false);
         addButton.setFocusPainted(false);
         addButton.setBorderPainted(false);
-
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     // Validate input
                     if (!validateInput()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Please correct the input errors before proceeding.",
+                                "Validation Error",
+                                JOptionPane.WARNING_MESSAGE);
                         return;
                     }
 
-                    // Set category
+                    // Check for duplicate meal name
+                    String mealName = nameTextArea.getText().trim();
+                    if (SQLMeal.mealExists(mealName)) {
+                        JOptionPane.showMessageDialog(null,
+                                "A meal with this name already exists. Please choose a different name.",
+                                "Duplicate Meal Name",
+                                JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
+                    // Collect meal details
                     if (vegetarianCheckBox.isSelected()) {
                         tempMeal.setCategory("Vegetarian");
                     } else if (nonVegetarianCheckBox.isSelected()) {
                         tempMeal.setCategory("Non-Vegetarian");
                     }
 
-                    // Set type
                     if (breakfastCheckBox.isSelected())
                         tempMeal.setType("Breakfast");
                     if (lunchCheckBox.isSelected())
@@ -469,40 +480,51 @@ public class AddMeal extends JFrame {
                     if (dinnerCheckBox.isSelected())
                         tempMeal.setType("Dinner");
 
-                    // Set other properties
                     tempMeal.setIsSpicy(spicyCheckBox.isSelected());
-                    tempMeal.setName(nameTextArea.getText().trim());
+                    tempMeal.setName(mealName);
                     tempMeal.setIngredients(ingredientsTextField.getText().trim());
                     tempMeal.setDescription(descriptionTextField.getText().trim());
                     tempMeal.setServingSize(servingSizeTextField.getText().trim());
                     tempMeal.setNutritionFact(nutritionalFactsTextField.getText().trim());
 
-                    // Process and set image with background replaced
-                    if (selectedImage != null) {
-                        tempMeal.setImage(ImageProcessor.swapBackground(selectedImage, "pics/backgroud for food.png"));
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Please select an image for the meal.", "Image Missing",
+                    // Check if an image is selected
+                    if (selectedImage == null) {
+                        JOptionPane.showMessageDialog(null,
+                                "Please select an image for the meal.",
+                                "Image Missing",
                                 JOptionPane.WARNING_MESSAGE);
                         return;
                     }
 
-                    // Save meal to database
-                    SQLMeal.addMeal(tempMeal);
-                    JOptionPane.showMessageDialog(null, "Meal added successfully!", "Success",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    System.out.println("Meal added...");
+                    // Process and set the image
+                    tempMeal.setImage(ImageProcessor.swapBackground(selectedImage, "pics/backgroud for food.png"));
 
-                    // Clear the form
-                    clearForm();
+                    // Save meal to the database
+                    SQLMeal.addMeal(tempMeal);
+
+                    // Show success message and close the window
+                    JOptionPane.showMessageDialog(null,
+                            "Meal added successfully!",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    // Close the window only once, after successful operations
+                    dispose();
 
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error saving meal: " + ex.getMessage(), "Database Error",
+                    JOptionPane.showMessageDialog(null,
+                            "Error saving meal: " + ex.getMessage(),
+                            "Database Error",
                             JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
+                    dispose(); // Close the window in case of database error
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error processing image: " + ex.getMessage(), "Image Processing Error",
+                    JOptionPane.showMessageDialog(null,
+                            "Error processing image: " + ex.getMessage(),
+                            "Image Processing Error",
                             JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
+                    dispose(); // Close the window in case of other errors
                 }
             }
         });
@@ -527,47 +549,74 @@ public class AddMeal extends JFrame {
 
     // Validate all required inputs
     private boolean validateInput() {
+        // Check category
         if (!vegetarianCheckBox.isSelected() && !nonVegetarianCheckBox.isSelected()) {
             JOptionPane.showMessageDialog(null, "Please select a category (Vegetarian/Non-Vegetarian).",
                     "Validation Error", JOptionPane.WARNING_MESSAGE);
             return false;
         }
+
+        // Check meal type
         if (!breakfastCheckBox.isSelected() && !lunchCheckBox.isSelected() && !dinnerCheckBox.isSelected()) {
             JOptionPane.showMessageDialog(null,
                     "Please select at least one meal type (Breakfast/Lunch/Dinner).", "Validation Error",
                     JOptionPane.WARNING_MESSAGE);
             return false;
         }
-        if (nameTextArea.getText().trim().isEmpty()) {
+
+        // Check meal name
+        String mealName = nameTextArea.getText().trim();
+        if (mealName.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please enter a meal name.", "Validation Error",
                     JOptionPane.WARNING_MESSAGE);
             return false;
         }
+
+        // Check if meal name already exists
+        try {
+            if (SQLMeal.mealExists(mealName)) {
+                showValidationError("A meal with this name already exists. Please choose a different name.");
+                return false;
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Error checking for existing meal: " + ex.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            return false; // Prevent proceeding if there was a database error
+        }
+
+        // Check ingredients
         if (ingredientsTextField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please enter ingredients.", "Validation Error",
-                    JOptionPane.WARNING_MESSAGE);
+            showValidationError("Please enter ingredients.");
             return false;
         }
+
+        // Check description
         if (descriptionTextField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please enter a description.", "Validation Error",
-                    JOptionPane.WARNING_MESSAGE);
+            showValidationError("Please enter a description.");
             return false;
         }
+
+        // Check serving size
         if (servingSizeTextField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please enter a serving size.", "Validation Error",
-                    JOptionPane.WARNING_MESSAGE);
+            showValidationError("Please enter a serving size.");
             return false;
         }
+
+        // Check nutritional facts
         if (nutritionalFactsTextField.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please enter nutritional facts.", "Validation Error",
-                    JOptionPane.WARNING_MESSAGE);
+            showValidationError("Please enter nutritional facts.");
             return false;
         }
+
+        // Check if image is selected
         if (selectedImage == null) {
-            JOptionPane.showMessageDialog(null, "Please select an image.", "Validation Error",
-                    JOptionPane.WARNING_MESSAGE);
+            showValidationError("Please select an image.");
             return false;
         }
+
+        // All validations passed
         return true;
     }
 
@@ -611,6 +660,15 @@ public class AddMeal extends JFrame {
         });
 
         return addButton;
+    }
+
+    private void showValidationError(String message) {
+        JOptionPane.showMessageDialog(
+                this,  // Use 'this' as the parent component
+                message,
+                "Validation Error",
+                JOptionPane.WARNING_MESSAGE
+        );
     }
 
     // TEMP FOR REUSE WITH EDITMEAL
