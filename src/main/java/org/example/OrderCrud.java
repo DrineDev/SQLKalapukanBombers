@@ -11,7 +11,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,13 +21,33 @@ import java.util.List;
 import java.util.Map;
 
 public class OrderCrud extends JFrame {
-    private final JFrame Frame;
-    private JTable orderTable;
-    private DefaultTableModel tableModel;
-    private JPopupMenu popupMenu;
+    private final JLabel confirmationTextLabel2;
+    private final JLabel confirmationTextLabel;
+    private final JButton bottomLeftUpdateButton;
+    private final JTextField orderIdTextfield;
+    private final JTextField orderDateTextfield;
+    private final JTextField statusTextfield;
+    private final JTextField totalAmountTextfield;
+    private final JLabel orderIdLabelUpdate;
+    private final JLabel orderDateLabelUpdate;
+    private final JLabel statusLabelUpdate;
+    private final JLabel totalAmountLabelUpdate;
+    private final JPanel warningPanel;
+    private final JLabel warningText;
+    private final JFrame deletePopUpFrame;
+    private final JButton noButton;
+    private final JButton yesButton;
+    private final JPanel rightSideBottom;
+    private JFrame Frame;
+    private JButton exitButton, addButton, updateButton, deleteButton, orderIdButton, confirmButton, cancelButton;
+    private JPanel topLeftPanel, updateOrderPanel, rightSidePanel, confirmationPanel, orderItemsPanel, orderPanel, orderDatePanel, statusPanel, totalAmountPanel;
+    private JTextField orderIDField, orderDateField, statusField, totalAmountField;
+    private JLabel orderDateLabel, orderLabel, rightSideLineLabel, orderIdLabel, totalAmountLabel, statusLabel, totalAmountValue;
+    private NavigatorButtonOrder navButton;
+    private JScrollPane orderItemsScrollPane;
     private JRadioButton mainMenuButton, inventoryButton, orderButton, salesButton, promotionsButton;
+    private JPopupMenu popupMenu;
     private ButtonGroup buttonGroup;
-    private JPanel orderItemsPanel;
 
     private static final int BUTTON_HEIGHT = 50;
     private static final int BUTTON_WIDTH = 150;
@@ -37,18 +56,6 @@ public class OrderCrud extends JFrame {
     private static final String DB_URL = "jdbc:sqlite:SQL/database.db";
 
     public OrderCrud() {
-        //Exit Button
-        ImageIcon ExitImageIcon = new ImageIcon("pics/exit button.png");
-        JButton exitButton = new JButton();
-        exitButton.setIcon(ExitImageIcon);
-        exitButton.setContentAreaFilled(false);
-        exitButton.setFocusPainted(false);
-        exitButton.setBorderPainted(false);
-        exitButton.setBounds(962, 15, 20, 20);
-        exitButton.addActionListener(e -> System.exit(0));
-        exitButton.setVisible(true);
-
-
         //Frame Initialization
         Frame = new JFrame();
         Frame.setSize(1000, 600);
@@ -57,97 +64,57 @@ public class OrderCrud extends JFrame {
         Frame.setLayout(null);
         Frame.setLocationRelativeTo(null);
         Frame.getContentPane().setBackground(Color.PINK);
+        exitButton = createExitButton();
 
-        NavigatorButtonOrder navButton = new NavigatorButtonOrder();
+        navButton = new NavigatorButtonOrder();
+        navButton.setBounds(10, 10, 48, 48);
 
-        navButton.setBounds(10,10,48,48);
+        ImageIcon orderImage = new ImageIcon("pics/Orders.png");
+        orderLabel = new JLabel(orderImage);
+        orderLabel.setBounds(307, 12, 51, 13);
 
+        ImageIcon rightSideLine = new ImageIcon("pics/Line 1.png");
+        rightSideLineLabel = new JLabel(rightSideLine);
+        rightSideLineLabel.setBounds(24, 35, 613, 3);
 
+        ImageIcon orderIdImage = new ImageIcon("pics/Order_ID (3).png");
+        orderIdLabel = new JLabel(orderIdImage);
+        orderIdLabel.setBounds(46, 45, 67, 14);
 
-        ImageIcon OrderImage = new ImageIcon("pics/Orders.png");
-        ImageIcon RightSideLine = new ImageIcon("pics/Line 1.png");
-        ImageIcon Order_IDImage = new ImageIcon("pics/Order_ID (3).png");
-        ImageIcon Order_DateImage = new ImageIcon("pics/Order_Date (2).png");
-        ImageIcon StatusImage = new ImageIcon("pics/Status (2).png");
-        ImageIcon Total_AmountImage = new ImageIcon("pics/Total_Amount (2).png");
+        ImageIcon orderDateImage = new ImageIcon("pics/Order_Date (2).png");
+        orderDateLabel = new JLabel(orderDateImage);
+        orderDateLabel.setBounds(232, 45, 84, 14);
 
-        JLabel OrderLabel = new JLabel(OrderImage);
-        JLabel RightSideLineLabel = new JLabel(RightSideLine);
-        JLabel Order_IDLabel = new JLabel(Order_IDImage);
-        JLabel Order_DateLabel = new JLabel(Order_DateImage);
-        JLabel StatusLabel = new JLabel(StatusImage);
-        JLabel Total_AmountLabel = new JLabel(Total_AmountImage);
+        ImageIcon statusImage = new ImageIcon("pics/Status (2).png");
+        statusLabel = new JLabel(statusImage);
+        statusLabel.setBounds(427, 45, 54, 14);
 
-        OrderLabel.setBounds(307,12,51,13);
-        RightSideLineLabel.setBounds(24,35,613,3);
-        Order_IDLabel.setBounds(46,45,67,14);
-        Order_DateLabel.setBounds(232,45,84,14);
-        StatusLabel.setBounds(427, 45,54,14);
-        Total_AmountLabel.setBounds(538,45,97,14);
+        ImageIcon totalAmountImage = new ImageIcon("pics/Total_Amount (2).png");
+        totalAmountLabel = new JLabel(totalAmountImage);
+        totalAmountLabel.setBounds(538, 45, 97, 14);
 
+        orderItemsScrollPane = createOrderItemsScrollPane();
 
+        // RIGHT SIDE PANEL INIT (WITH LABELS AND PANELS)
+        rightSidePanel = createRightSidePanel();
 
-        JScrollPane orderItemsScrollPane = getjPanel();
-
-
-        JPanel OrderPanel = new JPanel();
-        OrderPanel.setLayout(new BoxLayout(OrderPanel,BoxLayout.Y_AXIS));
-        OrderPanel.setBounds(24,72,80,419);
-        OrderPanel.setBackground(Color.WHITE);
-
-        JPanel Order_Date_Panel = new JPanel();
-        Order_Date_Panel.setLayout(new BoxLayout(Order_Date_Panel,BoxLayout.Y_AXIS));
-        Order_Date_Panel.setBounds(135,72,250,419);
-        Order_Date_Panel.setBackground(Color.WHITE);
-
-
-        JPanel Status_Panel = new JPanel();
-        Status_Panel.setLayout(new BoxLayout(Status_Panel,BoxLayout.Y_AXIS));
-        Status_Panel.setBounds(400,72,60,419);
-        Status_Panel.setBorder(null);
-        Status_Panel.setBackground(Color.WHITE);
-
-
-        JPanel Total_Amount_Panel = new JPanel();
-        Total_Amount_Panel.setLayout(new BoxLayout(Total_Amount_Panel,BoxLayout.Y_AXIS));
-        Total_Amount_Panel.setBounds(527, 72, 109,419);
-        Total_Amount_Panel.setBorder(null);
-        Total_Amount_Panel.setBackground(Color.WHITE);
-
-        JPanel RightSidePanel = new JPanel();
-        RightSidePanel.setLayout(null);  // Changed to null layout for absolute positioning
-        RightSidePanel.setBackground(Color.WHITE);
-        RightSidePanel.setBounds(302, 45, 660, 520);  // Match scroll pane width
-        RightSidePanel.add(OrderPanel);
-        RightSidePanel.add(Order_Date_Panel);
-        RightSidePanel.add(Status_Panel);
-        RightSidePanel.add(Total_Amount_Panel);
-
-        RightSidePanel.add(OrderLabel);
-        RightSidePanel.add(RightSideLineLabel);
-        RightSidePanel.add(Order_IDLabel);
-        RightSidePanel.add(Order_DateLabel);
-        RightSidePanel.add(StatusLabel);
-        RightSidePanel.add(Total_AmountLabel);
-
+        // GET ORDERS
         List<Order> orders = SQLOrder.getAllOrders();
         int maxHeight = 419;
-
         for (Order order : orders) {
             // Order ID Panel
-            JButton orderIDButton = new JButton(String.valueOf(order.getOrderId()));
-            orderIDButton.setBackground(Color.WHITE);
-            orderIDButton.setBorderPainted(false);
-            orderIDButton.setContentAreaFilled(false);
-            orderIDButton.setRequestFocusEnabled(false);
-            orderIDButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            orderIDButton.setMaximumSize(new Dimension(70, 20));
-            orderIDButton.setPreferredSize(new Dimension(70, 20));
-            OrderPanel.add(orderIDButton);
-            RightSidePanel.add(OrderPanel);
+            orderIdButton = new JButton(String.valueOf(order.getOrderId()));
+            orderIdButton.setBackground(Color.WHITE);
+            orderIdButton.setBorderPainted(false);
+            orderIdButton.setContentAreaFilled(false);
+            orderIdButton.setRequestFocusEnabled(false);
+            orderIdButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            orderIdButton.setMaximumSize(new Dimension(70, 20));
+            orderIdButton.setPreferredSize(new Dimension(70, 20));
+            orderPanel.add(orderIdButton);
             List<OrderItem> items = SQLOrderItems.getOrderItems(Integer.parseInt(String.valueOf(order.getOrderId())));
 
-            orderIDButton.addActionListener(new ActionListener() {
+            orderIdButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Frame.add(orderItemsScrollPane);
@@ -159,84 +126,71 @@ public class OrderCrud extends JFrame {
             JLabel orderDateLabel = new JLabel(order.getOrderDate());
             orderDateLabel.setMaximumSize(new Dimension(250, 20));
             orderDateLabel.setPreferredSize(new Dimension(250, 20));
-            Order_Date_Panel.add(orderDateLabel);
-            Order_Date_Panel.setBorder(null);
-            Order_Date_Panel.setBackground(Color.WHITE);
-            RightSidePanel.add(Order_Date_Panel);
-
+            orderDatePanel.add(orderDateLabel);
+            orderDatePanel.setBorder(null);
+            orderDatePanel.setBackground(Color.WHITE);
 
             // Status Panel
             JLabel statusLabel = new JLabel(order.getStatus());
             statusLabel.setMaximumSize(new Dimension(60, 20));
             statusLabel.setPreferredSize(new Dimension(60, 20));
             statusLabel.setFont(new Font("Inter", Font.BOLD, 14));
-            Status_Panel.add(statusLabel);
-            RightSidePanel.add(Status_Panel);
-
+            statusPanel.add(statusLabel);
 
             // Total Amount Panel
-            JLabel totalAmountLabel = new JLabel(String.format("%.2f", order.getTotalAmount()));
-            totalAmountLabel.setMaximumSize(new Dimension(109, 20));
-            totalAmountLabel.setPreferredSize(new Dimension(109, 20));
-            totalAmountLabel.setFont(new Font("Inter", Font.BOLD, 14));
-            totalAmountLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-            Total_Amount_Panel.add(totalAmountLabel);
-            RightSidePanel.add(Total_Amount_Panel);
-
+            totalAmountValue = new JLabel(String.format("%.2f", order.getTotalAmount()));
+            totalAmountValue.setMaximumSize(new Dimension(109, 20));
+            totalAmountValue.setPreferredSize(new Dimension(109, 20));
+            totalAmountValue.setFont(new Font("Inter", Font.BOLD, 14));
+            totalAmountValue.setAlignmentX(Component.LEFT_ALIGNMENT);
+            totalAmountPanel.add(totalAmountValue);
         }
 
-
-        RightSidePanel.setPreferredSize(new Dimension(660, maxHeight + 100));
+        rightSidePanel.setPreferredSize(new Dimension(660, maxHeight + 100));
 
         //Add Order button for addorderpanel
-        ImageIcon AddButtonImage = new ImageIcon("pics/Add order.png");
-        JButton AddButton = new JButton(AddButtonImage);
-        AddButton.setPreferredSize(new Dimension(130,40));
+        ImageIcon addButtonImage = new ImageIcon("pics/Add order.png");
+        addButton = new JButton(addButtonImage);
+        addButton.setPreferredSize(new Dimension(130, 40));
+        addButton.setBackground(Color.pink);
+        addButton.setContentAreaFilled(false);
+        addButton.setBorderPainted(false);
+        addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                confirmationPanel.setVisible(true);
+            }
+        });
 
-
+        // CONFIRMATION TEXTS
         ImageIcon ConfirmationPanelText1 = new ImageIcon("pics/Are you sure you want to.png");
+        confirmationTextLabel = new JLabel(ConfirmationPanelText1);
+        confirmationTextLabel.setBounds(52, 9, 145, 15);
         ImageIcon ConfirmationPanelText2 = new ImageIcon("pics/you to go to the Main Menu_.png");
-        JLabel ConfirmationTextLabel = new JLabel(ConfirmationPanelText1);
-        JLabel ConfirmationTextLabel2 = new JLabel(ConfirmationPanelText2);
+        confirmationTextLabel2 = new JLabel(ConfirmationPanelText2);
+        confirmationTextLabel2.setBounds(27, 30, 195, 15);
 
-        ConfirmationTextLabel.setBounds(52,9,145,15);
-        ConfirmationTextLabel2.setBounds(27,30,195,15);
+        // CANCEL BUTTON
         ImageIcon CancelImageIcon = new ImageIcon("pics/Group 1.png");
+        cancelButton = new JButton(CancelImageIcon);
+        cancelButton.setBounds(61, 123, 120, 32);
+        cancelButton.setContentAreaFilled(false);
+        cancelButton.setBorderPainted(false);
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                confirmationPanel.setVisible(false);
+            }
+        });
+
+        // CONFIRM BUTTON
         ImageIcon ConfirmImageIcon = new ImageIcon("pics/Group 3.png");
-        JButton CancelButton = new JButton(CancelImageIcon);
-        JButton ConfirmButton = new JButton(ConfirmImageIcon);
-
-        CancelButton.setBounds(61,123, 120,32);
-        CancelButton.setContentAreaFilled(false);
-        CancelButton.setBorderPainted(false);
-        ConfirmButton.setBounds(61,72,120,30);
-        ConfirmButton.setContentAreaFilled(false);
-        ConfirmButton.setBorderPainted(false);
-        JPanel ConfirmationPanel = new JPanel();
-        ConfirmationPanel.setLayout(null);
-        ConfirmationPanel.setBounds(505, 235, 250,200);
-        ConfirmationPanel.setBorder(new LineBorder(Color.PINK,2,false));
-        ConfirmationPanel.add(CancelButton);
-        ConfirmationPanel.add(ConfirmButton);
-        ConfirmationPanel.add(ConfirmationTextLabel);
-        ConfirmationPanel.add(ConfirmationTextLabel2);
-        ConfirmationPanel.setVisible(false);
-
-       AddButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ConfirmationPanel.setVisible(true);
-            }
-        });
-
-        CancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ConfirmationPanel.setVisible(false);
-            }
-        });
-
-        ConfirmButton.addActionListener(new ActionListener() {
+        confirmButton = new JButton(ConfirmImageIcon);
+        confirmButton.setBounds(61, 72, 120, 30);
+        confirmButton.setContentAreaFilled(false);
+        confirmButton.setBorderPainted(false);
+        confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(MainFrameManager::new);
@@ -244,215 +198,158 @@ public class OrderCrud extends JFrame {
             }
         });
 
+        // CONFIRMATION PANEL
+        confirmationPanel = createConfirmationPanel();
 
-
-
-
-
+        // UPDATE BUTTON
         ImageIcon UpdateButtonImage = new ImageIcon("pics/update order.png");
-        JButton UpdateButton = new JButton(UpdateButtonImage);
-        UpdateButton.setPreferredSize(new Dimension(130,40));
+        updateButton = new JButton(UpdateButtonImage);
+        updateButton.setPreferredSize(new Dimension(130, 40));
 
         ImageIcon BottomLeftUpdateButtonImage = new ImageIcon("pics/BottomLeftUpdateButton.png");
-        JButton BottomLeftUpdateButton = new JButton(BottomLeftUpdateButtonImage);
-        BottomLeftUpdateButton.setBounds(70, 228, 100,34);
-        BottomLeftUpdateButton.setBorderPainted(false);
+        bottomLeftUpdateButton = new JButton(BottomLeftUpdateButtonImage);
+        bottomLeftUpdateButton.setBounds(70, 228, 100, 34);
+        bottomLeftUpdateButton.setBorderPainted(false);
 
+        orderIdTextfield = new JTextField();
+        orderIdTextfield.setBounds(22, 24, 195, 26);
+        orderIdTextfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 
-        JTextField Order_ID_Textfield2 = new JTextField();
-        JTextField Order_Date_Textfield2 = new JTextField();
-        JTextField Status_Textfield2 = new JTextField();
-        JTextField Total_Amount_Textfield2 = new JTextField();
-        Order_ID_Textfield2.setBounds(22, 24, 195, 26);
-        Order_ID_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        Order_Date_Textfield2.setBounds(22, 75, 195, 26);
-        Order_Date_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        Status_Textfield2.setBounds(22, 126, 195, 26);
-        Status_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        Total_Amount_Textfield2.setBounds(22, 177, 195, 26);
-        Total_Amount_Textfield2.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        orderDateTextfield = new JTextField();
+        orderDateTextfield.setBounds(22, 75, 195, 26);
+        orderDateTextfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 
-        ImageIcon Order_ID_Text2 = new ImageIcon("pics/Order_ID (1).png");
-        ImageIcon Order_Date_Text2 = new ImageIcon("pics/Order_Date.png");
-        ImageIcon Status_Text2 = new ImageIcon("pics/Status.png");
-        ImageIcon Total_Amount2 = new ImageIcon("pics/Total_Amount.png");
+        statusTextfield = new JTextField();
+        statusTextfield.setBounds(22, 126, 195, 26);
+        statusTextfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 
-        JLabel Order_ID_Label2 = new JLabel(Order_ID_Text2);
-        Order_ID_Label2.setBounds(101, 50, 47,10);
-        JLabel Order_Date_Label2 = new JLabel(Order_Date_Text2);
-        Order_Date_Label2.setBounds(95, 101, 59,10);
-        JLabel Status_Label2 = new JLabel(Status_Text2);
-        Status_Label2.setBounds(98, 152, 47,10);
-        JLabel Total_Amount_Label2 = new JLabel(Total_Amount2);
-        Total_Amount_Label2.setBounds(83, 202, 87, 11);
+        totalAmountTextfield = new JTextField();
+        totalAmountTextfield.setBounds(22, 177, 195, 26);
+        totalAmountTextfield.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
 
-        JPanel UpdateOrderPanel = new JPanel();
-        UpdateOrderPanel.setLayout(null);
-        UpdateOrderPanel.setBackground(Color.WHITE);
-        UpdateOrderPanel.setBounds(33,267,240,290);
-        UpdateOrderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY,2,true));
+        ImageIcon orderIdText = new ImageIcon("pics/Order_ID (1).png");
+        orderIdLabelUpdate = new JLabel(orderIdText);
+        orderIdLabelUpdate.setBounds(101, 50, 47, 10);
 
-        UpdateOrderPanel.add(Order_ID_Textfield2);
-        UpdateOrderPanel.add(Order_ID_Label2);
-        UpdateOrderPanel.add(Order_Date_Textfield2);
-        UpdateOrderPanel.add(Order_Date_Label2);
-        UpdateOrderPanel.add(Status_Textfield2);
-        UpdateOrderPanel.add(Status_Label2);
-        UpdateOrderPanel.add(Total_Amount_Textfield2);
-        UpdateOrderPanel.add(Total_Amount_Label2);
-        UpdateOrderPanel.add(BottomLeftUpdateButton);
+        ImageIcon orderDateText = new ImageIcon("pics/Order_Date.png");
+        orderDateLabelUpdate = new JLabel(orderDateText);
+        orderDateLabelUpdate.setBounds(95, 101, 59, 10);
 
+        ImageIcon statusText = new ImageIcon("pics/Status.png");
+        statusLabelUpdate = new JLabel(statusText);
+        statusLabelUpdate.setBounds(98, 152, 47, 10);
 
+        ImageIcon totalAmountText = new ImageIcon("pics/Total_Amount.png");
+        totalAmountLabelUpdate = new JLabel(totalAmountText);
+        totalAmountLabelUpdate.setBounds(83, 202, 87, 11);
 
-        UpdateOrderPanel.setVisible(false);
-        UpdateButton.setBackground(Color.GRAY);
-        UpdateButton.addActionListener(new ActionListener() {
+        updateOrderPanel = createUpdateOrderPanel();
+        updateOrderPanel.setVisible(false);
+        updateButton.setBackground(Color.GRAY);
+        updateButton.setBackground(Color.pink);
+        updateButton.setContentAreaFilled(false);
+        updateButton.setBorderPainted(false);
+        updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                UpdateOrderPanel.setVisible(true);
+                updateOrderPanel.setVisible(true);
             }
         });
 
-
-        //shuts off bottomleftpanel after updating an order
-        BottomLeftUpdateButton.addActionListener(new ActionListener() {
+        // shuts off bottom left panel
+        bottomLeftUpdateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (Order_ID_Textfield2.getText().isEmpty() ||
-                            Order_Date_Textfield2.getText().isEmpty() ||
-                            Status_Textfield2.getText().isEmpty() ||
-                            Total_Amount_Textfield2.getText().isEmpty())
-                    {
+                    if (orderIdTextfield.getText().isEmpty() || orderDateTextfield.getText().isEmpty() || statusTextfield.getText().isEmpty() || totalAmountTextfield.getText().isEmpty()) {
                         JOptionPane.showMessageDialog(null, "All fields must be filled.", "Input Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
-                    int Order_ID = Integer.parseInt(Order_ID_Textfield2.getText());
-                    String Order_Date = Order_Date_Textfield2.getText();
-                    String Status = Status_Textfield2.getText();
-                    Double Total_Amount = Double.parseDouble(Total_Amount_Textfield2.getText());
+                    int Order_ID = Integer.parseInt(orderIdTextfield.getText());
+                    String Order_Date = orderDateTextfield.getText();
+                    String Status = statusTextfield.getText();
+                    Double Total_Amount = Double.parseDouble(totalAmountTextfield.getText());
 
-                    if(Order_ID < 0) {
+                    if (Order_ID < 0) {
                         JOptionPane.showMessageDialog(null, "All fields must have an input", "Add Order error", JOptionPane.ERROR_MESSAGE);
                     }
                     SQLOrder.editOrder(Order_ID, Order_Date, Status, Total_Amount);
-                    UpdateOrderPanel.setVisible(false);
+                    updateOrderPanel.setVisible(false);
 
                     if (Order_Date != null || Status != null || Total_Amount > 0) {
-                        UpdateOrderPanel.setVisible(false);
-                        JOptionPane.showMessageDialog(null,
-                                "Order updated successfully",
-                                "Update Confirmation",
-                                JOptionPane.INFORMATION_MESSAGE);
+                        updateOrderPanel.setVisible(false);
+                        JOptionPane.showMessageDialog(null, "Order updated successfully", "Update Confirmation", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(null,
-                                "Failed to update order",
-                                "Update Error",
-                                JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Failed to update order", "Update Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null,
-                            "Invalid number format in input fields",
-                            "Input Error",
-                            JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Invalid number format in input fields", "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-
-
+        // delete button init
         ImageIcon DeleteButtonImage = new ImageIcon("pics/delete order.png");
-        JButton DeleteButton = new JButton(DeleteButtonImage);
-        DeleteButton.setPreferredSize(new Dimension(130,40));
+        deleteButton = new JButton(DeleteButtonImage);
+        deleteButton.setPreferredSize(new Dimension(130, 40));
+        deleteButton.setBackground(Color.red);
+        deleteButton.setContentAreaFilled(false);
+        deleteButton.setBorderPainted(false);
 
-
-        //Warning Panel after pressing Delete Button
-        JPanel WarningPanel = new JPanel();
+        // WARNING PANEL
         ImageIcon WarningTextImage = new ImageIcon("pics/warningtext.png");
-        JLabel WarningText = new JLabel(WarningTextImage);
-        WarningText.setBounds(55,32,190,32);
-        WarningPanel.setBackground(Color.WHITE);
-        WarningPanel.setBounds(300,45,660,620);
-        WarningPanel.setBorder(new LineBorder(new Color(208,108,108,255)));
-        WarningPanel.setLayout(null);
-        WarningPanel.add(WarningText);
+        warningText = new JLabel(WarningTextImage);
+        warningText.setBounds(55, 32, 190, 32);
+        warningPanel = new JPanel();
+        warningPanel.setBackground(Color.WHITE);
+        warningPanel.setBounds(300, 45, 660, 620);
+        warningPanel.setBorder(new LineBorder(new Color(208, 108, 108, 255)));
+        warningPanel.setLayout(null);
+        warningPanel.add(warningText);
 
-        //new Frame for delete pop up
-        JFrame DeletePopUpFrame = new JFrame();
-        DeletePopUpFrame.setBounds(300,45,300,200);
-        DeletePopUpFrame.setUndecorated(true);
-        DeletePopUpFrame.setLocationRelativeTo(null);
-        DeletePopUpFrame.add(WarningPanel);
+        // DELETE POP UP FRAME
+        deletePopUpFrame = new JFrame();
+        deletePopUpFrame.setBounds(300, 45, 300, 200);
+        deletePopUpFrame.setUndecorated(true);
+        deletePopUpFrame.setLocationRelativeTo(null);
+        deletePopUpFrame.add(warningPanel);
 
-
+        // NO BUTTON
         ImageIcon NoImage = new ImageIcon("pics/no.png");
-        JButton NoButton = new JButton(NoImage);
-        NoButton.setContentAreaFilled(false);
-        NoButton.setBorderPainted(false);
-        NoButton.setBounds(40,129,90,30);
-        NoButton.addActionListener(e -> DeletePopUpFrame.setVisible(false));
-        ImageIcon YesImage = new ImageIcon("pics/yes.png");
-        JButton YesButton = new JButton(YesImage);
-        YesButton.setContentAreaFilled(false);
-        YesButton.setBorderPainted(false);
-        YesButton.setBounds(170,129,90,30);
+        noButton = new JButton(NoImage);
+        noButton.setContentAreaFilled(false);
+        noButton.setBorderPainted(false);
+        noButton.setBounds(40, 129, 90, 30);
+        noButton.addActionListener(e -> deletePopUpFrame.setVisible(false));
 
-        //Delete Button Function to warn user of deleting meal order
-        DeleteButton.addActionListener(new ActionListener() {
+        ImageIcon YesImage = new ImageIcon("pics/yes.png");
+        yesButton = new JButton(YesImage);
+        yesButton.setContentAreaFilled(false);
+        yesButton.setBorderPainted(false);
+        yesButton.setBounds(170, 129, 90, 30);
+        deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DeletePopUpFrame.setVisible(true);
-                WarningPanel.add(NoButton);
-                WarningPanel.add(YesButton);
+                deletePopUpFrame.setVisible(true);
+                warningPanel.add(noButton);
+                warningPanel.add(yesButton);
             }
         });
 
-        YesButton.addActionListener(new ActionListener() {
+        yesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int OrderId = Integer.parseInt(Order_ID_Textfield2.getText());
+                int OrderId = Integer.parseInt(orderIdTextfield.getText());
 
                 SQLOrder.deleteOrder(OrderId);
-                DeletePopUpFrame.setVisible(false);
+                deletePopUpFrame.setVisible(false);
             }
         });
 
-
-        AddButton.setBackground(Color.pink);
-        AddButton.setContentAreaFilled(false);
-        AddButton.setBorderPainted(false);
-        UpdateButton.setBackground(Color.pink);
-        UpdateButton.setContentAreaFilled(false);
-        UpdateButton.setBorderPainted(false);
-        DeleteButton.setBackground(Color.red);
-        DeleteButton.setContentAreaFilled(false);
-        DeleteButton.setBorderPainted(false);
-
-
-        //Top Left Panel for Order options
-        JPanel TopLeftPanel = new JPanel();
-        TopLeftPanel.setBounds(33, 54,240,204);
-        TopLeftPanel.setBackground(Color.WHITE);
-        TopLeftPanel.setLayout(new BoxLayout(TopLeftPanel, BoxLayout.Y_AXIS));
-        TopLeftPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-        TopLeftPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Adds vertical spacing
-        AddButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        UpdateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        DeleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        TopLeftPanel.add(AddButton);
-        TopLeftPanel.add(UpdateButton);
-        TopLeftPanel.add(DeleteButton);
-
-
-
-
-        JPanel RightSideBottom = new JPanel();
-        RightSideBottom.setLayout(new BoxLayout(RightSideBottom, BoxLayout.Y_AXIS));
-
-
-
-
+        topLeftPanel = createTopLeftPanel();
+        rightSideBottom = new JPanel();
+        rightSideBottom.setLayout(new BoxLayout(rightSideBottom, BoxLayout.Y_AXIS));
 
         // Create and initialize the MenuButton
         createPopupMenu();
@@ -464,7 +361,7 @@ public class OrderCrud extends JFrame {
             }
         });
 
-// Add a component (e.g., a button or the frame itself) to trigger the popup menu
+        // Add a component (e.g., a button or the frame itself) to trigger the popup menu
         Frame.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -483,19 +380,157 @@ public class OrderCrud extends JFrame {
             }
         });
 
-
-
         Frame.add(navButton);
-        Frame.add(ConfirmationPanel);
+        Frame.add(confirmationPanel);
         Frame.add(exitButton);
-        Frame.add(RightSideBottom);
-        Frame.add(TopLeftPanel);
-        Frame.add(UpdateOrderPanel);
-        Frame.add(RightSidePanel);
+        Frame.add(rightSideBottom);
+        Frame.add(topLeftPanel);
+        Frame.add(updateOrderPanel);
+        Frame.add(rightSidePanel);
         Frame.setVisible(true);
     }
 
-    private JScrollPane getjPanel() {
+    private JPanel createConfirmationPanel() {
+        JPanel confirmationPanelTemp = new JPanel();
+        confirmationPanelTemp.setLayout(null);
+        confirmationPanelTemp.setBounds(505, 235, 250, 200);
+        confirmationPanelTemp.setBorder(new LineBorder(Color.PINK, 2, false));
+        confirmationPanelTemp.add(cancelButton);
+        confirmationPanelTemp.add(confirmButton);
+        confirmationPanelTemp.add(confirmationTextLabel);
+        confirmationPanelTemp.add(confirmationTextLabel2);
+        confirmationPanelTemp.setVisible(false);
+
+        return confirmationPanelTemp;
+    }
+
+    private JPanel createTopLeftPanel() {
+        JPanel TopLeftPanel = new JPanel();
+        TopLeftPanel.setBounds(33, 54, 240, 204);
+        TopLeftPanel.setBackground(Color.WHITE);
+        TopLeftPanel.setLayout(new BoxLayout(TopLeftPanel, BoxLayout.Y_AXIS));
+        TopLeftPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+        TopLeftPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        updateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        TopLeftPanel.add(addButton);
+        TopLeftPanel.add(updateButton);
+        TopLeftPanel.add(deleteButton);
+
+        return TopLeftPanel;
+    }
+
+
+    private JPanel createUpdateOrderPanel() {
+        JPanel updateOrderPanelTemp = new JPanel();
+        updateOrderPanelTemp.setLayout(null);
+        updateOrderPanelTemp.setBackground(Color.WHITE);
+        updateOrderPanelTemp.setBounds(33, 267, 240, 290);
+        updateOrderPanelTemp.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+
+        updateOrderPanelTemp.add(orderIdTextfield);
+        updateOrderPanelTemp.add(orderIdLabelUpdate);
+        updateOrderPanelTemp.add(orderDateTextfield);
+        updateOrderPanelTemp.add(orderDateLabelUpdate);
+        updateOrderPanelTemp.add(statusTextfield);
+        updateOrderPanelTemp.add(statusLabelUpdate);
+        updateOrderPanelTemp.add(totalAmountTextfield);
+        updateOrderPanelTemp.add(totalAmountLabelUpdate);
+        updateOrderPanelTemp.add(bottomLeftUpdateButton);
+
+        return updateOrderPanelTemp;
+    }
+
+    private JPanel createRightSidePanel() {
+        // Initialize the panels with their layouts
+        orderPanel = new JPanel();
+        orderPanel.setLayout(new BoxLayout(orderPanel, BoxLayout.Y_AXIS));
+        orderPanel.setBackground(Color.WHITE);
+
+        orderDatePanel = new JPanel();
+        orderDatePanel.setLayout(new BoxLayout(orderDatePanel, BoxLayout.Y_AXIS));
+        orderDatePanel.setBackground(Color.WHITE);
+
+        statusPanel = new JPanel();
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
+        statusPanel.setBackground(Color.WHITE);
+
+        totalAmountPanel = new JPanel();
+        totalAmountPanel.setLayout(new BoxLayout(totalAmountPanel, BoxLayout.Y_AXIS));
+        totalAmountPanel.setBackground(Color.WHITE);
+
+        // Create a container panel for the scrollable content
+        JPanel scrollContent = new JPanel();
+        scrollContent.setLayout(null); // Using absolute positioning
+        scrollContent.setBackground(Color.WHITE);
+
+        // Add panels to scroll content with bounds
+        scrollContent.add(orderPanel);
+        scrollContent.add(orderDatePanel);
+        scrollContent.add(statusPanel);
+        scrollContent.add(totalAmountPanel);
+
+        // Set bounds for the panels
+        orderPanel.setBounds(24, 0, 80, 500);
+        orderDatePanel.setBounds(135, 0, 250, 500);
+        statusPanel.setBounds(400, 0, 60, 500);
+        totalAmountPanel.setBounds(527, 0, 109, 500);
+
+        // Important: Set preferred size for scroll content
+        scrollContent.setPreferredSize(new Dimension(660, 500));
+
+        // Create the scroll pane
+        JScrollPane scrollPane = new JScrollPane(scrollContent);
+        scrollPane.setBounds(0, 65, 660, 455); // Adjusted to account for header space
+        scrollPane.setBackground(Color.WHITE);
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUI(new customScrollBarUI());
+
+        // Create the main right-side panel
+        JPanel rightSidePanel = new JPanel();
+        rightSidePanel.setLayout(null);
+        rightSidePanel.setBounds(302, 45, 660, 520);
+        rightSidePanel.setBackground(Color.WHITE);
+
+        // Add header labels (uncommented and adjusted positions)
+//        orderLabel.setBounds(307, 12, 51, 13);
+//        rightSideLineLabel.setBounds(24, 35, 613, 3);
+//        orderIdLabel.setBounds(46, 45, 67, 14);
+//        orderDateLabel.setBounds(232, 45, 84, 14);
+//        statusLabel.setBounds(427, 45, 54, 14);
+//        totalAmountLabel.setBounds(538, 45, 97, 14);
+
+        // Add components to the rightSidePanel
+        rightSidePanel.add(orderLabel);
+        rightSidePanel.add(rightSideLineLabel);
+        rightSidePanel.add(orderIdLabel);
+        rightSidePanel.add(orderDateLabel);
+        rightSidePanel.add(statusLabel);
+        rightSidePanel.add(totalAmountLabel);
+        rightSidePanel.add(scrollPane);
+
+        return rightSidePanel;
+    }
+
+
+    private JButton createExitButton() {
+        ImageIcon ExitImageIcon = new ImageIcon("pics/exit button.png");
+        JButton exitButton = new JButton();
+        exitButton.setIcon(ExitImageIcon);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setFocusPainted(false);
+        exitButton.setBorderPainted(false);
+        exitButton.setBounds(962, 15, 20, 20);
+        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.setVisible(true);
+
+        return exitButton;
+    }
+
+    private JScrollPane createOrderItemsScrollPane() {
         orderItemsPanel = new JPanel();
         orderItemsPanel.setLayout(null);
         orderItemsPanel.setBackground(Color.WHITE);
@@ -632,7 +667,8 @@ public class OrderCrud extends JFrame {
         // Add popup menu listener
         popupMenu.addPopupMenuListener(new PopupMenuListener() {
             @Override
-            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+            }
 
             @Override
             public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
